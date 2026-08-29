@@ -1,4 +1,5 @@
 import type { SchemaTypeDefinition } from "sanity";
+import { ImageInputWithUrl } from "../components/ImageInputWithUrl";
 
 /** Dokumen "Tentang Kami" (companyProfile) — singelton-ish company info. */
 export const companyProfile: SchemaTypeDefinition = {
@@ -29,6 +30,21 @@ export const companyProfile: SchemaTypeDefinition = {
       title: "Logo Perusahaan",
       type: "image",
       options: { hotspot: true },
+      components: { input: ImageInputWithUrl },
+      fields: [
+        {
+          name: "alt",
+          title: "Teks Alternatif",
+          type: "string",
+        },
+      ],
+    },
+    {
+      name: "heroImage",
+      title: "Gambar Hero (Beranda)",
+      type: "image",
+      options: { hotspot: true },
+      components: { input: ImageInputWithUrl },
       fields: [
         {
           name: "alt",

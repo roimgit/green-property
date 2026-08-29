@@ -1,4 +1,5 @@
 import type { SchemaTypeDefinition } from "sanity";
+import { ImageInputWithUrl } from "../components/ImageInputWithUrl";
 
 /** Dokumen "Logo Kerjasama" (partnerLogo). */
 export const partnerLogo: SchemaTypeDefinition = {
@@ -17,6 +18,7 @@ export const partnerLogo: SchemaTypeDefinition = {
       title: "Logo",
       type: "image",
       options: { hotspot: true },
+      components: { input: ImageInputWithUrl },
       validation: (Rule) => Rule.required(),
       fields: [
         {

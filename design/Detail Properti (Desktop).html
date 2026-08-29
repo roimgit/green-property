@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+
+<html lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Property Detail - Green Property</title>
+<!-- Fonts & Icons -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-tint": "#096d34",
+                        "background": "#f7f9ff",
+                        "tertiary-fixed": "#abf3b6",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-fixed-variant": "#005224",
+                        "surface-dim": "#d7dae1",
+                        "on-error-container": "#93000a",
+                        "secondary": "#775a1a",
+                        "on-surface-variant": "#3f493f",
+                        "on-primary-container": "#adffbb",
+                        "on-tertiary-fixed": "#00210b",
+                        "on-error": "#ffffff",
+                        "on-primary-fixed": "#00210b",
+                        "surface-variant": "#e0e2e9",
+                        "on-surface": "#181c21",
+                        "tertiary": "#195f30",
+                        "on-secondary": "#ffffff",
+                        "secondary-fixed": "#ffdea5",
+                        "surface-container-high": "#e5e8ef",
+                        "error-container": "#ffdad6",
+                        "on-background": "#181c21",
+                        "surface-bright": "#f7f9ff",
+                        "error": "#ba1a1a",
+                        "primary-container": "#1f7a3f",
+                        "outline-variant": "#bfcabc",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed-dim": "#e9c178",
+                        "surface-container-lowest": "#ffffff",
+                        "outline": "#6f7a6e",
+                        "on-tertiary-container": "#b5fec0",
+                        "surface-container-highest": "#e0e2e9",
+                        "primary-fixed-dim": "#82d994",
+                        "surface-container-low": "#f1f4fa",
+                        "surface-container": "#ebeef5",
+                        "primary": "#00602c",
+                        "on-secondary-container": "#785a1b",
+                        "surface": "#f7f9ff",
+                        "inverse-primary": "#82d994",
+                        "tertiary-fixed-dim": "#90d69c",
+                        "tertiary-container": "#357847",
+                        "on-secondary-fixed-variant": "#5d4202",
+                        "primary-fixed": "#9df6ae",
+                        "on-tertiary-fixed-variant": "#055225",
+                        "secondary-container": "#fed489",
+                        "inverse-surface": "#2d3136",
+                        "inverse-on-surface": "#eef1f8",
+                        "on-secondary-fixed": "#271900"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xs": "8px",
+                        "gutter": "24px",
+                        "base": "4px",
+                        "container-max": "1280px",
+                        "md": "24px",
+                        "margin-mobile": "16px",
+                        "sm": "16px",
+                        "xl": "64px",
+                        "lg": "40px"
+                    },
+                    "fontFamily": {
+                        "headline-sm": ["Plus Jakarta Sans"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "display": ["Plus Jakarta Sans"],
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "body-md": ["Plus Jakarta Sans"],
+                        "body-sm": ["Plus Jakarta Sans"],
+                        "label-caps": ["Plus Jakarta Sans"],
+                        "price-display": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "headline-sm": ["20px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "1.3", "fontWeight": "700" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.3", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "display": ["48px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "body-sm": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "label-caps": ["12px", { "lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "price-display": ["24px", { "lineHeight": "1", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        /* Smooth scrolling */
+        html { scroll-behavior: smooth; }
+        /* Hide scrollbar for gallery thumbnails */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md antialiased light">
+<!-- Top Navigation Bar -->
+<header class="bg-surface dark:bg-background w-full top-0 sticky z-50 shadow-sm border-b border-outline-variant dark:border-outline transition-all duration-200 ease-in-out">
+<div class="flex justify-between items-center px-lg py-sm max-w-container-max mx-auto">
+<!-- Brand Logo -->
+<a class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed hover:opacity-80 transition-opacity" href="#">
+                Green Property
+            </a>
+<!-- Navigation Links (Desktop) -->
+<nav class="hidden md:flex items-center space-x-md">
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary font-body-md text-body-md hover:opacity-80 transition-opacity" href="#">Beranda</a>
+<!-- Active Navigation Item -->
+<a aria-current="page" class="text-primary dark:text-primary-fixed font-bold border-b-2 border-primary dark:border-primary-fixed pb-1 font-body-md text-body-md hover:opacity-80 transition-opacity" href="#">Properti</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary font-body-md text-body-md hover:opacity-80 transition-opacity" href="#">Land Provider</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary font-body-md text-body-md hover:opacity-80 transition-opacity" href="#">Tentang Kami</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary font-body-md text-body-md hover:opacity-80 transition-opacity" href="#">Kontak</a>
+</nav>
+<!-- Actions (Search + Trailing Action) -->
+<div class="flex items-center space-x-sm">
+<button aria-label="Search" class="text-on-surface-variant hover:text-primary transition-colors p-2">
+<span class="material-symbols-outlined">search</span>
+</button>
+<a class="hidden md:inline-flex justify-center items-center px-6 py-2 bg-primary text-on-primary font-body-sm text-body-sm font-semibold rounded-full hover:bg-surface-tint transition-colors" href="#">
+                    Masuk
+                </a>
+<!-- Mobile Menu Button -->
+<button class="md:hidden text-on-surface-variant p-2">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="max-w-container-max mx-auto px-margin-mobile md:px-lg py-md md:py-lg flex flex-col gap-lg">
+<!-- Breadcrumb -->
+<nav aria-label="Breadcrumb" class="flex items-center space-x-2 font-body-sm text-body-sm text-on-surface-variant">
+<a class="hover:text-primary transition-colors" href="#">Beranda</a>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+<a class="hover:text-primary transition-colors" href="#">Properti Residensial</a>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+<span aria-current="page" class="text-on-surface font-medium">Modern Tropical Villa in Canggu</span>
+</nav>
+<!-- Main Layout Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Left Column: Gallery, Specs, Description (Span 8) -->
+<div class="lg:col-span-8 flex flex-col gap-lg">
+<!-- Header Info (Mobile / Top of content) -->
+<div class="flex flex-col gap-2">
+<h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface">Modern Tropical Villa with Private Ricefield View</h1>
+<div class="flex items-center gap-2 text-on-surface-variant font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[18px]">location_on</span>
+<span>Jl. Batu Bolong, Canggu, Bali - Indonesia</span>
+</div>
+</div>
+<!-- Photo Gallery -->
+<div class="flex flex-col gap-sm relative group cursor-pointer">
+<!-- Badges -->
+<div class="absolute top-4 left-4 z-10 flex gap-2">
+<span class="bg-secondary text-on-secondary font-label-caps text-label-caps px-3 py-1 rounded-full shadow-sm">FOR SALE</span>
+<span class="bg-surface/90 backdrop-blur text-primary font-label-caps text-label-caps px-3 py-1 rounded-full shadow-sm border border-outline-variant/30">VILLA RESIDENTIAL</span>
+</div>
+<!-- Main Image -->
+<div class="w-full h-[300px] md:h-[500px] rounded-xl overflow-hidden bg-surface-container">
+<img alt="Main Property View" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="A breathtaking exterior view of a modern tropical villa in Canggu, Bali. The architecture features clean lines, expansive glass windows, and warm wooden accents. A pristine turquoise swimming pool sits in the foreground, reflecting the soft, golden hour sunlight. Lush green tropical plants and a distant rice paddy field provide a serene, premium resort aesthetic. High-resolution real estate photography, bright and inviting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBqy9qYW2lGV-jJxJF0QbhgGxL4PYmyuJye5A7Oxch3InBbfLF0Slec_THLK3YeblBNrQ4Zs5OKgkwh4HiY1EdvgW1ZpuUwB1x7XBJ-_7_zeTG5Qo71Uk6GLzJAEz9ZC0IhTvP0pbqgMQhKX537wU6H5psMpgk5tuAyKElMG6cBwAlTpvIAqPOvkkUOU1ADiSEcxQVSBVO6FJxa55RPQWPfhNyPMkU23TsG7Z75KjuWNymB-Rj_UNPI"/>
+</div>
+<!-- Thumbnails Strip -->
+<div class="flex gap-sm overflow-x-auto no-scrollbar py-2">
+<img alt="Thumbnail 1" class="h-24 w-32 rounded-lg object-cover cursor-pointer opacity-100 border-2 border-primary" data-alt="Interior view of a luxurious living room in a tropical villa. Open floor plan with high ceilings, natural wood finishes, and minimalist modern furniture. Sunlight streams through floor-to-ceiling glass doors that open to a lush garden. The color palette is earthy and sophisticated, featuring off-whites, warm browns, and subtle green accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuChEGA8B80YAeGAHEqmnpkDJtEvmG0bGvjf6LwJVRAcAjXXzet-u_ZbamOUdLrtqZnpLRRpYjf79M2O2DqjdH70R2IiQBFH_mfaooSazdqSiF2GRxlctxeNkYBfS-_lhBsnxIO7zUpuFbH7-Hi0QiG4ubaKVdGXOFnyprem9e0hgElRcfJ8r5Mb3rV4f7OoaB1bML0n5fapYQEdWYvmHDVW5G5W_dDvKIkIsZjYAMK57nDqvIHBfJ11"/>
+<img alt="Thumbnail 2" class="h-24 w-32 rounded-lg object-cover cursor-pointer opacity-70 hover:opacity-100 transition-opacity" data-alt="A sleek, modern kitchen with matte black cabinetry, a large white marble island, and high-end stainless steel appliances. Three minimal pendant lights hang above the island. The space is well-lit with natural light, creating a clean, corporate yet warm atmosphere perfect for premium real estate marketing." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDKRAe6NEav6ljHwSHjy7WM2HKSTVnC7oY8-V0q-15IY6uslJjHKzH3S5h0Z6XChFu05MmVMk72OXQht2pmS-kk2f6l8PKIvyA9a1aTfWr4OfMAKZWnBJdFSfKgWY3s7GMR8ijsTL9QykOv9f4KS3Luxep5604leQiPGB_wl65nKbNxELS7od7ZPewpBJM_rrI3XweDHAyBEK7ps3xOxjXhglr-hZTkKnNC4zf1H8KyhdNuu-q49IHT"/>
+<img alt="Thumbnail 3" class="h-24 w-32 rounded-lg object-cover cursor-pointer opacity-70 hover:opacity-100 transition-opacity" data-alt="A serene master bedroom featuring a king-sized bed with crisp white linens. Wooden slatted walls add texture to the room. Large sliding glass doors lead to a private balcony overlooking a tropical garden. Soft, diffused morning light fills the room, emphasizing a calm and exclusive mood." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCucECvfd4p7HEtE7kyL0ha9y1Nv3tUO3xMb7NtjKuqUqdB2o9zEOxeOqmM_IzlVWwtSjWVY1kO8RVm7myh1t-O5cW-w_-aKIyLWZ6Klv8XsHw1A5fEpXRic3p4X0DL4KbB1K9fZv-GZ1fgtWSUOAtv99kFz-mkdXrSxSJkd4Gtn2mKP8_JVEdToO_CQ9Z52dgxmG72NY03wmC3zCQ3Bt6Wcv65d2HZlW1IfDPAq1IGVNyzwSjOw2bs"/>
+<img alt="Thumbnail 4" class="h-24 w-32 rounded-lg object-cover cursor-pointer opacity-70 hover:opacity-100 transition-opacity" data-alt="A luxurious en-suite bathroom with a freestanding white soaking tub resting on natural stone tiles. A large open shower area is visible in the background, surrounded by tropical plants planted directly into a small indoor garden bed. The lighting is soft and ambient, creating a spa-like retreat feel." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCYB3GX4d9ToJC6RLAqZmumQFls_qFA9QXy8HUwNLSh0D4f4W52mXSmEPEjS7cLjFMw7eTaX-aWBJGf4A_q048D3T_SshiuyTjxww5S-Q0bF5swFfMHHjFoAOr0rILZfOu4DhYfn0xWrjGTiW_DFUcjosgd4T5AaxSfbSx9zoQJAMTyqaSwbSNzwV_dGkB21SBDWbEIKqNvlOKOv-UMpdb78ypY-y1g80nr-eL_Gdkf85gQhW5vyXVx"/>
+<div class="h-24 w-32 rounded-lg bg-surface-container-high flex items-center justify-center cursor-pointer hover:bg-surface-dim transition-colors shrink-0">
+<span class="font-body-sm text-body-sm text-on-surface font-semibold">+12 Photos</span>
+</div>
+</div>
+</div>
+<!-- Specification Table -->
+<div class="bg-surface-container-lowest rounded-xl p-md border border-outline-variant shadow-[0px_4px_20px_rgba(34,38,43,0.04)]">
+<h2 class="font-headline-sm text-headline-sm text-on-surface mb-md">Spesifikasi Properti</h2>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-y-sm gap-x-lg">
+<!-- Spec Item -->
+<div class="flex justify-between items-center py-2 border-b border-outline-variant/50">
+<span class="text-on-surface-variant font-body-sm text-body-sm">Tipe Properti</span>
+<span class="text-on-surface font-body-md text-body-md font-semibold">Villa</span>
+</div>
+<div class="flex justify-between items-center py-2 border-b border-outline-variant/50">
+<span class="text-on-surface-variant font-body-sm text-body-sm">Sertifikat</span>
+<span class="text-on-surface font-body-md text-body-md font-semibold">SHM (Hak Milik)</span>
+</div>
+<div class="flex justify-between items-center py-2 border-b border-outline-variant/50">
+<span class="text-on-surface-variant font-body-sm text-body-sm">Luas Tanah</span>
+<span class="text-on-surface font-body-md text-body-md font-semibold">500 m²</span>
+</div>
+<div class="flex justify-between items-center py-2 border-b border-outline-variant/50">
+<span class="text-on-surface-variant font-body-sm text-body-sm">Luas Bangunan</span>
+<span class="text-on-surface font-body-md text-body-md font-semibold">350 m²</span>
+</div>
+<div class="flex justify-between items-center py-2 border-b border-outline-variant/50">
+<span class="text-on-surface-variant font-body-sm text-body-sm">Kamar Tidur</span>
+<span class="text-on-surface font-body-md text-body-md font-semibold">4 + 1</span>
+</div>
+<div class="flex justify-between items-center py-2 border-b border-outline-variant/50">
+<span class="text-on-surface-variant font-body-sm text-body-sm">Kamar Mandi</span>
+<span class="text-on-surface font-body-md text-body-md font-semibold">4 + 1</span>
+</div>
+<div class="flex justify-between items-center py-2 border-b border-outline-variant/50">
+<span class="text-on-surface-variant font-body-sm text-body-sm">Jumlah Lantai</span>
+<span class="text-on-surface font-body-md text-body-md font-semibold">2 Lantai</span>
+</div>
+<div class="flex justify-between items-center py-2 border-b border-outline-variant/50">
+<span class="text-on-surface-variant font-body-sm text-body-sm">Daya Listrik</span>
+<span class="text-on-surface font-body-md text-body-md font-semibold">7700 Watt</span>
+</div>
+<div class="flex justify-between items-center py-2 border-b border-outline-variant/50">
+<span class="text-on-surface-variant font-body-sm text-body-sm">Garasi / Carport</span>
+<span class="text-on-surface font-body-md text-body-md font-semibold">2 Mobil</span>
+</div>
+<div class="flex justify-between items-center py-2 border-b border-outline-variant/50">
+<span class="text-on-surface-variant font-body-sm text-body-sm">Hadap</span>
+<span class="text-on-surface font-body-md text-body-md font-semibold">Selatan</span>
+</div>
+</div>
+</div>
+<!-- Description & Facilities -->
+<div class="bg-surface-container-lowest rounded-xl p-md border border-outline-variant shadow-[0px_4px_20px_rgba(34,38,43,0.04)]">
+<h2 class="font-headline-sm text-headline-sm text-on-surface mb-sm">Deskripsi Properti</h2>
+<div class="font-body-md text-body-md text-on-surface-variant leading-relaxed space-y-4">
+<p>Nikmati perpaduan sempurna antara kemewahan modern dan ketenangan tropis di villa eksklusif ini. Terletak di jantung Canggu, properti ini menawarkan privasi absolut dengan pemandangan sawah yang menakjubkan, menjadikannya oase sempurna bagi Anda yang mencari gaya hidup premium di Bali.</p>
+<p>Desain arsitektur terbuka memungkinkan cahaya alami dan sirkulasi udara yang maksimal, menciptakan suasana ruang yang lega dan menyatu dengan alam. Dibangun dengan material berkualitas tinggi dan perabotan kustom eksklusif, setiap sudut villa ini memancarkan keanggunan. Lokasi strategis hanya 5 menit berkendara menuju Pantai Batu Bolong dan dikelilingi oleh cafe, restoran, serta beach club bertaraf internasional.</p>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mt-xl mb-md">Fasilitas Utama</h3>
+<div class="grid grid-cols-2 md:grid-cols-3 gap-sm">
+<div class="flex items-center gap-2 text-on-surface-variant font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-primary text-[20px]">pool</span>
+<span>Private Pool</span>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-primary text-[20px]">yard</span>
+<span>Tropical Garden</span>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-primary text-[20px]">kitchen</span>
+<span>Modern Kitchen</span>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-primary text-[20px]">wifi</span>
+<span>High-Speed Internet</span>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-primary text-[20px]">security</span>
+<span>24/7 Security Area</span>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-primary text-[20px]">ac_unit</span>
+<span>Full AC Rooms</span>
+</div>
+</div>
+</div>
+<!-- Location Map -->
+<div class="bg-surface-container-lowest rounded-xl p-md border border-outline-variant shadow-[0px_4px_20px_rgba(34,38,43,0.04)]">
+<h2 class="font-headline-sm text-headline-sm text-on-surface mb-sm">Lokasi</h2>
+<p class="text-on-surface-variant font-body-sm text-body-sm mb-md">Jl. Batu Bolong, Canggu, Kuta Utara, Kabupaten Badung, Bali</p>
+<div class="w-full h-[300px] rounded-lg overflow-hidden bg-surface-container">
+<img alt="Location Map" class="w-full h-full object-cover grayscale opacity-80 contrast-125" data-alt="A stylized, modern digital map showing the location of Canggu, Bali. The map uses a minimalist color palette with soft gray streets, light green parks, and a subtle blue ocean. A prominent forest green drop pin icon marks the exact location of the property on a main road, surrounded by a subtle glowing radius." data-location="Canggu, Bali" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAODdb1TjavYT_YOvGs9NdO_2-2F--HOP3ptu9el8SqcIC3nekkpH1rqfgMi7er0vpjU1aAv8ZU5zr3CYSXalrIswvB8xT5-ep7fLlP3V3MGBrH92rwaRb7hVIeeQgiVmrDxYBM_0JGxu3x0kXh27a7uOM7tFpnGsQOFeQcGe3Rd-0E4VSCeQ8LVa68WUh1DXoZbMJETGoFx4cCQ50eDEMw-trlZ9MDRw5eVbFGyDkyAzbHLbTb_krj"/>
+</div>
+</div>
+</div>
+<!-- Right Column: Sticky Widgets (Span 4) -->
+<div class="lg:col-span-4 flex flex-col gap-lg relative">
+<!-- Sticky Container -->
+<div class="sticky top-[100px] flex flex-col gap-lg">
+<!-- Pricing & CTAs Card -->
+<div class="bg-surface-container-lowest rounded-xl p-md border-t-4 border-t-primary border-x border-b border-outline-variant shadow-[0px_8px_30px_rgba(34,38,43,0.08)]">
+<div class="mb-sm">
+<p class="text-on-surface-variant font-body-sm text-body-sm">Harga Penawaran</p>
+<h2 class="font-price-display text-price-display text-primary mt-1">Rp 12.500.000.000</h2>
+<p class="text-on-surface-variant font-body-sm text-body-sm mt-1">Status: <span class="text-[#00602c] font-semibold flex items-center inline-flex gap-1"><span class="w-2 h-2 rounded-full bg-[#00602c]"></span> Tersedia</span></p>
+</div>
+<div class="flex flex-col gap-3 mt-lg">
+<a class="w-full flex justify-center items-center gap-2 px-6 py-3 bg-primary text-on-primary font-body-md text-body-md font-semibold rounded-full hover:bg-surface-tint transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">chat</span>
+                                Chat WhatsApp
+                            </a>
+<a class="w-full flex justify-center items-center gap-2 px-6 py-3 border-2 border-primary text-primary font-body-md text-body-md font-semibold rounded-full hover:bg-surface-container-low transition-colors" href="#">
+<span class="material-symbols-outlined">call</span>
+                                Telepon Sekarang
+                            </a>
+</div>
+</div>
+<!-- Centralized Contact & Form -->
+<div class="bg-surface-container-lowest rounded-xl p-md border border-outline-variant shadow-[0px_4px_20px_rgba(34,38,43,0.04)]">
+<div class="flex items-center gap-3 mb-md pb-md border-b border-outline-variant/50">
+<div class="w-12 h-12 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container">
+<span class="material-symbols-outlined text-[28px]">domain</span>
+</div>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold text-primary">Green Property</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Corporate Agency</p>
+</div>
+</div>
+<form class="flex flex-col gap-4">
+<h4 class="font-headline-sm text-headline-sm text-on-surface text-[16px]">Kirim Pesan Langsung</h4>
+<div>
+<label class="sr-only" for="name">Nama Lengkap</label>
+<input class="w-full rounded-lg border-outline-variant bg-surface text-on-surface font-body-sm text-body-sm focus:border-primary focus:ring-primary placeholder:text-on-surface-variant/50" id="name" placeholder="Nama Lengkap" type="text"/>
+</div>
+<div>
+<label class="sr-only" for="phone">Nomor Telepon</label>
+<input class="w-full rounded-lg border-outline-variant bg-surface text-on-surface font-body-sm text-body-sm focus:border-primary focus:ring-primary placeholder:text-on-surface-variant/50" id="phone" placeholder="Nomor Telepon" type="tel"/>
+</div>
+<div>
+<label class="sr-only" for="message">Pesan</label>
+<textarea class="w-full rounded-lg border-outline-variant bg-surface text-on-surface font-body-sm text-body-sm focus:border-primary focus:ring-primary placeholder:text-on-surface-variant/50" id="message" rows="3">Halo, saya tertarik dengan properti Modern Tropical Villa (ID: GP-8829). Mohon informasi lebih lanjut.</textarea>
+</div>
+<button class="w-full px-4 py-2 bg-primary text-on-primary font-body-sm text-body-sm font-semibold rounded-lg hover:bg-surface-tint transition-colors mt-2" type="button">
+                                Kirim Pesan
+                            </button>
+</form>
+</div>
+<!-- KPR Calculator -->
+<div class="bg-surface-container-lowest rounded-xl p-md border border-outline-variant shadow-[0px_4px_20px_rgba(34,38,43,0.04)]">
+<div class="flex items-center gap-2 mb-sm">
+<span class="material-symbols-outlined text-primary">calculate</span>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Simulasi KPR</h2>
+</div>
+<div class="flex flex-col gap-4 mt-md">
+<div>
+<label class="block font-body-sm text-body-sm text-on-surface-variant mb-1">Harga Properti (Rp)</label>
+<input class="w-full rounded-lg border-outline-variant bg-surface-container-low text-on-surface-variant font-body-sm text-body-sm font-semibold cursor-not-allowed" disabled="" type="text" value="12,500,000,000"/>
+</div>
+<div class="flex gap-2">
+<div class="w-1/3">
+<label class="block font-body-sm text-body-sm text-on-surface-variant mb-1">DP (%)</label>
+<select class="w-full rounded-lg border-outline-variant bg-surface text-on-surface font-body-sm text-body-sm focus:border-primary focus:ring-primary">
+<option value="10">10%</option>
+<option selected="" value="20">20%</option>
+<option value="30">30%</option>
+</select>
+</div>
+<div class="w-2/3">
+<label class="block font-body-sm text-body-sm text-on-surface-variant mb-1">Tenor (Tahun)</label>
+<select class="w-full rounded-lg border-outline-variant bg-surface text-on-surface font-body-sm text-body-sm focus:border-primary focus:ring-primary">
+<option value="5">5 Tahun</option>
+<option value="10">10 Tahun</option>
+<option selected="" value="15">15 Tahun</option>
+<option value="20">20 Tahun</option>
+</select>
+</div>
+</div>
+<div>
+<label class="block font-body-sm text-body-sm text-on-surface-variant mb-1">Suku Bunga Asumsi (%)</label>
+<input class="w-full rounded-lg border-outline-variant bg-surface text-on-surface font-body-sm text-body-sm focus:border-primary focus:ring-primary" step="0.1" type="number" value="7.5"/>
+</div>
+<div class="mt-4 p-4 bg-surface-container rounded-lg border border-outline-variant/30">
+<p class="text-on-surface-variant font-body-sm text-body-sm text-center">Estimasi Cicilan per Bulan</p>
+<p class="font-price-display text-price-display text-primary text-center mt-1">Rp 92.701.200</p>
+<p class="text-on-surface-variant font-label-caps text-label-caps text-center mt-2 opacity-70">*Hanya estimasi kasar, bunga dapat berubah sewaktu-waktu sesuai kebijakan bank.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Similar Properties Section -->
+<section class="mt-xl border-t border-outline-variant/50 pt-xl">
+<div class="flex justify-between items-end mb-lg">
+<div>
+<h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface">Properti Serupa</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-2">Pilihan villa eksklusif lainnya di area Bali.</p>
+</div>
+<a class="hidden md:inline-block font-body-sm text-body-sm text-primary font-semibold hover:underline" href="#">Lihat Semua</a>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
+<!-- Card 1 -->
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-[0px_4px_20px_rgba(34,38,43,0.04)] border border-outline-variant/50 group cursor-pointer hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
+<div class="h-60 overflow-hidden relative">
+<span class="absolute top-3 left-3 z-10 bg-secondary text-on-secondary font-label-caps text-label-caps px-2 py-1 rounded-sm shadow-sm">FOR SALE</span>
+<img alt="Similar Property 1" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Exterior view of a minimalist white villa in Seminyak, Bali. The design features geometric shapes and a large rectangular swimming pool surrounded by a wooden deck. The lighting is bright and clear, emphasizing the pristine and modern corporate aesthetic of the property." src="https://lh3.googleusercontent.com/aida-public/AB6AXuATWo8vhBo58uxcw4ZP1aWCwS1MDYPdWNKZQC_8KtWebjulDvepeL9YXW6EC27iD9YLF1NnjH4o4GemMlxwylMtoOGatWP-meMftIvcrKtJB108ZFXtqV5nHb9lDd2kebX7s4oaKJ34X0D2HtVU9II9_YwGquFJq2759MwAiIBs2_XRy_QyvMJbSel7lw32IZR4sAxb2ESnbIXnfQSpS9wdJIPX7wuf27b-3KLrKjuiD3dQKnyhUSYv"/>
+</div>
+<div class="p-sm flex flex-col gap-2">
+<h3 class="font-headline-sm text-headline-sm text-on-surface truncate">Minimalist Villa Seminyak</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">location_on</span> Seminyak, Bali</p>
+<div class="flex items-center gap-4 mt-2 border-t border-outline-variant/30 pt-3">
+<span class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">bed</span> 3</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">shower</span> 3</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">aspect_ratio</span> 250 m²</span>
+</div>
+<p class="font-headline-md text-headline-md text-primary mt-2">Rp 8.200.000.000</p>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-[0px_4px_20px_rgba(34,38,43,0.04)] border border-outline-variant/50 group cursor-pointer hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
+<div class="h-60 overflow-hidden relative">
+<span class="absolute top-3 left-3 z-10 bg-secondary text-on-secondary font-label-caps text-label-caps px-2 py-1 rounded-sm shadow-sm">FOR SALE</span>
+<img alt="Similar Property 2" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A grand tropical estate in Uluwatu, Bali, positioned on a gentle cliff. The architecture blends traditional Balinese roof styles with modern glass structures. An infinity pool overlooks the ocean at sunset, casting warm, rich colors across the scene. The mood is highly exclusive and luxurious." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDvldBViqLf3nwkPcUnZEpGd2a8GJ_pehlA6sTUkcbpNFRuDbbwbkH5mV-AY0jBOXjvzBveOHic2r-tuqGKjaCmY6w-BUoVpLY8VO1gwv3F7vMv4tpFTz59kUSKIno6iwV4AEVdimrVyXuggoyxaHYDrYDqKFDjaGD576ic55kJ3hT7MnT65SvfXzVanQyBfy6fIB_TkVzLcmyBVpiti7EilzGlZvHxSQNNmzL-4opHWj1iBwv53TlM"/>
+</div>
+<div class="p-sm flex flex-col gap-2">
+<h3 class="font-headline-sm text-headline-sm text-on-surface truncate">Cliffside Estate Uluwatu</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">location_on</span> Uluwatu, Bali</p>
+<div class="flex items-center gap-4 mt-2 border-t border-outline-variant/30 pt-3">
+<span class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">bed</span> 5</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">shower</span> 6</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">aspect_ratio</span> 800 m²</span>
+</div>
+<p class="font-headline-md text-headline-md text-primary mt-2">Rp 25.000.000.000</p>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-[0px_4px_20px_rgba(34,38,43,0.04)] border border-outline-variant/50 group cursor-pointer hover:-translate-y-1 hover:shadow-lg transition-all duration-300 hidden md:block">
+<div class="h-60 overflow-hidden relative">
+<span class="absolute top-3 left-3 z-10 bg-secondary text-on-secondary font-label-caps text-label-caps px-2 py-1 rounded-sm shadow-sm">FOR RENT</span>
+<img alt="Similar Property 3" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A chic, contemporary smart-home villa in Pererenan, Bali. The facade features a mix of exposed concrete, sleek black steel frames, and climbing green vines. The lighting is bright daytime, highlighting the crisp, clean lines and premium tactile materials used in the construction." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAM8ttmxQWLciHliNg5OnhLKf0NJuS38pTVBTlUmUPUeiC7H2BViuSM4t5HyKlpyrixGBv4O_DP-WlxMMIk_7gICYypQc1REuFPTBtzhQtH49_IR6zywNSJEvIWn3_baNApUBtfkeHaVZpVQF5BuLCZBUchAjpG0Psjr-ZQuHWmrOaC3r-ak_jCmMrw3gihPPGJXl8S2EwVEN90VF8LMdG6oCO8-EpAWust1V5j7ip6XfvhkvmSWM_o"/>
+</div>
+<div class="p-sm flex flex-col gap-2">
+<h3 class="font-headline-sm text-headline-sm text-on-surface truncate">Contemporary Smart Villa</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">location_on</span> Pererenan, Bali</p>
+<div class="flex items-center gap-4 mt-2 border-t border-outline-variant/30 pt-3">
+<span class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">bed</span> 2</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">shower</span> 2</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">aspect_ratio</span> 150 m²</span>
+</div>
+<p class="font-headline-md text-headline-md text-primary mt-2">Rp 450.000.000 <span class="text-on-surface-variant font-body-sm text-body-sm font-normal">/ year</span></p>
+</div>
+</div>
+</div>
+<a class="md:hidden block text-center mt-md w-full py-3 border border-primary text-primary font-body-sm text-body-sm font-semibold rounded-full" href="#">Lihat Semua Properti</a>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-highest dark:bg-inverse-surface w-full mt-xl flat no shadows">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-lg px-lg py-xl max-w-container-max mx-auto">
+<!-- Brand & Copyright -->
+<div class="flex flex-col gap-4 col-span-1 md:col-span-1">
+<a class="font-headline-sm text-headline-sm font-bold text-primary dark:text-primary-fixed opacity-90 hover:opacity-100 transition-opacity" href="#">
+                    Green Property
+                </a>
+<p class="font-body-sm text-body-sm text-on-surface-variant dark:text-surface-variant">
+                    © 2024 Green Property Indonesia. All Rights Reserved.
+                </p>
+</div>
+<!-- Links Group 1: Contact -->
+<div class="flex flex-col gap-3">
+<h4 class="font-body-md text-body-md text-on-surface dark:text-inverse-on-surface font-semibold mb-2">Hubungi Kami</h4>
+<a class="font-body-sm text-body-sm text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors opacity-90 hover:opacity-100" href="#">WhatsApp</a>
+<a class="font-body-sm text-body-sm text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors opacity-90 hover:opacity-100" href="#">KakaoTalk</a>
+<a class="font-body-sm text-body-sm text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors opacity-90 hover:opacity-100" href="#">Email</a>
+<a class="font-body-sm text-body-sm text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors opacity-90 hover:opacity-100" href="#">Phone</a>
+<a class="font-body-sm text-body-sm text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors opacity-90 hover:opacity-100" href="#">Fax</a>
+</div>
+<!-- Links Group 2: Office -->
+<div class="flex flex-col gap-3">
+<h4 class="font-body-md text-body-md text-on-surface dark:text-inverse-on-surface font-semibold mb-2">Kantor</h4>
+<a class="font-body-sm text-body-sm text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors opacity-90 hover:opacity-100" href="#">Office Address</a>
+<a class="font-body-sm text-body-sm text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors opacity-90 hover:opacity-100" href="#">Operating Hours</a>
+</div>
+<!-- Links Group 3: Nav -->
+<div class="flex flex-col gap-3">
+<h4 class="font-body-md text-body-md text-on-surface dark:text-inverse-on-surface font-semibold mb-2">Pintasan</h4>
+<a class="font-body-sm text-body-sm text-primary dark:text-primary-fixed opacity-90 hover:opacity-100 transition-opacity" href="#">Quick Navigation</a>
+</div>
+</div>
+</footer>
+</body></html>

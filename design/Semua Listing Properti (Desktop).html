@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+
+<html lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Semua Listing Properti - Green Property</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-secondary": "#ffffff",
+                      "surface-container-lowest": "#ffffff",
+                      "surface-variant": "#e0e2e9",
+                      "secondary-fixed": "#ffdea5",
+                      "inverse-primary": "#82d994",
+                      "secondary-container": "#fed489",
+                      "primary-fixed": "#9df6ae",
+                      "on-primary-fixed": "#00210b",
+                      "background": "#f7f9ff",
+                      "secondary": "#775a1a",
+                      "surface-container-low": "#f1f4fa",
+                      "tertiary": "#195f30",
+                      "surface-tint": "#096d34",
+                      "on-tertiary-fixed": "#00210b",
+                      "on-primary-fixed-variant": "#005224",
+                      "on-secondary-fixed": "#271900",
+                      "surface-dim": "#d7dae1",
+                      "tertiary-fixed-dim": "#90d69c",
+                      "surface-container-highest": "#e0e2e9",
+                      "on-tertiary-container": "#b5fec0",
+                      "on-surface-variant": "#3f493f",
+                      "tertiary-fixed": "#abf3b6",
+                      "surface-bright": "#f7f9ff",
+                      "on-primary": "#ffffff",
+                      "error-container": "#ffdad6",
+                      "on-error": "#ffffff",
+                      "primary-container": "#1f7a3f",
+                      "inverse-on-surface": "#eef1f8",
+                      "on-background": "#181c21",
+                      "on-secondary-container": "#785a1b",
+                      "primary-fixed-dim": "#82d994",
+                      "on-tertiary-fixed-variant": "#055225",
+                      "surface": "#f7f9ff",
+                      "surface-container-high": "#e5e8ef",
+                      "on-primary-container": "#adffbb",
+                      "secondary-fixed-dim": "#e9c178",
+                      "on-tertiary": "#ffffff",
+                      "on-error-container": "#93000a",
+                      "on-surface": "#181c21",
+                      "tertiary-container": "#357847",
+                      "surface-container": "#ebeef5",
+                      "inverse-surface": "#2d3136",
+                      "primary": "#00602c",
+                      "outline": "#6f7a6e",
+                      "outline-variant": "#bfcabc",
+                      "on-secondary-fixed-variant": "#5d4202",
+                      "error": "#ba1a1a"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-mobile": "16px",
+                      "md": "24px",
+                      "lg": "40px",
+                      "container-max": "1280px",
+                      "base": "4px",
+                      "sm": "16px",
+                      "xs": "8px",
+                      "gutter": "24px",
+                      "xl": "64px"
+              },
+              "fontFamily": {
+                      "price-display": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "headline-sm": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "label-caps": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "headline-lg-mobile": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "headline-md": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "body-sm": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "body-lg": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "body-md": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "display": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "headline-lg": [
+                              "Plus Jakarta Sans"
+                      ]
+              },
+              "fontSize": {
+                      "price-display": [
+                              "24px",
+                              {
+                                      "lineHeight": "1",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-sm": [
+                              "20px",
+                              {
+                                      "lineHeight": "1.4",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "label-caps": [
+                              "12px",
+                              {
+                                      "lineHeight": "1",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "28px",
+                              {
+                                      "lineHeight": "1.3",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "1.4",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "1.5",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "1.6",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "1.6",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "display": [
+                              "48px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "1.3",
+                                      "fontWeight": "700"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+    </script>
+<style>
+        body { background-color: #f7f9ff; color: #181c21; }
+        .card-shadow { box-shadow: 0px 4px 20px rgba(34, 38, 43, 0.04); }
+        .card-hover:hover { transform: translateY(-2px); box-shadow: 0px 8px 30px rgba(34, 38, 43, 0.08); transition: all 0.3s ease; }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<header class="w-full top-0 sticky bg-surface dark:bg-background border-b border-outline-variant dark:border-outline shadow-sm z-50">
+<div class="flex justify-between items-center px-lg py-sm max-w-container-max mx-auto">
+<div class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed">
+                Green Property
+            </div>
+<nav class="hidden md:flex items-center gap-md">
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary transition-all duration-200 ease-in-out font-body-md" href="#">Beranda</a>
+<a class="text-primary dark:text-primary-fixed font-bold border-b-2 border-primary dark:border-primary-fixed pb-1 transition-all duration-200 ease-in-out font-body-md" href="#">Properti</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary transition-all duration-200 ease-in-out font-body-md" href="#">Land Provider</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary transition-all duration-200 ease-in-out font-body-md" href="#">Tentang Kami</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary transition-all duration-200 ease-in-out font-body-md" href="#">Kontak</a>
+</nav>
+<div class="flex items-center gap-sm">
+<button class="font-body-md text-body-md text-primary dark:text-primary-fixed hover:opacity-80 transition-opacity">Masuk</button>
+</div>
+</div>
+</header>
+<main class="flex-grow max-w-container-max mx-auto w-full px-margin-mobile md:px-lg py-xl flex flex-col gap-lg">
+<!-- Header -->
+<section class="flex flex-col gap-base">
+<nav class="text-on-surface-variant font-body-sm flex items-center gap-xs">
+<a class="hover:text-primary transition-colors" href="#">Beranda</a>
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+<span class="text-on-surface font-semibold">Properti</span>
+</nav>
+<h1 class="font-display text-display text-on-surface">Semua Listing Properti</h1>
+</section>
+<!-- Main Layout: 2 Columns -->
+<section class="grid grid-cols-1 lg:grid-cols-4 gap-gutter">
+<!-- Left Column (Sidebar Filter) -->
+<aside class="lg:col-span-1 flex flex-col gap-md">
+<div class="bg-surface-container-lowest p-md rounded-xl card-shadow border border-outline-variant/30 flex flex-col gap-lg">
+<!-- Kategori -->
+<div class="flex flex-col gap-sm">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Kategori</h3>
+<div class="flex flex-col gap-xs">
+<label class="flex items-center gap-sm cursor-pointer group">
+<input class="rounded border-outline-variant text-primary focus:ring-primary h-5 w-5" type="checkbox"/>
+<span class="font-body-md text-on-surface-variant group-hover:text-on-surface transition-colors">Land</span>
+</label>
+<label class="flex items-center gap-sm cursor-pointer group">
+<input checked="" class="rounded border-outline-variant text-primary focus:ring-primary h-5 w-5" type="checkbox"/>
+<span class="font-body-md text-on-surface-variant group-hover:text-on-surface transition-colors">Factory</span>
+</label>
+<label class="flex items-center gap-sm cursor-pointer group">
+<input class="rounded border-outline-variant text-primary focus:ring-primary h-5 w-5" type="checkbox"/>
+<span class="font-body-md text-on-surface-variant group-hover:text-on-surface transition-colors">Residence</span>
+</label>
+<label class="flex items-center gap-sm cursor-pointer group">
+<input class="rounded border-outline-variant text-primary focus:ring-primary h-5 w-5" type="checkbox"/>
+<span class="font-body-md text-on-surface-variant group-hover:text-on-surface transition-colors">Apartment</span>
+</label>
+</div>
+</div>
+<!-- Tipe Transaksi -->
+<div class="flex flex-col gap-sm">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Tipe Transaksi</h3>
+<div class="flex bg-surface-container p-1 rounded-lg">
+<button class="flex-1 py-2 text-center rounded-md bg-surface-container-lowest shadow-sm font-body-sm font-semibold text-primary">Jual</button>
+<button class="flex-1 py-2 text-center rounded-md font-body-sm text-on-surface-variant hover:text-on-surface transition-colors">Sewa</button>
+</div>
+</div>
+<!-- Harga -->
+<div class="flex flex-col gap-sm">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Harga (Rp)</h3>
+<div class="flex gap-sm">
+<input class="w-full px-sm py-2 border border-outline-variant rounded-lg font-body-sm text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none" placeholder="Min" type="text"/>
+<input class="w-full px-sm py-2 border border-outline-variant rounded-lg font-body-sm text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none" placeholder="Max" type="text"/>
+</div>
+</div>
+<!-- Lokasi -->
+<div class="flex flex-col gap-sm">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Lokasi</h3>
+<select class="w-full px-sm py-3 border border-outline-variant rounded-lg font-body-sm text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none bg-surface-container-lowest appearance-none">
+<option value="">Semua Lokasi</option>
+<option value="jakarta">Jakarta</option>
+<option value="bali">Bali</option>
+<option value="bandung">Bandung</option>
+</select>
+</div>
+<!-- Luas -->
+<div class="flex flex-col gap-sm">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Luas Tanah (m²)</h3>
+<div class="flex gap-sm">
+<input class="w-full px-sm py-2 border border-outline-variant rounded-lg font-body-sm text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none" placeholder="Min" type="number"/>
+<input class="w-full px-sm py-2 border border-outline-variant rounded-lg font-body-sm text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none" placeholder="Max" type="number"/>
+</div>
+</div>
+<button class="w-full py-3 bg-primary text-on-primary rounded-full font-headline-sm font-semibold hover:opacity-90 transition-opacity">Terapkan Filter</button>
+</div>
+</aside>
+<!-- Right Column (Grid & Controls) -->
+<section class="lg:col-span-3 flex flex-col gap-lg">
+<!-- Controls -->
+<div class="flex flex-col md:flex-row justify-between items-center gap-sm">
+<div class="relative w-full md:w-96">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full pl-10 pr-sm py-3 border border-outline-variant rounded-xl font-body-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none bg-surface-container-lowest" placeholder="Cari properti..." type="text"/>
+</div>
+<div class="flex items-center gap-sm w-full md:w-auto">
+<span class="font-body-sm text-on-surface-variant whitespace-nowrap">Urutkan:</span>
+<select class="px-sm py-2 border border-outline-variant rounded-lg font-body-sm text-on-surface focus:border-primary outline-none bg-surface-container-lowest">
+<option>Terbaru</option>
+<option>Harga Terendah</option>
+<option>Harga Tertinggi</option>
+</select>
+</div>
+</div>
+<!-- Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-gutter">
+<!-- Property Card 1 -->
+<article class="bg-surface-container-lowest rounded-[16px] overflow-hidden card-shadow card-hover border border-outline-variant/30 flex flex-col">
+<div class="relative h-60 w-full">
+<img class="w-full h-full object-cover" data-alt="A high-quality architectural photograph of a modern industrial factory building during golden hour. The building features clean lines, expansive glass windows, and metallic paneling. Surrounded by a pristine asphalt parking lot with subtle landscaping. The lighting is warm and inviting, highlighting the premium corporate aesthetic of the facility. The color palette is composed of sophisticated earth tones, deep grays, and natural greens, matching a premium real estate brand identity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD6pZtkF3DKeql16nIGSyOv5Lmm8plcg1x6vi4OpvOxp_kth3f3yJcWxIYWF-0-2gDEHlRrTuWnlXpj1c2eaJyjd5YOFZfx7HzXNMM7Tj4zexsb3N0kEmdkR14Xs-EtkeB46zJ5JqaO0uO71V2KkDw2NNkgC-wbeZgxgzaieXwt5Ur6De9CaF4D4vbke0tjvFaNRBVCkB-Md1YRUCSmP0Vnk13eduNUkww4A1QwgF3rzgytapYbyyZy"/>
+<div class="absolute top-sm left-sm flex gap-2">
+<span class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full font-label-caps text-label-caps uppercase shadow-sm">Factory</span>
+<span class="bg-primary text-on-primary px-3 py-1 rounded-full font-label-caps text-label-caps uppercase shadow-sm">Jual</span>
+</div>
+</div>
+<div class="p-sm flex flex-col gap-sm flex-grow">
+<div class="flex flex-col gap-xs">
+<h3 class="font-headline-sm text-headline-sm text-on-surface line-clamp-1">Kawasan Industri Cikarang</h3>
+<div class="flex items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">location_on</span>
+<span class="font-body-sm line-clamp-1">Cikarang, Bekasi</span>
+</div>
+</div>
+<div class="flex justify-between items-center text-on-surface-variant font-body-sm border-t border-outline-variant/30 pt-sm mt-auto">
+<div class="flex items-center gap-1" title="Luas Tanah">
+<span class="material-symbols-outlined text-[18px]">aspect_ratio</span>
+<span>5000 m²</span>
+</div>
+<div class="flex items-center gap-1" title="Daya Listrik">
+<span class="material-symbols-outlined text-[18px]">bolt</span>
+<span>10k VA</span>
+</div>
+</div>
+<div class="flex justify-between items-end mt-sm">
+<div class="font-price-display text-price-display text-primary">Rp 15 M</div>
+<button class="w-10 h-10 rounded-full bg-[#25D366] text-white flex items-center justify-center hover:opacity-90 transition-opacity" title="Hubungi via WhatsApp">
+<svg class="w-5 h-5" fill="currentColor" viewbox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824zm-3.423-14.416c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm.029 18.88c-1.161 0-2.305-.292-3.318-.844l-3.677.964.984-3.595c-.607-1.052-.927-2.246-.926-3.468.001-5.824 4.737-10.56 10.56-10.56 5.824 0 10.559 4.736 10.559 10.559 0 5.824-4.735 10.56-10.559 10.56z"></path></svg>
+</button>
+</div>
+</div>
+</article>
+<!-- Property Card 2 -->
+<article class="bg-surface-container-lowest rounded-[16px] overflow-hidden card-shadow card-hover border border-outline-variant/30 flex flex-col">
+<div class="relative h-60 w-full">
+<img class="w-full h-full object-cover" data-alt="A wide drone shot of a massive, empty industrial plot of land ready for development. The land is flat, cleared, and surrounded by a well-maintained corporate park with subtle greenery. The lighting is bright and clear, showcasing the potential of the space. The overall mood is professional and promising, adhering to a premium real estate aesthetic with rich earthy colors and deep forest greens in the surrounding landscape." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB51Z1DLuQXHlA4MHE5tH9Sq54IfCMxDVKvaaouqGVJdR6-QADxfnUuFrA64OSt6LrPJ2V0IzW_TtM2q_Pb5kg-IkAEchRYBUeUG1WLqcSDen8Q_qmK-b4lWpTFK2pxzjOiNh7BEvpUkFIbpv7UB06yL3-nTiCc6-IiSP7wf1RwcPXcalM5_5T0MuH7qOB4yeKsoQXFP5fQbm53fmVSkFNp5K6Hcut7VV9SOMt9SU93OEyX_FvZgSqk"/>
+<div class="absolute top-sm left-sm flex gap-2">
+<span class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full font-label-caps text-label-caps uppercase shadow-sm">Land</span>
+<span class="bg-primary text-on-primary px-3 py-1 rounded-full font-label-caps text-label-caps uppercase shadow-sm">Jual</span>
+</div>
+</div>
+<div class="p-sm flex flex-col gap-sm flex-grow">
+<div class="flex flex-col gap-xs">
+<h3 class="font-headline-sm text-headline-sm text-on-surface line-clamp-1">Kavling Komersial TB Simatupang</h3>
+<div class="flex items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">location_on</span>
+<span class="font-body-sm line-clamp-1">Jakarta Selatan</span>
+</div>
+</div>
+<div class="flex justify-between items-center text-on-surface-variant font-body-sm border-t border-outline-variant/30 pt-sm mt-auto">
+<div class="flex items-center gap-1" title="Luas Tanah">
+<span class="material-symbols-outlined text-[18px]">aspect_ratio</span>
+<span>2500 m²</span>
+</div>
+</div>
+<div class="flex justify-between items-end mt-sm">
+<div class="font-price-display text-price-display text-primary">Rp 45 M</div>
+<button class="w-10 h-10 rounded-full bg-[#25D366] text-white flex items-center justify-center hover:opacity-90 transition-opacity" title="Hubungi via WhatsApp">
+<svg class="w-5 h-5" fill="currentColor" viewbox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824zm-3.423-14.416c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm.029 18.88c-1.161 0-2.305-.292-3.318-.844l-3.677.964.984-3.595c-.607-1.052-.927-2.246-.926-3.468.001-5.824 4.737-10.56 10.56-10.56 5.824 0 10.559 4.736 10.559 10.559 0 5.824-4.735 10.56-10.559 10.56z"></path></svg>
+</button>
+</div>
+</div>
+</article>
+<!-- Property Card 3 -->
+<article class="bg-surface-container-lowest rounded-[16px] overflow-hidden card-shadow card-hover border border-outline-variant/30 flex flex-col">
+<div class="relative h-60 w-full">
+<img class="w-full h-full object-cover" data-alt="A low-angle exterior shot of a modern warehouse facility featuring clean white corrugated steel siding and subtle green accents. The building looks robust and newly constructed. A pristine paved driveway leads to large roller doors. The sky is bright blue with a few scattered clouds. The aesthetic is clean, professional, and corporate, emphasizing stability and premium quality." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAIkhiokD_HL7rubeaL_tbvuhosqfs5kVyYk7jdU6KgY4cnaRLkS-LHQDf1tCVAnbiyS_A7pk1G7HmxMHpgY3g1IRBG8a6tCinP9ZaMDVjNRUFQNe8dinpOeMXE_DUUUOQka7pbXxvs5j-D0UWYOBj1RYUI6P6m3IcfS8Id9a6sgDn5lJxDuDCAQcO_7UOqHW5_j7LerEUorKYLq7LdHcJiQnWN6dPajrr83o9G1AzRUld2LbRPbue6"/>
+<div class="absolute top-sm left-sm flex gap-2">
+<span class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full font-label-caps text-label-caps uppercase shadow-sm">Factory</span>
+<span class="bg-surface-dim text-on-surface px-3 py-1 rounded-full font-label-caps text-label-caps uppercase shadow-sm">Sewa</span>
+</div>
+</div>
+<div class="p-sm flex flex-col gap-sm flex-grow">
+<div class="flex flex-col gap-xs">
+<h3 class="font-headline-sm text-headline-sm text-on-surface line-clamp-1">Gudang Modern Karawang</h3>
+<div class="flex items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">location_on</span>
+<span class="font-body-sm line-clamp-1">KIIC, Karawang</span>
+</div>
+</div>
+<div class="flex justify-between items-center text-on-surface-variant font-body-sm border-t border-outline-variant/30 pt-sm mt-auto">
+<div class="flex items-center gap-1" title="Luas Bangunan">
+<span class="material-symbols-outlined text-[18px]">domain</span>
+<span>3200 m²</span>
+</div>
+<div class="flex items-center gap-1" title="Daya Listrik">
+<span class="material-symbols-outlined text-[18px]">bolt</span>
+<span>20k VA</span>
+</div>
+</div>
+<div class="flex justify-between items-end mt-sm">
+<div class="font-price-display text-price-display text-primary">Rp 120 Jt<span class="font-body-sm text-on-surface-variant font-normal">/bln</span></div>
+<button class="w-10 h-10 rounded-full bg-[#25D366] text-white flex items-center justify-center hover:opacity-90 transition-opacity" title="Hubungi via WhatsApp">
+<svg class="w-5 h-5" fill="currentColor" viewbox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824zm-3.423-14.416c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm.029 18.88c-1.161 0-2.305-.292-3.318-.844l-3.677.964.984-3.595c-.607-1.052-.927-2.246-.926-3.468.001-5.824 4.737-10.56 10.56-10.56 5.824 0 10.559 4.736 10.559 10.559 0 5.824-4.735 10.56-10.559 10.56z"></path></svg>
+</button>
+</div>
+</div>
+</article>
+</div>
+<!-- Pagination -->
+<div class="flex justify-center items-center gap-2 mt-lg">
+<button class="w-10 h-10 rounded-lg flex items-center justify-center border border-outline-variant text-on-surface-variant hover:bg-surface-container transition-colors disabled:opacity-50" disabled="">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="w-10 h-10 rounded-lg flex items-center justify-center bg-primary text-on-primary font-body-sm font-semibold">1</button>
+<button class="w-10 h-10 rounded-lg flex items-center justify-center hover:bg-surface-container text-on-surface transition-colors font-body-sm">2</button>
+<button class="w-10 h-10 rounded-lg flex items-center justify-center hover:bg-surface-container text-on-surface transition-colors font-body-sm">3</button>
+<span class="text-on-surface-variant">...</span>
+<button class="w-10 h-10 rounded-lg flex items-center justify-center border border-outline-variant text-on-surface-variant hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+<!-- Empty State (Hidden by default, shown for reference as requested) -->
+<!-- 
+                <div class="flex flex-col items-center justify-center py-20 text-center gap-md bg-surface-container-lowest rounded-xl border border-outline-variant/30">
+                    <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAsP_UxII83ms-FixfXIiOanvONKWZuk8W0dXSbqICM96gNpB3SL1u15oNRsq6lNY851MSuzs5J4MOKw53UgF-Up98VIBbqBwhqVA5ll1eDMZ6o_ddwORDSupYmvCaYMn_ptiBvBCkIPmLQVDInGgn__XBCMoh_0OH8f2sHJtDc-leGnJw9U3ookybGujZ0w7dmT15zphEe8K_ZbxaPJWH6zgUaVkhmTze9N4ZbNib9dvv0nLdQoRaR" class="w-48 h-48 opacity-80" alt="Empty state">
+                    <div class="flex flex-col gap-xs">
+                        <h3 class="font-headline-md text-headline-md text-on-surface">Properti tidak ditemukan</h3>
+                        <p class="font-body-md text-on-surface-variant max-w-md mx-auto">Coba ubah kriteria pencarian atau hapus beberapa filter untuk melihat lebih banyak hasil.</p>
+                    </div>
+                    <button class="px-6 py-2 border-2 border-primary text-primary rounded-full font-headline-sm font-semibold hover:bg-primary hover:text-white transition-colors mt-sm">Reset Filter</button>
+                </div> 
+                -->
+</section>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full mt-xl bg-surface-container-highest dark:bg-inverse-surface border-t border-outline-variant/20">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-lg px-lg py-xl max-w-container-max mx-auto">
+<div class="flex flex-col gap-md">
+<div class="font-headline-sm text-headline-sm font-bold text-primary dark:text-primary-fixed">Green Property</div>
+<p class="font-body-sm text-body-sm text-on-surface dark:text-inverse-on-surface opacity-90">
+                    © 2024 Green Property Indonesia. All Rights Reserved.
+                </p>
+</div>
+<div class="flex flex-col gap-sm">
+<h4 class="font-body-md font-semibold text-on-surface dark:text-inverse-on-surface">Kontak</h4>
+<a class="font-body-sm text-body-sm text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors opacity-90 hover:opacity-100" href="#">WhatsApp</a>
+<a class="font-body-sm text-body-sm text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors opacity-90 hover:opacity-100" href="#">KakaoTalk</a>
+<a class="font-body-sm text-body-sm text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors opacity-90 hover:opacity-100" href="#">Email</a>
+<a class="font-body-sm text-body-sm text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors opacity-90 hover:opacity-100" href="#">Phone</a>
+<a class="font-body-sm text-body-sm text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors opacity-90 hover:opacity-100" href="#">Fax</a>
+</div>
+<div class="flex flex-col gap-sm">
+<h4 class="font-body-md font-semibold text-on-surface dark:text-inverse-on-surface">Lokasi &amp; Waktu</h4>
+<span class="font-body-sm text-body-sm text-on-surface-variant dark:text-surface-variant opacity-90">Office Address</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant dark:text-surface-variant opacity-90">Operating Hours</span>
+</div>
+<div class="flex flex-col gap-sm">
+<h4 class="font-body-md font-semibold text-on-surface dark:text-inverse-on-surface">Quick Navigation</h4>
+<a class="font-body-sm text-body-sm text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors opacity-90 hover:opacity-100" href="#">Beranda</a>
+<a class="font-body-sm text-body-sm text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors opacity-90 hover:opacity-100" href="#">Properti</a>
+<a class="font-body-sm text-body-sm text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors opacity-90 hover:opacity-100" href="#">Land Provider</a>
+</div>
+</div>
+</footer>
+</body></html>

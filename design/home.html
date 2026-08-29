@@ -1,0 +1,559 @@
+<!DOCTYPE html><html class="light" lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Green Property - Strategic Land Partner</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-container": "#357847",
+                    "tertiary": "#195f30",
+                    "on-tertiary-fixed": "#00210b",
+                    "surface": "#f7f9ff",
+                    "surface-container-highest": "#e0e2e9",
+                    "tertiary-fixed": "#abf3b6",
+                    "secondary-fixed-dim": "#e9c178",
+                    "outline": "#6f7a6e",
+                    "primary-container": "#1f7a3f",
+                    "primary": "#00602c",
+                    "surface-variant": "#e0e2e9",
+                    "outline-variant": "#bfcabc",
+                    "surface-container-low": "#f1f4fa",
+                    "surface-tint": "#096d34",
+                    "on-primary-container": "#adffbb",
+                    "on-primary-fixed": "#00210b",
+                    "on-error-container": "#93000a",
+                    "secondary-container": "#fed489",
+                    "on-tertiary": "#ffffff",
+                    "on-secondary-container": "#785a1b",
+                    "on-tertiary-container": "#b5fec0",
+                    "background": "#f7f9ff",
+                    "surface-dim": "#d7dae1",
+                    "primary-fixed": "#9df6ae",
+                    "on-primary": "#ffffff",
+                    "tertiary-fixed-dim": "#90d69c",
+                    "on-tertiary-fixed-variant": "#055225",
+                    "surface-container-high": "#e5e8ef",
+                    "on-surface-variant": "#3f493f",
+                    "on-error": "#ffffff",
+                    "inverse-primary": "#82d994",
+                    "secondary-fixed": "#ffdea5",
+                    "secondary": "#775a1a",
+                    "error-container": "#ffdad6",
+                    "on-secondary-fixed": "#271900",
+                    "primary-fixed-dim": "#82d994",
+                    "on-background": "#181c21",
+                    "surface-container": "#ebeef5",
+                    "on-secondary-fixed-variant": "#5d4202",
+                    "error": "#ba1a1a",
+                    "on-secondary": "#ffffff",
+                    "surface-bright": "#f7f9ff",
+                    "surface-container-lowest": "#ffffff",
+                    "on-primary-fixed-variant": "#005224",
+                    "inverse-surface": "#2d3136",
+                    "on-surface": "#181c21",
+                    "inverse-on-surface": "#eef1f8"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "sm": "16px",
+                    "lg": "40px",
+                    "container-max": "1280px",
+                    "margin-mobile": "16px",
+                    "xs": "8px",
+                    "md": "24px",
+                    "xl": "64px",
+                    "base": "4px",
+                    "gutter": "24px"
+            },
+            "fontFamily": {
+                    "headline-sm": ["Plus Jakarta Sans"],
+                    "price-display": ["Plus Jakarta Sans"],
+                    "headline-md": ["Plus Jakarta Sans"],
+                    "headline-lg": ["Plus Jakarta Sans"],
+                    "headline-lg-mobile": ["Plus Jakarta Sans"],
+                    "body-lg": ["Plus Jakarta Sans"],
+                    "label-caps": ["Plus Jakarta Sans"],
+                    "display": ["Plus Jakarta Sans"],
+                    "body-md": ["Plus Jakarta Sans"],
+                    "body-sm": ["Plus Jakarta Sans"]
+            },
+            "fontSize": {
+                    "headline-sm": ["20px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                    "price-display": ["24px", {"lineHeight": "1", "fontWeight": "700"}],
+                    "headline-md": ["24px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "1.3", "fontWeight": "700"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "1.3", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "label-caps": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "display": ["48px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}]
+            },
+            "boxShadow": {
+                "soft": "0px 4px 20px rgba(34, 38, 43, 0.04)"
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.on-background');
+        }
+    </style>
+</head>
+<body class="antialiased font-body-md text-body-md selection:bg-primary selection:text-on-primary">
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/90 dark:bg-surface-dim/90 backdrop-blur-md border-b border-outline-variant/30 shadow-sm">
+<div class="flex justify-between items-center h-20 px-sm lg:px-xl max-w-container-max mx-auto font-body-md text-body-md">
+<div class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed">
+                Green Property
+            </div>
+<!-- Desktop Navigation -->
+<nav class="hidden md:flex items-center gap-md"><a class="text-on-surface-variant hover:text-primary transition-colors py-2 active:scale-95 transition-transform hover:bg-surface-container-low transition-all duration-200 px-3 rounded-DEFAULT" href="#">Beranda</a><a class="text-on-surface-variant hover:text-primary transition-colors py-2 active:scale-95 transition-transform hover:bg-surface-container-low transition-all duration-200 px-3 rounded-DEFAULT" href="#">Properti</a><a class="text-on-surface-variant hover:text-primary transition-colors py-2 active:scale-95 transition-transform hover:bg-surface-container-low transition-all duration-200 px-3 rounded-DEFAULT" href="#">Land Provider Hyundai</a><a class="text-on-surface-variant hover:text-primary transition-colors py-2 active:scale-95 transition-transform hover:bg-surface-container-low transition-all duration-200 px-3 rounded-DEFAULT" href="#">Tentang Kami</a><a class="text-on-surface-variant hover:text-primary transition-colors py-2 active:scale-95 transition-transform hover:bg-surface-container-low transition-all duration-200 px-3 rounded-DEFAULT" href="#">Kontak</a></nav>
+<button class="bg-primary-container text-on-primary px-6 py-2 rounded-full font-body-sm text-body-sm font-semibold hover:bg-primary transition-colors active:scale-95">Hubungi Kami</button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="pt-24 pb-xl">
+<!-- Hero Section -->
+<section class="max-w-container-max mx-auto px-sm lg:px-xl mb-xl">
+<div class="relative w-full h-[600px] rounded-xl overflow-hidden shadow-soft group">
+<div class="absolute inset-0 bg-cover bg-center w-full h-full transition-transform duration-1000 group-hover:scale-105" data-alt="A sweeping, high-resolution aerial photograph of a pristine, modern industrial park in Indonesia during golden hour. The scene features highly organized, sleek logistics facilities and manufacturing plants with bright white roofs, surrounded by lush tropical greenery and perfectly paved wide roads. The lighting is warm and inviting, casting long soft shadows, conveying a sense of premium quality, strategic planning, and sustainable industrial development in a tropical setting." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCiSB-a2lXNFnoNG_Uo7kf37dTWTGx4PoRNpJY0cYUl6C3tIaDq9J6tl2YYjZ6QuCOdjhZZvcljXr8uD3YNQmZWlF0Wnvu-6lQzqpHH-7MiZy6ewHby99Yq6_IFn5koOWX_WXSCkV38h4sgXqCV7HshWNyIw8qSZqovhlJO1cHvYz7stqQxAeiYWWIrrXaGqAGnhx9UPmwjRZr0bz05HnjRRp8eIChiVDGaUxyGFz_XfvI-nee1GGlN')"></div>
+<div class="absolute inset-0 bg-gradient-to-r from-on-background/80 via-on-background/50 to-transparent"></div>
+<div class="absolute inset-0 flex flex-col justify-center px-lg md:px-xl max-w-3xl"><h1 class="font-display text-display text-surface-container-lowest mb-md drop-shadow-md">Solusi Strategis Properti Industrial &amp; Residensial di Indonesia</h1><p class="font-body-lg text-body-lg text-surface-bright mb-lg max-w-xl">Spesialis penyedia lahan untuk Vendor Hyundai dan hunian eksklusif dengan layanan terpercaya.</p><div class="bg-surface-container-lowest p-2 rounded-xl shadow-md flex flex-col md:flex-row gap-2 mb-lg max-w-2xl"><div class="flex-grow flex items-center px-4 border-r border-outline-variant/30"><span class="material-symbols-outlined text-outline mr-2">location_on</span><input class="w-full bg-transparent border-none focus:ring-0 text-body-md" placeholder="Input lokasi" type="text"></div><div class="flex items-center px-4 border-r border-outline-variant/30"><span class="material-symbols-outlined text-outline mr-2">category</span><select class="bg-transparent border-none focus:ring-0 text-body-md appearance-none pr-8"><option>Land</option><option>Factory</option><option>Residence</option><option>Apartment</option></select></div><button class="bg-primary text-on-primary px-8 py-2 rounded-lg font-bold hover:bg-surface-tint transition-colors">Cari</button></div><div class="flex gap-sm"><button class="bg-primary-container text-on-primary px-8 py-3 rounded-full font-body-md text-body-md font-semibold hover:bg-primary transition-colors shadow-sm">Lihat Properti</button><button class="bg-transparent border-2 border-surface-container-lowest text-surface-container-lowest backdrop-blur-sm px-8 py-3 rounded-full font-body-md text-body-md font-semibold hover:bg-surface-container-lowest/20 transition-colors flex items-center gap-2"><span class="material-symbols-outlined">chat</span> Hubungi Kami via WhatsApp</button></div></div>
+</div>
+</section>
+<!-- Service Portfolio (Bento Grid) -->
+<section class="max-w-container-max mx-auto px-sm lg:px-xl mb-xl">
+<div class="mb-lg">
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-xs">Service Portfolio</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Comprehensive solutions for industrial setup and corporate living.</p>
+</div>
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-gutter"><!-- Service 1 -->
+<a href="#" class="bg-surface-container-lowest border border-outline-variant p-md rounded-xl shadow-soft hover:-translate-y-1 hover:shadow-md hover:border-primary-container transition-all duration-300 flex flex-col group">
+<div class="w-12 h-12 rounded-full bg-surface-container-low flex items-center justify-center mb-md">
+<span class="material-symbols-outlined text-primary text-3xl">landscape</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-xs">Industrial Land</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant"><span class="font-bold text-primary">Jual &amp; Sewa</span> industrial plots optimized for manufacturing.</p>
+</a>
+<!-- Service 2 -->
+<a href="#" class="bg-surface-container-lowest border border-outline-variant p-md rounded-xl shadow-soft hover:-translate-y-1 hover:shadow-md hover:border-primary-container transition-all duration-300 flex flex-col group">
+<div class="w-12 h-12 rounded-full bg-surface-container-low flex items-center justify-center mb-md">
+<span class="material-symbols-outlined text-primary text-3xl">factory</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-xs">Turnkey Factories</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant"><span class="font-bold text-primary">Jual &amp; Sewa</span> ready-to-operate facilities built to international standards.</p>
+</a>
+<!-- Service 3 -->
+<a href="#" class="bg-surface-container-lowest border border-outline-variant p-md rounded-xl shadow-soft hover:-translate-y-1 hover:shadow-md hover:border-primary-container transition-all duration-300 flex flex-col group">
+<div class="w-12 h-12 rounded-full bg-surface-container-low flex items-center justify-center mb-md">
+<span class="material-symbols-outlined text-primary text-3xl">real_estate_agent</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-xs">Executive Residence</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant"><span class="font-bold text-primary">Jual &amp; Sewa</span> luxury housing for management staff.</p>
+</a>
+<!-- Service 4 -->
+<a href="#" class="bg-surface-container-lowest border border-outline-variant p-md rounded-xl shadow-soft hover:-translate-y-1 hover:shadow-md hover:border-primary-container transition-all duration-300 flex flex-col group">
+<div class="w-12 h-12 rounded-full bg-surface-container-low flex items-center justify-center mb-md">
+<span class="material-symbols-outlined text-primary text-3xl">apartment</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-xs">Staff Apartments</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant"><span class="font-bold text-primary">Jual &amp; Sewa</span> high-density, comfortable living solutions.</p>
+</a></div>
+</section>
+<!-- Ecosystem Section -->
+<section class="max-w-container-max mx-auto px-sm lg:px-xl mb-xl">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-lg items-stretch bg-surface-container-low rounded-xl overflow-hidden border border-surface-container-highest shadow-soft">
+    <!-- Left Side: Image -->
+    <div class="relative h-[400px] md:h-auto overflow-hidden">
+      <img class="absolute inset-0 w-full h-full object-cover" data-alt="A high-quality, wide-angle photograph of a modern industrial park landscape in Indonesia. The scene shows expansive, well-paved roads, organized industrial plots with sleek factory buildings, and lush green landscaping under a clear sky, emphasizing a premium and strategic industrial environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCiSB-a2lXNFnoNG_Uo7kf37dTWTGx4PoRNpJY0cYUl6C3tIaDq9J6tl2YYjZ6QuCOdjhZZvcljXr8uD3YNQmZWlF0Wnvu-6lQzqpHH-7MiZy6ewHby99Yq6_IFn5koOWX_WXSCkV38h4sgXqCV7HshWNyIw8qSZqovhlJO1cHvYz7stqQxAeiYWWIrrXaGqAGnhx9UPmwjRZr0bz05HnjRRp8eIChiVDGaUxyGFz_XfvI-nee1GGlN">
+    </div>
+    <!-- Right Side: Content -->
+    <div class="p-lg md:p-xl flex flex-col justify-center">
+      <div class="inline-block px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container font-label-caps text-label-caps mb-md w-fit">
+        LAND PROVIDER FOR HYUNDAI VENDOR
+      </div>
+      <h2 class="font-headline-lg text-headline-lg text-on-surface mb-md">
+        Spesialis Land Provider untuk Ekosistem Vendor Hyundai
+      </h2>
+      <p class="font-body-md text-body-md text-on-surface-variant mb-lg">
+        Kami menyediakan solusi lahan strategis yang terintegrasi penuh dengan rantai pasok industri otomotif.
+      </p>
+      <ul class="space-y-md mb-xl">
+        <li class="flex items-start gap-sm">
+          <span class="material-symbols-outlined" style="color: #C6A15B;">check_circle</span>
+          <span class="font-body-md text-body-md text-on-surface">Proksimitas Strategis ke Pabrik Perakitan Utama</span>
+        </li>
+        <li class="flex items-start gap-sm">
+          <span class="material-symbols-outlined" style="color: #C6A15B;">check_circle</span>
+          <span class="font-body-md text-body-md text-on-surface">Infrastruktur Teroptimasi untuk Logistik Berat</span>
+        </li>
+        <li class="flex items-start gap-sm">
+          <span class="material-symbols-outlined" style="color: #C6A15B;">check_circle</span>
+          <span class="font-body-md text-body-md text-on-surface">Dukungan Perizinan &amp; Regulasi yang Komprehensif</span>
+        </li>
+      </ul>
+      <button class="w-fit bg-transparent border-2 px-8 py-3 rounded-full font-body-md text-body-md font-semibold transition-all hover:bg-surface-container-highest flex items-center gap-2" style="border-color: #C6A15B; color: #C6A15B;">
+        Lihat Studi Kasus <span class="material-symbols-outlined text-sm">arrow_forward</span>
+      </button>
+    </div>
+  </div>
+</section><section class="max-w-container-max mx-auto px-sm lg:px-xl mb-xl">
+  <div class="flex justify-between items-end mb-lg">
+    <div>
+      <h2 class="font-headline-lg text-headline-lg text-on-surface mb-xs">Listing Unggulan</h2>
+      <p class="font-body-md text-body-md text-on-surface-variant">Properti industrial pilihan dengan lokasi strategis.</p>
+    </div>
+    <a href="#" class="hidden md:flex items-center gap-1 text-primary font-semibold hover:underline">
+      View All Listings <span class="material-symbols-outlined text-sm">arrow_forward</span>
+    </a>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter mb-lg">
+    <!-- Card 1 -->
+    <div class="group relative bg-surface-container-lowest rounded-xl overflow-hidden border border-outline-variant shadow-soft hover:shadow-md transition-all cursor-pointer">
+      <div class="relative h-60">
+        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAoM5RS9_Uh_GOlRh6gtUnrUX6txphVrSQRkgYvNQp-nkhirigbTQA41uiaH5xHhsYDryXhdg5PgXWFNaccHQAukHVlXAXvyhRhaXz1D4HnfO14B5OMEJjW9SNYSg0MQuj6tldEyENMnlm3KT4JLDYZkdGYltciUn1A4gBb3hD1__At2Y_bjidSF22soMrshZ7iWQlPv4my3mw8HjSej0hSXKZqfaG6oe5yp37CmJ3RFTWukbk01-4l" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" alt="Industrial Land">
+        <div class="absolute top-4 left-4 bg-primary text-on-primary px-3 py-1 rounded-full font-label-caps text-label-caps">FOR SALE</div>
+        <div class="absolute top-4 right-4 bg-surface/90 backdrop-blur-sm text-on-surface px-3 py-1 rounded-md font-label-caps text-label-caps">Land</div>
+      </div>
+      <div class="p-md">
+        <div class="text-primary-container font-price-display text-price-display mb-2">Rp 2.500.000 / m²</div>
+        <div class="flex items-center gap-1 text-on-surface-variant font-body-sm mb-3">
+          <span class="material-symbols-outlined text-sm">location_on</span> Jababeka, Cikarang
+        </div>
+        <div class="flex items-center gap-md border-t border-outline-variant/30 pt-sm">
+          <div class="flex items-center gap-1 text-on-surface-variant">
+            <span class="material-symbols-outlined text-outline text-sm">square_foot</span>
+            <span class="text-body-sm">20,000 SQM</span>
+          </div>
+          <div class="flex items-center gap-1 text-on-surface-variant">
+            <span class="material-symbols-outlined text-outline text-sm">bolt</span>
+            <span class="text-body-sm">High Power</span>
+          </div>
+        </div>
+      </div>
+      <button class="absolute bottom-4 right-4 w-12 h-12 bg-[#25D366] text-white rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform z-10">
+        <span class="material-symbols-outlined">chat</span>
+      </button>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="group relative bg-surface-container-lowest rounded-xl overflow-hidden border border-outline-variant shadow-soft hover:shadow-md transition-all cursor-pointer">
+      <div class="relative h-60">
+        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBYEq1eKagJ6Ifinwf17Ckwl7lUFeAIgxDtw_vutoOB7FfE-K-W7FFzEYtrKFj-Eji7Zx85t1e0vhNKMxM4Lz-w2eo4HcDFA_MDcBB16grS1kLjO3IYwk2ZYVoXra-sz81fjolSHIRP-BByOmyO1ypYQENnCdDxmHgnFDsxE58Fn8_YCs6puCRhV36qbYpcMs7U0527TNbM5uslR8Y3qZUxYd6RlZ9KN-8I2JeN5tdYmTRQHK0hfGx8" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" alt="Smart Factory">
+        <div class="absolute top-4 left-4 bg-primary-container text-on-primary px-3 py-1 rounded-full font-label-caps text-label-caps">FOR RENT</div>
+        <div class="absolute top-4 right-4 bg-surface/90 backdrop-blur-sm text-on-surface px-3 py-1 rounded-md font-label-caps text-label-caps">Factory</div>
+      </div>
+      <div class="p-md">
+        <div class="text-primary-container font-price-display text-price-display mb-2">Rp 85.000 / m² / bln</div>
+        <div class="flex items-center gap-1 text-on-surface-variant font-body-sm mb-3">
+          <span class="material-symbols-outlined text-sm">location_on</span> GIIC, Bekasi
+        </div>
+        <div class="flex items-center gap-md border-t border-outline-variant/30 pt-sm">
+          <div class="flex items-center gap-1 text-on-surface-variant">
+            <span class="material-symbols-outlined text-outline text-sm">warehouse</span>
+            <span class="text-body-sm">5,000 SQM</span>
+          </div>
+          <div class="flex items-center gap-1 text-on-surface-variant">
+            <span class="material-symbols-outlined text-outline text-sm">local_shipping</span>
+            <span class="text-body-sm">4 Docks</span>
+          </div>
+        </div>
+      </div>
+      <button class="absolute bottom-4 right-4 w-12 h-12 bg-[#25D366] text-white rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform z-10">
+        <span class="material-symbols-outlined">chat</span>
+      </button>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="group relative bg-surface-container-lowest rounded-xl overflow-hidden border border-outline-variant shadow-soft hover:shadow-md transition-all cursor-pointer">
+      <div class="relative h-60">
+        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAvsKwSqdF5ipLtUCpGHDe2s5OrNomqsSZ_aXwk_f43Zp_q3q16v0bMTALXbPVJOS7usgxje-TSD5aj-bXmb4VTpI579LGStwh1TM8VLz2ds6hzFdFCJzIa0suEpZCKvbz58Jejd3sUoR89GWFd2gqFbTRTRe8bPRleKEVu1FpizXSR5HHz1oxcTqPnM15NZJchneM4MF-uE84MtHNd-v_DJgzdDK3sBL1KYloULKEqh4rQMrjEEHyp" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" alt="Logistics Hub">
+        <div class="absolute top-4 left-4 bg-primary text-on-primary px-3 py-1 rounded-full font-label-caps text-label-caps">FOR SALE</div>
+        <div class="absolute top-4 right-4 bg-surface/90 backdrop-blur-sm text-on-surface px-3 py-1 rounded-md font-label-caps text-label-caps">Factory</div>
+      </div>
+      <div class="p-md">
+        <div class="text-primary-container font-price-display text-price-display mb-2">Hubungi Kami</div>
+        <div class="flex items-center gap-1 text-on-surface-variant font-body-sm mb-3">
+          <span class="material-symbols-outlined text-sm">location_on</span> Karawang International City
+        </div>
+        <div class="flex items-center gap-md border-t border-outline-variant/30 pt-sm">
+          <div class="flex items-center gap-1 text-on-surface-variant">
+            <span class="material-symbols-outlined text-outline text-sm">square_foot</span>
+            <span class="text-body-sm">15,000 SQM</span>
+          </div>
+          <div class="flex items-center gap-1 text-on-surface-variant">
+            <span class="material-symbols-outlined text-outline text-sm">dock</span>
+            <span class="text-body-sm">12 Docks</span>
+          </div>
+        </div>
+      </div>
+      <button class="absolute bottom-4 right-4 w-12 h-12 bg-[#25D366] text-white rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform z-10">
+        <span class="material-symbols-outlined">chat</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="flex justify-center">
+    <button class="bg-primary text-on-primary px-10 py-3 rounded-full font-bold hover:bg-surface-tint transition-colors shadow-md">
+      Lihat Semua Properti
+    </button>
+  </div>
+</section>
+<!-- Featured Listings -->
+<section class="max-w-container-max mx-auto px-sm lg:px-xl mb-xl">
+<div class="flex justify-between items-end mb-lg">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-xs">Featured Industrial Properties</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Prime locations ready for immediate development.</p>
+</div>
+<button class="text-primary font-body-md text-body-md font-semibold hover:underline flex items-center gap-xs hidden md:flex">
+                    View All Listings <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
+<!-- Listing 1 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden shadow-soft group hover:-translate-y-1 hover:shadow-md transition-all duration-300 flex flex-col">
+<div class="relative h-60 overflow-hidden bg-surface-container-low">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="A clean, elevated photograph of a large, flat, cleared plot of industrial land ready for construction. The land is bordered by modern, paved access roads and neat drainage systems. In the background, sleek, recently built industrial warehouses with white walls and blue trim are visible. The sky is a bright, clear tropical blue. The image conveys readiness, vast potential, and high-quality infrastructure." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAoM5RS9_Uh_GOlRh6gtUnrUX6txphVrSQRkgYvNQp-nkhirigbTQA41uiaH5xHhsYDryXhdg5PgXWFNaccHQAukHVlXAXvyhRhaXz1D4HnfO14B5OMEJjW9SNYSg0MQuj6tldEyENMnlm3KT4JLDYZkdGYltciUn1A4gBb3hD1__At2Y_bjidSF22soMrshZ7iWQlPv4my3mw8HjSej0hSXKZqfaG6oe5yp37CmJ3RFTWukbk01-4l">
+<div class="absolute top-4 left-4 bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full font-label-caps text-label-caps shadow-sm">
+                            FEATURED
+                        </div>
+<div class="absolute top-4 right-4 bg-surface-container-lowest px-2 py-1 rounded-md shadow-sm flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<span class="font-label-caps text-label-caps text-primary">AVAILABLE</span>
+</div>
+</div>
+<div class="p-md flex flex-col flex-grow">
+<div class="text-on-surface-variant font-body-sm text-body-sm flex items-center gap-1 mb-1">
+<span class="material-symbols-outlined text-sm">location_on</span> Cikarang, West Java
+                        </div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-xs">Delta Silicon Plot 8A</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-md flex-grow">Prime 5-hectare plot with direct toll access. Ideal for heavy manufacturing.</p>
+<div class="flex items-center gap-md mb-md border-t border-surface-variant pt-sm">
+<div class="flex items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined text-outline">square_foot</span>
+<span class="font-body-sm text-body-sm">50,000 SQM</span>
+</div>
+<div class="flex items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined text-outline">bolt</span>
+<span class="font-body-sm text-body-sm">High Cap</span>
+</div>
+</div>
+<div class="font-price-display text-price-display text-on-surface mt-auto">
+                            Contact for Pricing
+                        </div>
+</div>
+</div>
+<!-- Listing 2 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden shadow-soft group hover:-translate-y-1 hover:shadow-md transition-all duration-300 flex flex-col">
+<div class="relative h-60 overflow-hidden bg-surface-container-low">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="An architectural exterior shot of a highly modern, newly constructed smart factory building. The structure features extensive use of reflective glass, clean metallic paneling in shades of gray and white, and manicured green landscaping around the entrance. Large loading docks are visible on the side. The lighting suggests early morning, giving a crisp, professional, and cutting-edge industrial vibe." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBYEq1eKagJ6Ifinwf17Ckwl7lUFeAIgxDtw_vutoOB7FfE-K-W7FFzEYtrKFj-Eji7Zx85t1e0vhNKMxM4Lz-w2eo4HcDFA_MDcBB16grS1kLjO3IYwk2ZYVoXra-sz81fjolSHIRP-BByOmyO1ypYQENnCdDxmHgnFDsxE58Fn8_YCs6puCRhV36qbYpcMs7U0527TNbM5uslR8Y3qZUxYd6RlZ9KN-8I2JeN5tdYmTRQHK0hfGx8">
+<div class="absolute top-4 right-4 bg-surface-container-lowest px-2 py-1 rounded-md shadow-sm flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<span class="font-label-caps text-label-caps text-primary">AVAILABLE</span>
+</div>
+</div>
+<div class="p-md flex flex-col flex-grow">
+<div class="text-on-surface-variant font-body-sm text-body-sm flex items-center gap-1 mb-1">
+<span class="material-symbols-outlined text-sm">location_on</span> GIIC, Bekasi
+                        </div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-xs">GIIC Smart Factory B</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-md flex-grow">Turnkey smart factory building ready for automated assembly lines.</p>
+<div class="flex items-center gap-md mb-md border-t border-surface-variant pt-sm">
+<div class="flex items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined text-outline">square_foot</span>
+<span class="font-body-sm text-body-sm">12,500 SQM</span>
+</div>
+<div class="flex items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined text-outline">warehouse</span>
+<span class="font-body-sm text-body-sm">Turnkey</span>
+</div>
+</div>
+<div class="font-price-display text-price-display text-on-surface mt-auto">
+                            Contact for Pricing
+                        </div>
+</div>
+</div>
+<!-- Listing 3 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden shadow-soft group hover:-translate-y-1 hover:shadow-md transition-all duration-300 flex flex-col hidden lg:flex">
+<div class="relative h-60 overflow-hidden bg-surface-container-low">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="A wide angle photograph of a vast logistics warehouse interior, empty and pristine. The concrete floor is highly polished, reflecting rows of bright LED lighting suspended from a high structural steel ceiling. Massive rolling doors at the far end let in bright daylight. The image conveys immense scale, cleanliness, and readiness for large-scale supply chain operations." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAvsKwSqdF5ipLtUCpGHDe2s5OrNomqsSZ_aXwk_f43Zp_q3q16v0bMTALXbPVJOS7usgxje-TSD5aj-bXmb4VTpI579LGStwh1TM8VLz2ds6hzFdFCJzIa0suEpZCKvbz58Jejd3sUoR89GWFd2gqFbTRTRe8bPRleKEVu1FpizXSR5HHz1oxcTqPnM15NZJchneM4MF-uE84MtHNd-v_DJgzdDK3sBL1KYloULKEqh4rQMrjEEHyp">
+<div class="absolute top-4 right-4 bg-surface-container-lowest px-2 py-1 rounded-md shadow-sm flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-outline"></span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">UNDER OFFER</span>
+</div>
+</div>
+<div class="p-md flex flex-col flex-grow">
+<div class="text-on-surface-variant font-body-sm text-body-sm flex items-center gap-1 mb-1">
+<span class="material-symbols-outlined text-sm">location_on</span> Karawang
+                        </div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-xs">Logistics Hub K-1</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-md flex-grow">Massive warehouse space optimized for high-volume distribution.</p>
+<div class="flex items-center gap-md mb-md border-t border-surface-variant pt-sm">
+<div class="flex items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined text-outline">square_foot</span>
+<span class="font-body-sm text-body-sm">80,000 SQM</span>
+</div>
+<div class="flex items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined text-outline">local_shipping</span>
+<span class="font-body-sm text-body-sm">40 Docks</span>
+</div>
+</div>
+<div class="font-price-display text-price-display text-on-surface mt-auto">
+                            Contact for Pricing
+                        </div>
+</div>
+</div>
+</div>
+<button class="md:hidden mt-md w-full bg-surface-container-highest text-on-surface px-6 py-3 rounded-full font-body-md text-body-md font-semibold hover:bg-surface-dim transition-colors">
+                View All Listings
+            </button>
+</section>
+<!-- CTA Banner -->
+<section class="max-w-container-max mx-auto px-sm lg:px-xl mb-xl">
+<div class="bg-primary text-on-primary p-xl rounded-xl shadow-md text-center">
+<h2 class="font-headline-lg text-headline-lg mb-sm">Ready to secure your strategic position?</h2>
+<p class="font-body-lg text-body-lg mb-lg max-w-2xl mx-auto text-primary-fixed">Our specialists are ready to provide a customized portfolio of properties that meet your exact specifications and supply chain requirements.</p>
+<button class="bg-surface-container-lowest text-primary px-8 py-3 rounded-full font-body-md text-body-md font-bold hover:bg-surface-variant transition-colors shadow-sm">
+                    Request Specialist Consultation
+                </button>
+</div>
+</section>
+<section class="max-w-container-max mx-auto px-sm lg:px-xl mb-xl">
+  <div class="rounded-xl p-xl text-center shadow-lg flex flex-col items-center gap-lg" style="background-color: #155C2E;">
+    <div class="space-y-sm">
+      <h2 class="font-display text-display text-white">Siap Memulai Proyek Anda?</h2>
+      <p class="font-body-lg text-body-lg text-white/80 max-w-2xl mx-auto">Tim ahli kami siap membantu Anda menemukan solusi lahan dan properti terbaik di Indonesia.</p>
+    </div>
+    <div class="flex flex-col md:flex-row gap-md">
+      <a href="#" class="bg-[#25D366] text-white px-8 py-4 rounded-full font-bold flex items-center gap-2 hover:scale-105 transition-transform shadow-md">
+        <span class="material-symbols-outlined">chat</span> Chat via WhatsApp
+      </a>
+      <a href="#" class="border-2 border-white/30 text-white px-8 py-4 rounded-full font-bold hover:bg-white/10 transition-colors">
+        Lihat Semua Kontak
+      </a>
+    </div>
+  </div>
+</section></main>
+<!-- Footer -->
+<section class="bg-surface-container-lowest py-xl overflow-hidden">
+  <div class="max-w-container-max mx-auto px-sm lg:px-xl mb-lg text-center">
+    <h2 class="font-headline-md text-headline-md text-on-surface">Dipercaya oleh Mitra &amp; Klien Kami</h2>
+  </div>
+  
+  <div class="relative">
+    <div class="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-surface-container-lowest to-transparent z-10"></div>
+    <div class="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-surface-container-lowest to-transparent z-10"></div>
+
+    <div class="flex flex-col gap-lg">
+      <div class="group flex overflow-hidden">
+        <div class="flex animate-[marquee_40s_linear_infinite] group-hover:[animation-play-state:paused] gap-xl px-xl">
+          <div class="flex items-center justify-center w-40 h-20 grayscale hover:grayscale-0 transition-all duration-300 opacity-60 hover:opacity-100 font-bold text-outline">Logo A</div>
+          <div class="flex items-center justify-center w-40 h-20 grayscale hover:grayscale-0 transition-all duration-300 opacity-60 hover:opacity-100 font-bold text-outline">Logo B</div>
+          <div class="flex items-center justify-center w-40 h-20 grayscale hover:grayscale-0 transition-all duration-300 opacity-60 hover:opacity-100 font-bold text-outline">Logo C</div>
+          <div class="flex items-center justify-center w-40 h-20 grayscale hover:grayscale-0 transition-all duration-300 opacity-60 hover:opacity-100 font-bold text-outline">Logo D</div>
+          <div class="flex items-center justify-center w-40 h-20 grayscale hover:grayscale-0 transition-all duration-300 opacity-60 hover:opacity-100 font-bold text-outline">Logo E</div>
+          <div class="flex items-center justify-center w-40 h-20 grayscale hover:grayscale-0 transition-all duration-300 opacity-60 hover:opacity-100 font-bold text-outline">Logo A</div>
+          <div class="flex items-center justify-center w-40 h-20 grayscale hover:grayscale-0 transition-all duration-300 opacity-60 hover:opacity-100 font-bold text-outline">Logo B</div>
+          <div class="flex items-center justify-center w-40 h-20 grayscale hover:grayscale-0 transition-all duration-300 opacity-60 hover:opacity-100 font-bold text-outline">Logo C</div>
+          <div class="flex items-center justify-center w-40 h-20 grayscale hover:grayscale-0 transition-all duration-300 opacity-60 hover:opacity-100 font-bold text-outline">Logo D</div>
+          <div class="flex items-center justify-center w-40 h-20 grayscale hover:grayscale-0 transition-all duration-300 opacity-60 hover:opacity-100 font-bold text-outline">Logo E</div>
+        </div>
+      </div>
+
+      <div class="group flex overflow-hidden">
+        <div class="flex animate-[marquee-reverse_40s_linear_infinite] group-hover:[animation-play-state:paused] gap-xl px-xl">
+          <div class="flex items-center justify-center w-40 h-20 grayscale hover:grayscale-0 transition-all duration-300 opacity-60 hover:opacity-100 font-bold text-outline">Logo F</div>
+          <div class="flex items-center justify-center w-40 h-20 grayscale hover:grayscale-0 transition-all duration-300 opacity-60 hover:opacity-100 font-bold text-outline">Logo G</div>
+          <div class="flex items-center justify-center w-40 h-20 grayscale hover:grayscale-0 transition-all duration-300 opacity-60 hover:opacity-100 font-bold text-outline">Logo H</div>
+          <div class="flex items-center justify-center w-40 h-20 grayscale hover:grayscale-0 transition-all duration-300 opacity-60 hover:opacity-100 font-bold text-outline">Logo I</div>
+          <div class="flex items-center justify-center w-40 h-20 grayscale hover:grayscale-0 transition-all duration-300 opacity-60 hover:opacity-100 font-bold text-outline">Logo J</div>
+          <div class="flex items-center justify-center w-40 h-20 grayscale hover:grayscale-0 transition-all duration-300 opacity-60 hover:opacity-100 font-bold text-outline">Logo F</div>
+          <div class="flex items-center justify-center w-40 h-20 grayscale hover:grayscale-0 transition-all duration-300 opacity-60 hover:opacity-100 font-bold text-outline">Logo G</div>
+          <div class="flex items-center justify-center w-40 h-20 grayscale hover:grayscale-0 transition-all duration-300 opacity-60 hover:opacity-100 font-bold text-outline">Logo H</div>
+          <div class="flex items-center justify-center w-40 h-20 grayscale hover:grayscale-0 transition-all duration-300 opacity-60 hover:opacity-100 font-bold text-outline">Logo I</div>
+          <div class="flex items-center justify-center w-40 h-20 grayscale hover:grayscale-0 transition-all duration-300 opacity-60 hover:opacity-100 font-bold text-outline">Logo J</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<style class="">
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  @keyframes marquee-reverse {
+    0% { transform: translateX(-50%); }
+    100% { transform: translateX(0); }
+  }
+</style><footer class="w-full py-xl border-t border-white/10" style="background-color: rgb(21, 92, 46);">
+  <div class="max-w-container-max mx-auto px-sm lg:px-xl">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-xl text-white">
+      <!-- Column 1: Logo & Info -->
+      <div class="space-y-md">
+        <div class="font-headline-md text-headline-md font-bold">Green Property</div>
+        <div class="space-y-xs font-body-sm text-white/70">
+          <p class="">Kawasan Industri Jababeka II, Cikarang Baru, Bekasi, Jawa Barat 17530</p>
+          <p class="pt-2">Jam Operasional:<br>Senin - Jumat: 08:00 - 17:00<br>Sabtu: 08:00 - 12:00</p>
+        </div>
+      </div>
+      
+      <!-- Column 2: Contact Channels -->
+      <div class="space-y-md">
+        <h4 class="font-headline-sm text-headline-sm">Hubungi Kami</h4>
+        <ul class="space-y-sm font-body-sm text-white/70">
+          <li class="flex items-center gap-2"><span class="material-symbols-outlined text-sm">chat</span> WhatsApp: +62 812-XXXX-XXXX</li>
+          <li class="flex items-center gap-2"><span class="material-symbols-outlined text-sm">forum</span> KakaoTalk: greenproperty_id</li>
+          <li class="flex items-center gap-2"><span class="material-symbols-outlined text-sm">mail</span> info@greenproperty.co.id</li>
+          <li class="flex items-center gap-2"><span class="material-symbols-outlined text-sm">call</span> +62 21-XXXX-XXXX</li>
+          <li class="flex items-center gap-2"><span class="material-symbols-outlined text-sm">print</span> Fax: +62 21-XXXX-XXXX</li>
+        </ul>
+      </div>
+
+      <!-- Column 3: Quick Navigation -->
+      <div class="space-y-md">
+        <h4 class="font-headline-sm text-headline-sm">Navigasi</h4>
+        <ul class="space-y-sm font-body-sm">
+          <li class=""><a href="#" class="text-white/70 hover:text-white transition-colors">Beranda</a></li>
+          <li class=""><a href="#" class="text-white/70 hover:text-white transition-colors">Properti</a></li>
+          <li class=""><a href="#" class="text-white/70 hover:text-white transition-colors">Land Provider Hyundai</a></li>
+          <li class=""><a href="#" class="text-white/70 hover:text-white transition-colors">Tentang Kami</a></li>
+          <li class=""><a href="#" class="text-white/70 hover:text-white transition-colors">Kontak</a></li>
+        </ul>
+      </div>
+
+      <!-- Column 4: Copyright -->
+      <div class="space-y-md flex flex-col justify-between">
+        <h4 class="font-headline-sm text-headline-sm">Legal</h4>
+        <div class="space-y-sm font-body-sm text-white/70">
+          <p class="">© 2024 Green Property Indonesia. All rights reserved.</p>
+          <div class="flex gap-md">
+            <a href="#" class="hover:underline">Privacy Policy</a>
+            <a href="#" class="hover:underline">Terms</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+</body></html>

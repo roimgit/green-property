@@ -1,4 +1,5 @@
 import type { SchemaTypeDefinition } from "sanity";
+import { ImageInputWithUrl } from "../components/ImageInputWithUrl";
 
 /** Dokumen "Testimoni" (testimonial). */
 export const testimonial: SchemaTypeDefinition = {
@@ -45,6 +46,7 @@ export const testimonial: SchemaTypeDefinition = {
       title: "Foto / Avatar",
       type: "image",
       options: { hotspot: true },
+      components: { input: ImageInputWithUrl },
       fields: [
         {
           name: "alt",

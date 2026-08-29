@@ -1,0 +1,104 @@
+import Link from "next/link";
+import { sanityFetch, groq } from "@/lib/sanity/client";
+import type { CompanyProfile } from "@/types/sanity";
+
+const COMPANY_PROFILE_QUERY = groq`*[_type == "companyProfile"][0]{
+  companyName,
+  address,
+  contactEmail,
+  contactPhone,
+}`;
+
+const NAV_LINKS = [
+  { label: "Beranda", href: "/" },
+  { label: "Properti", href: "/properties" },
+  { label: "Land Provider Hyundai", href: "/#land-provider" },
+  { label: "Tentang Kami", href: "/#about" },
+  { label: "Kontak", href: "/#contact" },
+];
+
+function CompanySection({ profile }: { profile: CompanyProfile | null }) {
+  return (
+    <div className="space-y-md">
+      <div className="font-headline-md text-headline-md font-bold">
+        {profile?.companyName ?? "Green Property"}
+      </div>
+      <div className="space-y-xs font-body-sm text-white/70">
+        <p>{profile?.address ?? "Kawasan Industri Jababeka II, Cikarang Baru, Bekasi, Jawa Barat 17530"}</p>
+        <p className="pt-2">
+          Jam Operasional:
+          <br />
+          Senin - Jumat: 08:00 - 17:00
+          <br />
+          Sabtu: 08:00 - 12:00
+        </p>
+      </div>
+    </div>
+  );
+}
+
+export default async function SiteFooter() {
+  let profile: CompanyProfile | null = null;
+  try {
+    // Best-effort: footer renders even if Sanity is unreachable.
+    profile = (await sanityFetch<CompanyProfile | null>(COMPANY_PROFILE_QUERY)) ?? null;
+  } catch {
+    profile = null;
+  }
+
+  return (
+    <footer className="w-full py-xl border-t border-white/10 bg-[#155C2E] text-white">
+      <div className="max-w-container-max mx-auto px-sm lg:px-xl">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-xl">
+          <CompanySection profile={profile} />
+
+          <div className="space-y-md">
+            <h4 className="font-headline-sm text-headline-sm">Hubungi Kami</h4>
+            <ul className="space-y-sm font-body-sm text-white/70">
+              <li className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-sm">chat</span>
+                WhatsApp: +62 812-XXXX-XXXX
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-sm">forum</span>
+                KakaoTalk: greenproperty_id
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-sm">mail</span>
+                {profile?.contactEmail ?? "info@greenproperty.co.id"}
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-sm">call</span>
+                {profile?.contactPhone ?? "+62 21-XXXX-XXXX"}
+              </li>
+            </ul>
+          </div>
+
+          <div className="space-y-md">
+            <h4 className="font-headline-sm text-headline-sm">Navigasi</h4>
+            <ul className="space-y-sm font-body-sm">
+              {NAV_LINKS.map((link) => (
+                <li key={link.href}>
+                  <Link href={link.href} className="text-white/70 hover:text-white transition-colors">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="space-y-md flex flex-col justify-between">
+            <h4 className="font-headline-sm text-headline-sm">Legal</h4>
+            <div className="space-y-sm font-body-sm text-white/70">
+              <p>© {new Date().getFullYear()} Green Property Indonesia. All rights reserved.</p>
+              <div className="flex gap-md">
+                <Link href="#" className="hover:underline">Privacy Policy</Link>
+                <Link href="#" className="hover:underline">Terms</Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+}
