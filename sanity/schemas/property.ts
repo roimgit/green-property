@@ -176,6 +176,19 @@ export default defineType({
                 { name: 'certificate', title: 'Sertifikat', type: 'string' },
                 { name: 'landArea', title: 'Luas Tanah (m²)', type: 'number' },
                 { name: 'buildingArea', title: 'Luas Bangunan (m²)', type: 'number' },
+                {
+                    name: 'furnishing',
+                    title: 'Kondisi Interior',
+                    type: 'string',
+                    options: {
+                        list: [
+                            { title: 'Unfurnished', value: 'Unfurnished' },
+                            { title: 'Furnished', value: 'Furnished' },
+                        ],
+                        layout: 'dropdown', // Membuat tampilannya jadi combobox / pilihan dropdown
+                    },
+                    initialValue: 'Unfurnished',
+                },
                 { name: 'bedrooms', title: 'Kamar Tidur', type: 'string' },
                 { name: 'bathrooms', title: 'Kamar Mandi', type: 'string' },
                 { name: 'floors', title: 'Jumlah Lantai', type: 'number' },
