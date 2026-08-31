@@ -95,7 +95,7 @@ export default function PropertyFilters({
   }, [properties]);
 
   return (
-    <section className="grid grid-cols-1 lg:grid-cols-4 gap-gutter">
+    <section className="grid grid-cols-1 lg:grid-cols-5 gap-gutter">
       {/* Sidebar Filter */}
       <aside className="lg:col-span-1 flex flex-col gap-md">
         <div className="bg-surface-container-lowest p-md rounded-xl card-shadow border border-outline-variant/30 flex flex-col gap-lg">
@@ -191,7 +191,7 @@ export default function PropertyFilters({
       </aside>
 
       {/* Right Column */}
-      <section className="lg:col-span-3 flex flex-col gap-lg">
+      <section className="lg:col-span-4 flex flex-col gap-lg">
         {/* Controls */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-sm">
           <div className="relative w-full md:w-96">
@@ -221,7 +221,7 @@ export default function PropertyFilters({
 
         {/* Grid */}
         {filtered.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-gutter">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-gutter">
             {filtered.map((property) => (
               <PropertyCard key={property._id} property={property} />
             ))}

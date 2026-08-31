@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
-import SiteHeader from "@/components/SiteHeader";
-import SiteFooter from "@/components/SiteFooter";
 import "./globals.css";
 
 const plusJakarta = Plus_Jakarta_Sans({
@@ -22,11 +20,16 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="id"
       className={`${plusJakarta.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
-        <SiteHeader />
-        <div className="flex-grow">{children}</div>
-        <SiteFooter />
-      </body>
+      <head>
+        {/* Material Symbols icon font — guarantees service icons render as
+            glyphs (not text) on the frontend. */}
+        {/* eslint-disable-next-line @next/next/no-page-custom-font */}
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
+        />
+      </head>
+      <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );
 }

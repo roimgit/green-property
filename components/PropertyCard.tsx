@@ -12,6 +12,11 @@ export default function PropertyCard({ property }: { property: Property }) {
   const price = formatPrice(property.price);
   const specs = property.specs;
   const transactionLabel = property.transactionType === "Sewa" ? "Sewa" : "Jual";
+  // `category` could be a plain string (current schema) or a Sanity reference
+  // object `{ _ref, _type }` from older documents. Only render a plain string
+  // to avoid crashing the card render.
+  const categoryLabel =
+    typeof property.category === "string" ? property.category : null;
 
   return (
     <Link
@@ -29,9 +34,9 @@ export default function PropertyCard({ property }: { property: Property }) {
         ) : (
           <div className="w-full h-full bg-surface-container-low" />
         )}
-        {property.category && (
+        {categoryLabel && (
           <span className="absolute top-3 left-3 z-10 bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full font-label-caps text-label-caps uppercase shadow-sm">
-            {property.category}
+            {categoryLabel}
           </span>
         )}
         {transactionLabel && (

@@ -92,3 +92,13 @@ export interface Testimonial {
   photo?: SanityImage;
   urutanTampil?: number;
 }
+
+export interface Service {
+  _id: string;
+  _type: "service";
+  title?: string;
+  icon?: string;
+  desc?: string;
+  url?: string;
+  urutanTampil?: number;
+}

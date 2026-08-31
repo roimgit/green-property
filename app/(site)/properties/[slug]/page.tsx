@@ -72,7 +72,8 @@ export default async function PropertyDetailPage({ params }: Props) {
   const price = formatPrice(property.price);
   const specs = property.specs;
   const description = portableTextToText(property.description);
-  const category = property.category ?? "";
+  const category =
+    typeof property.category === "string" ? property.category : "";
   const transactionLabel = property.transactionType ?? "";
 
   const specWrapper = (label: string, value?: string | number) => (

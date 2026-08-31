@@ -6,33 +6,47 @@ import {
   getCompanyProfile,
   getPartnerLogos,
   getTestimonials,
+  getServices,
   imageUrl,
 } from "@/lib/sanity/data";
+import type { Service } from "@/types/sanity";
 
 export const dynamic = "force-dynamic";
 
 const HERO_IMAGE_FALLBACK = "/hero.svg";
 
-const SERVICES = [
+const SERVICES_FALLBACK: Service[] = [
   {
+    _id: "fallback-1",
+    _type: "service",
     icon: "landscape",
     title: "Industrial Land",
-    desc: "Jual & Sewa industrial plots optimized for manufacturing.",
+    desc: "industrial plots optimized for manufacturing.",
+    urutanTampil: 1,
   },
   {
+    _id: "fallback-2",
+    _type: "service",
     icon: "factory",
     title: "Turnkey Factories",
-    desc: "Jual & Sewa ready-to-operate facilities built to international standards.",
+    desc: "ready-to-operate facilities built to international standards.",
+    urutanTampil: 2,
   },
   {
+    _id: "fallback-3",
+    _type: "service",
     icon: "real_estate_agent",
     title: "Executive Residence",
-    desc: "Jual & Sewa luxury housing for management staff.",
+    desc: "luxury housing for management staff.",
+    urutanTampil: 3,
   },
   {
+    _id: "fallback-4",
+    _type: "service",
     icon: "apartment",
     title: "Staff Apartments",
-    desc: "Jual & Sewa high-density, comfortable living solutions.",
+    desc: "high-density, comfortable living solutions.",
+    urutanTampil: 4,
   },
 ];
 
@@ -67,7 +81,7 @@ async function PartnerLogoMarquee() {
 
         <div className="flex flex-col gap-lg">
           <div className="group flex overflow-hidden">
-            <div className="flex animate-[marquee_40s_linear_infinite] group-hover:[animation-play-state:paused] gap-xl px-xl">
+            <div className="flex animate-[marquee_80s_linear_infinite] gap-xl px-xl">
               {doubled.map((item, i) => (
                 <div
                   key={i}
@@ -90,47 +104,62 @@ async function PartnerLogoMarquee() {
 }
 
 export default async function Home() {
-  const [properties, testimonials, company] = await Promise.all([
+  const [properties, testimonials, company, services] = await Promise.all([
     getPropertyList(),
     getTestimonials(),
     getCompanyProfile(),
+    getServices(),
   ]);
 
   const featured = properties.filter((p) => p.isFeatured);
-  const unggulan = featured.slice(0, 6);
+  const unggulan = (featured.length > 0 ? featured : properties).slice(0, 8);
   const heroImage = imageUrl(company?.heroImage) ?? HERO_IMAGE_FALLBACK;
+  const serviceItems = services.length > 0 ? services : SERVICES_FALLBACK;
 
   return (
     <main className="pt-24 pb-xl">
       {/* ===== Hero ===== */}
-      <section className="max-w-container-max mx-auto px-sm lg:px-xl mb-xl">
+      <section className="max-w-container-max mx-auto px-4 lg:px-8 mb-xl">
         <div className="relative w-full h-[600px] rounded-xl overflow-hidden shadow-soft group">
+
+          {/* Background Image */}
           <div
             className="absolute inset-0 bg-cover bg-center w-full h-full transition-transform duration-1000 group-hover:scale-105"
             style={{ backgroundImage: `url('${heroImage}')` }}
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-on-background/80 via-on-background/50 to-transparent" />
-          <div className="absolute inset-0 flex flex-col justify-center px-lg md:px-xl max-w-3xl">
-            <h1 className="font-display text-display text-surface-container-lowest mb-md drop-shadow-md">
-              Solusi Strategis Properti Industrial &amp; Residensial di Indonesia
-            </h1>
-            <p className="font-body-lg text-body-lg text-surface-bright mb-lg max-w-xl">
-              Spesialis penyedia lahan untuk Vendor Hyundai dan hunian eksklusif dengan layanan terpercaya.
-            </p>
-            <div className="flex gap-sm">
-              <Link
-                href="/properties"
-                className="bg-primary-container text-on-primary px-8 py-3 rounded-full font-body-md text-body-md font-semibold hover:bg-primary transition-colors shadow-sm"
-              >
-                Lihat Properti
-              </Link>
-              <a
-                href="#"
-                className="bg-transparent border-2 border-surface-container-lowest text-surface-container-lowest backdrop-blur-sm px-8 py-3 rounded-full font-body-md text-body-md font-semibold hover:bg-surface-container-lowest/20 transition-colors flex items-center gap-2"
-              >
-                <span className="material-symbols-outlined">chat</span> Hubungi Kami via WhatsApp
-              </a>
+
+          {/* Gradient Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-r from-on-background/90 via-on-background/60 to-transparent z-0" />
+
+          {/* Content Container - Memisahkan Posisi dan Lebar */}
+          <div className="absolute inset-0 flex flex-col justify-center px-6 md:px-12 lg:px-16 z-10 w-full">
+
+            {/* Inner Wrapper untuk membatasi lebar teks */}
+            <div className="max-w-2xl lg:max-w-3xl">
+              <h1 className="font-display text-display text-surface-container-lowest mb-md drop-shadow-md leading-tight">
+                Solusi Strategis Properti Industrial &amp; Residensial di Indonesia
+              </h1>
+              <p className="font-body-lg text-body-lg text-surface-bright mb-lg">
+                Spesialis penyedia lahan untuk Vendor Hyundai dan hunian eksklusif dengan layanan terpercaya.
+              </p>
+
+              {/* Button Group - Ditambah flex-wrap agar responsif di mobile */}
+              <div className="flex flex-wrap gap-4">
+                <Link
+                  href="/properties"
+                  className="bg-primary-container text-on-primary px-8 py-3 rounded-full font-body-md text-body-md font-semibold hover:bg-primary transition-colors shadow-sm text-center"
+                >
+                  Lihat Properti
+                </Link>
+                <a
+                  href="#"
+                  className="bg-transparent border-2 border-surface-container-lowest text-surface-container-lowest backdrop-blur-sm px-8 py-3 rounded-full font-body-md text-body-md font-semibold hover:bg-surface-container-lowest/20 transition-colors flex items-center justify-center gap-2"
+                >
+                  <span className="material-symbols-outlined">chat</span> Hubungi Kami via WhatsApp
+                </a>
+              </div>
             </div>
+
           </div>
         </div>
       </section>
@@ -143,21 +172,46 @@ export default async function Home() {
             Comprehensive solutions for industrial setup and corporate living.
           </p>
         </div>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-gutter">
-          {SERVICES.map((service) => (
-            <div
-              key={service.title}
-              className="bg-surface-container-lowest border border-outline-variant p-md rounded-xl shadow-soft hover:-translate-y-1 hover:shadow-md hover:border-primary-container transition-all duration-300 flex flex-col"
-            >
-              <div className="w-12 h-12 rounded-full bg-surface-container-low flex items-center justify-center mb-md">
-                <span className="material-symbols-outlined text-primary text-3xl">{service.icon}</span>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter">
+          {serviceItems.map((service) => {
+            const cardContent = (
+              <>
+                <div className="w-14 h-14 rounded-full bg-surface-container-low flex items-center justify-center mb-md shrink-0">
+                  <span
+                    className="material-symbols-outlined text-primary text-[32px]"
+                    style={{ fontFamily: '"Material Symbols Outlined"' }}
+                  >
+                    {service.icon || "landscape"}
+                  </span>
+                </div>
+                <h3 className="font-headline-md text-headline-md text-on-surface font-bold mb-sm">
+                  {service.title}
+                </h3>
+                <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+                  <span className="font-bold text-primary">Jual &amp; Sewa</span>{" "}
+                  {service.desc}
+                </p>
+              </>
+            );
+            const cardClassName =
+              "h-full bg-surface-container-lowest border border-outline-variant p-lg rounded-xl shadow-soft hover:-translate-y-1 hover:shadow-md hover:border-primary-container transition-all duration-300 flex flex-col";
+
+            return service.url ? (
+              <a
+                key={service._id}
+                href={service.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={cardClassName}
+              >
+                {cardContent}
+              </a>
+            ) : (
+              <div key={service._id} className={cardClassName}>
+                {cardContent}
               </div>
-              <h3 className="font-headline-sm text-headline-sm text-on-surface mb-xs">{service.title}</h3>
-              <p className="font-body-sm text-body-sm text-on-surface-variant">
-                <span className="font-bold text-primary">Jual &amp; Sewa</span> {service.desc}
-              </p>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </section>
 
@@ -222,7 +276,7 @@ export default async function Home() {
         </div>
 
         {unggulan.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter mb-lg">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter mb-lg">
             {unggulan.map((property) => (
               <PropertyCard key={property._id} property={property} />
             ))}
@@ -242,31 +296,6 @@ export default async function Home() {
           >
             Lihat Semua Properti
           </Link>
-        </div>
-      </section>
-
-      {/* ===== Featured Industrial Properties ===== */}
-      <section className="max-w-container-max mx-auto px-sm lg:px-xl mb-xl">
-        <div className="flex justify-between items-end mb-lg">
-          <div>
-            <h2 className="font-headline-lg text-headline-lg text-on-surface mb-xs">
-              Featured Industrial Properties
-            </h2>
-            <p className="font-body-md text-body-md text-on-surface-variant">
-              Prime locations ready for immediate development.
-            </p>
-          </div>
-          <Link
-            href="/properties"
-            className="text-primary font-body-md text-body-md font-semibold hover:underline flex items-center gap-xs hidden md:flex"
-          >
-            View All Listings <span className="material-symbols-outlined text-sm">arrow_forward</span>
-          </Link>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
-          {featured.slice(0, 3).map((property) => (
-            <PropertyCard key={property._id} property={property} />
-          ))}
         </div>
       </section>
 

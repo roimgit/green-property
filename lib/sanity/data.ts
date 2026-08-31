@@ -4,6 +4,7 @@ import type {
   CompanyProfile,
   PartnerLogo,
   Testimonial,
+  Service,
   SanityImage,
 } from "@/types/sanity";
 
@@ -88,6 +89,15 @@ const TESTIMONIALS_QUERY = groq`*[_type == "testimonial"]{
   urutanTampil
 } | order(urutanTampil asc)`;
 
+const SERVICES_QUERY = groq`*[_type == "service"]{
+  _id,
+  title,
+  icon,
+  desc,
+  url,
+  urutanTampil
+} | order(urutanTampil asc)`;
+
 /** Extract a usable image URL from a Sanity image field. */
 export function imageUrl(image?: SanityImage): string | null {
   return image?.asset?.url ?? image?.url ?? null;
@@ -150,6 +160,14 @@ export async function getPartnerLogos(): Promise<PartnerLogo[]> {
 export async function getTestimonials(): Promise<Testimonial[]> {
   try {
     return await sanityFetch<Testimonial[]>(TESTIMONIALS_QUERY);
+  } catch {
+    return [];
+  }
+}
+
+export async function getServices(): Promise<Service[]> {
+  try {
+    return await sanityFetch<Service[]>(SERVICES_QUERY);
   } catch {
     return [];
   }
