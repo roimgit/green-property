@@ -21,25 +21,102 @@ export default defineType({
         }),
         defineField({
             name: 'category',
-            title: 'Kategori',
-            type: 'string',
-            options: {
-                list: ['Land', 'Factory', 'Residence', 'Apartment'],
-            },
+            title: 'Kategori Properti',
+            type: 'reference',
+            to: [{ type: 'category' }],
+            validation: (Rule) => Rule.required(),
         }),
+
+        // --- STRUKTUR HARGA (GABUNGAN TRANSAKSI, HARGA, & MATA UANG) ---
         defineField({
-            name: 'transactionType',
-            title: 'Tipe Transaksi',
-            type: 'string',
-            options: {
-                list: ['Jual', 'Sewa'],
-            },
+            name: 'pricing',
+            title: 'Struktur Harga & Transaksi',
+            type: 'array',
+            of: [
+                {
+                    type: 'object',
+                    fields: [
+                        {
+                            name: 'transactionType',
+                            title: 'Tipe Transaksi',
+                            type: 'string',
+                            options: {
+                                list: [
+                                    { title: 'Jual', value: 'jual' },
+                                    { title: 'Sewa', value: 'sewa' },
+                                    { title: 'Sewa + Jual', value: 'sewa_jual' },
+                                ],
+                            },
+                            validation: (Rule) => Rule.required(),
+                        },
+                        {
+                            name: 'currency',
+                            title: 'Mata Uang',
+                            type: 'string',
+                            options: {
+                                list: [
+                                    { title: 'Rupiah (IDR)', value: 'IDR' },
+                                    { title: 'Dollar USD (USD)', value: 'USD' },
+                                    { title: 'Dollar Singapura (SGD)', value: 'SGD' },
+                                    { title: 'Ringgit Malaysia (MYR)', value: 'MYR' },
+                                    { title: 'Baht Thailand (THB)', value: 'THB' },
+                                    { title: 'Won Korea (KRW)', value: 'KRW' },
+                                    { title: 'Yuan China (CNY)', value: 'CNY' },
+                                    { title: 'Euro (EUR)', value: 'EUR' },
+                                    { title: 'Pound Sterling (GBP)', value: 'GBP' },
+                                    { title: 'Yen Jepang (JPY)', value: 'JPY' },
+                                ],
+                            },
+                            initialValue: 'IDR',
+                            validation: (Rule) => Rule.required(),
+                        },
+                        {
+                            name: 'price',
+                            title: 'Nominal Harga',
+                            type: 'number',
+                            validation: (Rule) => Rule.required(),
+                        },
+                        {
+                            name: 'pricePeriod',
+                            title: 'Periode Harga',
+                            type: 'string',
+                            options: {
+                                list: [
+                                    { title: 'Per Tahun (Tahunan)', value: 'year' },
+                                    { title: 'Per Bulan (Bulanan)', value: 'month' },
+                                    { title: 'Per Hari (Harian)', value: 'day' },
+                                    { title: 'Sekali (One-time / Jual)', value: 'once' },
+                                ],
+                            },
+                            description: 'Wajib diisi jika ada pilihan sewa',
+                        },
+                        {
+                            name: 'priceUnit',
+                            title: 'Unit Harga (Opsional)',
+                            type: 'string',
+                            description: 'Contoh: Per Hektar, Per m², Per Unit',
+                        },
+                    ],
+                    preview: {
+                        select: {
+                            transactionType: 'transactionType',
+                            price: 'price',
+                            currency: 'currency',
+                            pricePeriod: 'pricePeriod',
+                        },
+                        prepare(selection) {
+                            const { transactionType, price, currency, pricePeriod } = selection
+                            return {
+                                title: `${transactionType?.toUpperCase()} - ${currency} ${price?.toLocaleString('id-ID')}`,
+                                subtitle: pricePeriod ? `Periode: ${pricePeriod}` : 'Harga Tetap',
+                            }
+                        },
+                    },
+                }
+            ],
+            validation: (Rule) => Rule.required().min(1),
         }),
-        defineField({
-            name: 'price',
-            title: 'Harga (Rp)',
-            type: 'number',
-        }),
+
         defineField({
             name: 'status',
             title: 'Status Properti',
@@ -48,6 +125,12 @@ export default defineType({
                 list: ['Tersedia', 'Under Offer', 'Terjual'],
             },
             initialValue: 'Tersedia'
+        }),
+        defineField({
+            name: 'contact',
+            title: 'Kontak Penjual/Penyewa',
+            type: 'reference',
+            to: [{ type: 'contact' }],
         }),
 
         // --- LOKASI ---
