@@ -102,3 +102,15 @@ export interface Service {
   url?: string;
   urutanTampil?: number;
 }
+
+export interface Contact {
+  _id: string;
+  _type: "contact";
+  name?: string;
+  phoneNumber?: string;
+  whatsappNumber?: string;
+  whatsappLink?: string;
+  kakaoTalkNumber?: string;
+  kakaoTalkLink?: string;
+  email?: string;
+}

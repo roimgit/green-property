@@ -8,18 +8,18 @@ const NAV_LINKS = [
   { label: "Properti", href: "/properties" },
   { label: "Land Provider Hyundai", href: "/#land-provider" },
   { label: "Tentang Kami", href: "/#about" },
-  { label: "Kontak", href: "/#contact" },
+  { label: "Kontak", href: "/contact" },
 ];
 
 export default function SiteHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <header className="w-full top-0 sticky z-50 bg-surface dark:bg-surface-dim/90 backdrop-blur-md border-b border-outline-variant/30 shadow-sm">
+    <header className="w-full top-0 sticky z-50 bg-white border-b border-primary/15 shadow-sm">
       <div className="flex justify-between items-center h-20 px-sm lg:px-xl max-w-container-max mx-auto font-body-md text-body-md">
         <Link
           href="/"
-          className="font-headline-md text-headline-md font-bold text-primary"
+          className="font-headline-md text-headline-md font-bold text-primary hover:text-primary/80 transition-colors"
         >
           Green Property
         </Link>
@@ -29,7 +29,7 @@ export default function SiteHeader() {
             <Link
               key={link.label}
               href={link.href}
-              className="text-on-surface-variant hover:text-primary transition-colors font-body-md text-body-md"
+              className="text-on-surface hover:text-primary transition-colors font-body-md text-body-md"
             >
               {link.label}
             </Link>
@@ -37,12 +37,12 @@ export default function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-sm">
-          <button className="bg-primary-container text-on-primary px-6 py-2 rounded-full font-body-sm text-body-sm font-semibold hover:bg-primary transition-colors hidden sm:inline-flex">
+          <button className="bg-primary text-on-primary px-6 py-2 rounded-full font-body-sm text-body-sm font-semibold hover:bg-primary/90 active:scale-95 transition-all hidden sm:inline-flex">
             Hubungi Kami
           </button>
           
           <button 
-            className="md:hidden text-on-surface-variant p-2"
+            className="md:hidden text-on-surface p-2 hover:text-primary transition-colors"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label="Toggle menu"
           >
@@ -55,11 +55,11 @@ export default function SiteHeader() {
 
       {/* Mobile Menu */}
       <div 
-        className={`md:hidden absolute top-20 left-0 w-full bg-surface border-b border-outline-variant/30 shadow-lg transition-all duration-300 overflow-hidden ${
+        className={`md:hidden absolute top-20 left-0 w-full bg-white border-b border-primary/15 shadow-lg transition-all duration-300 overflow-hidden ${
           isMenuOpen ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'
         }`}
       >
-        <nav className="flex flex-col p-md gap-md bg-surface">
+        <nav className="flex flex-col p-md gap-md bg-white">
           {NAV_LINKS.map((link) => (
             <Link
               key={link.label}
@@ -70,7 +70,7 @@ export default function SiteHeader() {
               {link.label}
             </Link>
           ))}
-          <button className="mt-sm bg-primary-container text-on-primary px-6 py-3 rounded-full font-body-sm text-body-sm font-semibold hover:bg-primary transition-colors w-full sm:hidden">
+          <button className="mt-sm bg-primary text-on-primary px-6 py-3 rounded-full font-body-sm text-body-sm font-semibold hover:bg-primary/90 active:scale-95 transition-all w-full sm:hidden">
             Hubungi Kami
           </button>
         </nav>

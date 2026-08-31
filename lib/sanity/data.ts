@@ -4,6 +4,7 @@ import type {
   CompanyProfile,
   PartnerLogo,
   Testimonial,
+  Contact,
   Service,
   SanityImage,
 } from "@/types/sanity";
@@ -89,6 +90,17 @@ const TESTIMONIALS_QUERY = groq`*[_type == "testimonial"]{
   urutanTampil
 } | order(urutanTampil asc)`;
 
+const CONTACTS_QUERY = groq`*[_type == "contact"]{
+  _id,
+  name,
+  phoneNumber,
+  whatsappNumber,
+  whatsappLink,
+  kakaoTalkNumber,
+  kakaoTalkLink,
+  email
+}`;
+
 const SERVICES_QUERY = groq`*[_type == "service"]{
   _id,
   title,
@@ -160,6 +172,14 @@ export async function getPartnerLogos(): Promise<PartnerLogo[]> {
 export async function getTestimonials(): Promise<Testimonial[]> {
   try {
     return await sanityFetch<Testimonial[]>(TESTIMONIALS_QUERY);
+  } catch {
+    return [];
+  }
+}
+
+export async function getContacts(): Promise<Contact[]> {
+  try {
+    return await sanityFetch<Contact[]>(CONTACTS_QUERY);
   } catch {
     return [];
   }
