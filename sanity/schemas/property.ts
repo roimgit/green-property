@@ -44,7 +44,6 @@ export default defineType({
                                 list: [
                                     { title: 'Jual', value: 'jual' },
                                     { title: 'Sewa', value: 'sewa' },
-                                    { title: 'Sewa + Jual', value: 'sewa_jual' },
                                 ],
                             },
                             validation: (Rule) => Rule.required(),
@@ -184,6 +183,8 @@ export default defineType({
                         list: [
                             { title: 'Unfurnished', value: 'Unfurnished' },
                             { title: 'Furnished', value: 'Furnished' },
+                            { title: 'Full Furnished', value: 'Full Furnished' },
+                            { title: 'Semi Furnished', value: 'Semi Furnished' },
                         ],
                         layout: 'dropdown', // Membuat tampilannya jadi combobox / pilihan dropdown
                     },
