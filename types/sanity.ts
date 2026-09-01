@@ -81,6 +81,8 @@ export interface CompanyProfile {
   address?: string;
   operationalHours?: OperationalHours;
   googleMapsUrl?: string;
+  latitude?: number;
+  longitude?: number;
 }
 
 export interface PartnerLogo {

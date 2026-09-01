@@ -71,7 +71,9 @@ const COMPANY_QUERY = groq`*[_type == "companyProfile"][0]{
   contactPhone,
   address,
   operationalHours,
-  googleMapsUrl
+  googleMapsUrl,
+  latitude,
+  longitude
 }`;
 
 const LOGOS_QUERY = groq`*[_type == "partnerLogo"]{

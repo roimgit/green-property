@@ -90,7 +90,21 @@ export const companyProfile: SchemaTypeDefinition = {
       name: "googleMapsUrl",
       title: "Link Google Maps",
       type: "string",
-      description: "Gunakan EMBED CODE dari Google Maps untuk hasil terbaik. Buka maps > Bagikan > Embed map > copy src URL. Atau paste link reguler: https://maps.app.goo.gl/... atau https://www.google.com/maps/...",
+      description: "Paste link Google Maps (bisa short link): https://maps.app.goo.gl/ABC123",
+    },
+    {
+      name: "latitude",
+      title: "Latitude (Garis Lintang)",
+      type: "number",
+      description: "Contoh: -6.2088 (negif = Selatan). Ekstrak dari Google Maps: klik kanan > Salin koordinat",
+      validation: (Rule) => Rule.min(-90).max(90),
+    },
+    {
+      name: "longitude",
+      title: "Longitude (Garis Bujur)",
+      type: "number",
+      description: "Contoh: 106.8456 (positif = Timur). Ekstrak dari Google Maps: klik kanan > Salin koordinat",
+      validation: (Rule) => Rule.min(-180).max(180),
     },
     {
       name: "operationalHours",

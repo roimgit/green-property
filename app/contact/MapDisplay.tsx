@@ -1,62 +1,170 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-export function MapDisplay({ googleMapsUrl, address }: { googleMapsUrl: string; address?: string }) {
+// Declare Leaflet global
+declare global {
+  interface Window {
+    L: any;
+  }
+}
+
+export function MapDisplay({ 
+  latitude, 
+  longitude, 
+  address 
+}: { 
+  latitude?: number
+  longitude?: number
+  address?: string 
+}) {
   const mapContainer = useRef<HTMLDivElement>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  console.log('[MapDisplay] Props received:', { latitude, longitude, address });
 
   useEffect(() => {
-    if (!mapContainer.current) return;
-
-    // Extract coordinates from Google Maps URL
-    let lat = -6.2088; // Default: Jakarta
-    let lng = 106.8456;
-
-    // Try to extract coordinates from various URL formats
-    const coordPattern = /@(-?\d+\.?\d*),(-?\d+\.?\d*)/;
-    const match = googleMapsUrl.match(coordPattern);
-    if (match) {
-      lat = parseFloat(match[1]);
-      lng = parseFloat(match[2]);
+    if (!mapContainer.current) {
+      console.log('[MapDisplay] No map container ref');
+      return;
     }
 
-    console.log(`[Map] Coordinates: ${lat}, ${lng}`);
+    // Check if coordinates are available
+    if (latitude === undefined || latitude === null || longitude === undefined || longitude === null) {
+      console.log('[MapDisplay] Missing coordinates:', { latitude, longitude });
+      setError('Koordinat tidak tersedia.');
+      setLoading(false);
+      return;
+    }
 
-    // Dynamically load Leaflet CSS and JS
-    const leafletCSS = document.createElement('link');
-    leafletCSS.rel = 'stylesheet';
-    leafletCSS.href = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css';
-    document.head.appendChild(leafletCSS);
+    console.log('[MapDisplay] Starting initialization with:', { latitude, longitude });
 
-    const leafletScript = document.createElement('script');
-    leafletScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js';
-    leafletScript.async = true;
-    leafletScript.onload = () => {
-      if (!mapContainer.current) return;
+    const initMap = () => {
+      try {
+        setLoading(true);
+        setError(null);
 
-      // Create Leaflet map
-      const map = window.L.map(mapContainer.current).setView([lat, lng], 15);
+        if (!mapContainer.current) {
+          console.log('[MapDisplay] Container removed during init');
+          return;
+        }
 
-      // Add OpenStreetMap tiles
-      window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors',
-        maxZoom: 19,
-      }).addTo(map);
+        console.log('[MapDisplay] Loading Leaflet CSS...');
 
-      // Add marker with popup
-      const markerText = address || `Lokasi: ${lat.toFixed(4)}, ${lng.toFixed(4)}`;
-      window.L.marker([lat, lng])
-        .bindPopup(markerText)
-        .addTo(map)
-        .openPopup();
+        // Dynamically load Leaflet CSS
+        const leafletCSS = document.createElement('link');
+        leafletCSS.rel = 'stylesheet';
+        leafletCSS.href = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css';
+        leafletCSS.onload = () => console.log('[MapDisplay] Leaflet CSS loaded');
+        leafletCSS.onerror = () => console.error('[MapDisplay] Failed to load Leaflet CSS');
+        document.head.appendChild(leafletCSS);
+
+        console.log('[MapDisplay] Loading Leaflet JS...');
+
+        // Dynamically load Leaflet JS
+        const leafletScript = document.createElement('script');
+        leafletScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js';
+        leafletScript.async = true;
+        
+        leafletScript.onload = () => {
+          console.log('[MapDisplay] Leaflet JS loaded, checking window.L...');
+          
+          if (!window.L) {
+            console.error('[MapDisplay] window.L not found after script load');
+            setError('Gagal memuat perpustakaan peta (Leaflet).');
+            setLoading(false);
+            return;
+          }
+
+          if (!mapContainer.current) {
+            console.log('[MapDisplay] Container removed after Leaflet load');
+            return;
+          }
+
+          try {
+            console.log('[MapDisplay] Creating map with coordinates:', latitude, longitude);
+            
+            // Clear container first
+            mapContainer.current.innerHTML = '';
+
+            // Create Leaflet map
+            const map = window.L.map(mapContainer.current).setView([latitude, longitude], 15);
+
+            console.log('[MapDisplay] Map instance created');
+
+            // Add OpenStreetMap tiles
+            window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+              attribution: '© OpenStreetMap contributors',
+              maxZoom: 19,
+            }).addTo(map);
+
+            console.log('[MapDisplay] Tiles added');
+
+            // Add marker with popup
+            const markerText = address || `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
+            window.L.marker([latitude, longitude])
+              .bindPopup(markerText)
+              .addTo(map)
+              .openPopup();
+
+            console.log('[MapDisplay] Marker added, map ready!');
+            setLoading(false);
+            setError(null);
+          } catch (err) {
+            console.error('[MapDisplay] Error during map initialization:', err);
+            setError('Gagal membuat peta: ' + (err instanceof Error ? err.message : String(err)));
+            setLoading(false);
+          }
+        };
+
+        leafletScript.onerror = (err) => {
+          console.error('[MapDisplay] Failed to load Leaflet JS:', err);
+          setError('Gagal memuat perpustakaan peta.');
+          setLoading(false);
+        };
+
+        document.head.appendChild(leafletScript);
+      } catch (err) {
+        console.error('[MapDisplay] Error in initMap:', err);
+        setError('Error: ' + (err instanceof Error ? err.message : String(err)));
+        setLoading(false);
+      }
     };
-    document.head.appendChild(leafletScript);
+
+    // Give DOM time to settle
+    const timer = setTimeout(initMap, 100);
 
     return () => {
-      if (leafletCSS.parentNode) leafletCSS.parentNode.removeChild(leafletCSS);
-      if (leafletScript.parentNode) leafletScript.parentNode.removeChild(leafletScript);
+      clearTimeout(timer);
+      // Cleanup
+      if (mapContainer.current) {
+        mapContainer.current.innerHTML = '';
+      }
     };
-  }, [googleMapsUrl, address]);
+  }, [latitude, longitude, address]);
+
+  if (loading) {
+    return (
+      <div
+        style={{ height: '400px', width: '100%' }}
+        className="flex items-center justify-center bg-gray-100 rounded"
+      >
+        <p className="text-gray-600">Memuat peta...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div
+        style={{ height: '400px', width: '100%' }}
+        className="flex items-center justify-center bg-red-50 rounded border border-red-200"
+      >
+        <p className="text-red-600 text-center">{error}</p>
+      </div>
+    );
+  }
 
   return (
     <div

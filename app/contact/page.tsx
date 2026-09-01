@@ -13,6 +13,13 @@ export default async function ContactPage() {
   const companyProfile = await getCompanyProfile();
   const mapsUrl = companyProfile?.googleMapsUrl || null;
 
+  console.log('[ContactPage] Company Profile:', {
+    address: companyProfile?.address,
+    latitude: companyProfile?.latitude,
+    longitude: companyProfile?.longitude,
+    googleMapsUrl: companyProfile?.googleMapsUrl,
+  });
+
   return (
     <main className="max-w-container-max mx-auto w-full px-margin-mobile md:px-lg py-xl flex flex-col gap-lg">
       {/* Header */}
@@ -272,7 +279,7 @@ export default async function ContactPage() {
       </section>
 
       {/* Google Maps Section with Leaflet */}
-      {mapsUrl && (
+      {companyProfile?.latitude && companyProfile?.longitude ? (
         <section className="mt-xl flex flex-col gap-md">
           <div>
             <h2 className="font-headline-md text-headline-md text-on-surface mb-sm">
@@ -280,22 +287,36 @@ export default async function ContactPage() {
             </h2>
             <div className="h-1 w-12 bg-gradient-to-r from-primary to-primary/30 rounded-full" />
           </div>
+
+          {/* Debug Info */}
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-xs">
+            <p className="font-mono text-blue-900">
+              📍 Lat: {companyProfile.latitude}, Lng: {companyProfile.longitude}
+            </p>
+            {mapsUrl && <p className="font-mono text-blue-900 mt-1">🔗 URL: {mapsUrl}</p>}
+          </div>
           
           <div className="rounded-2xl overflow-hidden shadow-lg border border-primary/20 hover:border-primary/40 transition-all">
-            <MapDisplay googleMapsUrl={mapsUrl} address={companyProfile?.address} />
+            <MapDisplay 
+              latitude={companyProfile.latitude} 
+              longitude={companyProfile.longitude} 
+              address={companyProfile?.address} 
+            />
           </div>
 
           {/* Additional action buttons */}
           <div className="flex gap-md flex-wrap">
-            <a
-              href={mapsUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex-1 min-w-64 bg-primary text-on-primary px-lg py-md rounded-xl font-semibold hover:bg-primary hover:shadow-lg transition-all flex items-center justify-center gap-md text-center"
-            >
-              <span className="material-symbols-outlined">location_on</span>
-              Buka di Google Maps
-            </a>
+            {mapsUrl && (
+              <a
+                href={mapsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 min-w-64 bg-primary text-on-primary px-lg py-md rounded-xl font-semibold hover:bg-primary hover:shadow-lg transition-all flex items-center justify-center gap-md text-center"
+              >
+                <span className="material-symbols-outlined">location_on</span>
+                Buka di Google Maps
+              </a>
+            )}
             <a
               href={`https://www.google.com/maps/search/${encodeURIComponent(companyProfile?.address || "")}`}
               target="_blank"
@@ -305,6 +326,14 @@ export default async function ContactPage() {
               <span className="material-symbols-outlined">directions</span>
               Lihat Rute
             </a>
+          </div>
+        </section>
+      ) : (
+        <section className="mt-xl pt-xl border-t border-primary/20 flex flex-col gap-lg">
+          <div className="text-center">
+            <p className="text-on-surface-variant font-body-lg">
+              ⚠️ Koordinat peta belum tersedia. Silakan update di Sanity Studio.
+            </p>
           </div>
         </section>
       )}
