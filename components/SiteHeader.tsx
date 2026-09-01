@@ -7,7 +7,7 @@ const NAV_LINKS = [
   { label: "Beranda", href: "/" },
   { label: "Properti", href: "/properties" },
   { label: "Land Provider Hyundai", href: "/#land-provider" },
-  { label: "Tentang Kami", href: "/#about" },
+  { label: "Tentang Kami", href: "/about" },
   { label: "Kontak", href: "/contact" },
 ];
 

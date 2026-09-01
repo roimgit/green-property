@@ -29,38 +29,33 @@ const NAV_LINKS = [
   { label: "Beranda", href: "/" },
   { label: "Properti", href: "/properties" },
   { label: "Land Provider Hyundai", href: "/#land-provider" },
-  { label: "Tentang Kami", href: "/#about" },
+  { label: "Tentang Kami", href: "/about" },
   { label: "Kontak", href: "/contact" },
 ];
 
 function ContactLink({ contacts }: { contacts: Contact[] }) {
-  const visibleContacts = contacts.filter((contact) => contact.name);
+  const hasContacts = contacts.some((contact) => contact.name || contact.email || contact.phoneNumber || contact.whatsappNumber);
 
-  if (visibleContacts.length === 0) {
+  if (!hasContacts) {
     return (
       <Link
         href="/contact"
-        className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-sm py-3 text-sm font-medium text-white/90 transition-colors hover:bg-white/10 hover:text-white"
+        className="inline-flex items-center gap-2 rounded-full bg-white px-sm py-3 text-sm font-semibold text-primary shadow-sm transition-colors hover:bg-primary/5"
       >
-        <span className="material-symbols-outlined text-base">person</span>
+        <span className="material-symbols-outlined text-base">mail</span>
         <span>Hubungi Kami</span>
       </Link>
     );
   }
 
   return (
-    <div className="space-y-2">
-      {visibleContacts.map((contact) => (
-        <Link
-          key={contact._id}
-          href="/contact"
-          className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-sm py-3 text-sm font-medium text-white/90 transition-colors hover:bg-white/10 hover:text-white"
-        >
-          <span className="material-symbols-outlined text-base">person</span>
-          <span>{contact.name}</span>
-        </Link>
-      ))}
-    </div>
+    <Link
+      href="/contact"
+      className="inline-flex items-center gap-2 rounded-full bg-white px-sm py-3 text-sm font-semibold text-primary shadow-sm transition-colors hover:bg-primary/5"
+    >
+      <span className="material-symbols-outlined text-base">mail</span>
+      <span>Hubungi Kami</span>
+    </Link>
   );
 }
 
@@ -112,15 +107,10 @@ export default async function SiteFooter() {
   }
 
   return (
-    <footer className="w-full border-t border-primary/20 bg-gradient-to-b from-primary to-primary/95 py-xl text-white">
+    <footer className="w-full border-t border-primary/20 bg-gradient-to-b from-primary to-primary/95 py-lg text-white">
       <div className="mx-auto max-w-container-max px-sm lg:px-xl">
-        <div className="grid grid-cols-1 gap-xl md:grid-cols-2 lg:grid-cols-[1.35fr_1.2fr_0.9fr_0.75fr]">
+        <div className="grid grid-cols-1 gap-lg md:grid-cols-2 lg:grid-cols-[1.4fr_0.9fr_0.9fr]">
           <CompanySection profile={profile} />
-
-          <div className="space-y-md">
-            <h4 className="font-headline-sm text-headline-sm font-semibold text-white">Hubungi Kami</h4>
-            <ContactLink contacts={contacts} />
-          </div>
 
           <div className="space-y-md">
             <h4 className="font-headline-sm text-headline-sm font-semibold text-white">Navigasi</h4>
@@ -136,19 +126,13 @@ export default async function SiteFooter() {
           </div>
 
           <div className="space-y-md">
-            <h4 className="font-headline-sm text-headline-sm font-semibold text-white">Legal</h4>
-            <div className="space-y-sm font-body-sm text-white/80">
-              <p>© {new Date().getFullYear()} Green Property Indonesia. All rights reserved.</p>
-              <div className="flex flex-wrap gap-md">
-                <Link href="#" className="transition-colors hover:text-white">
-                  Privacy Policy
-                </Link>
-                <Link href="#" className="transition-colors hover:text-white">
-                  Terms
-                </Link>
-              </div>
-            </div>
+            <h4 className="font-headline-sm text-headline-sm font-semibold text-white">Hubungi Kami</h4>
+            <ContactLink contacts={contacts} />
           </div>
+        </div>
+
+        <div className="mt-lg border-t border-white/10 pt-md text-sm text-white/75">
+          © {new Date().getFullYear()} Green Property Indonesia. All rights reserved.
         </div>
       </div>
     </footer>

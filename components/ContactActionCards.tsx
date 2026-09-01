@@ -6,7 +6,7 @@ import type { Contact } from "@/types/sanity";
 type Channel = "whatsapp" | "kakaoTalk" | "email";
 
 const DEFAULT_MESSAGE =
-  "Halo Tim Green Property, saya tertarik untuk mengetahui lebih lanjut mengenai informasi unit properti dan jadwal kunjungan *show unit*. Bisakah saya mendapatkan informasi detailnya? Terima kasih.";
+  "Halo Tim Green Property, perkenalkan saya [Nama Anda] dari [Alamat Anda]. Saya tertarik untuk mengetahui lebih lanjut mengenai informasi unit properti dan jadwal kunjungan show unit. Bisakah saya mendapatkan informasi detailnya? Terima kasih.";
 
 const CHANNEL_LABELS: Record<Channel, string> = {
   whatsapp: "WhatsApp",
@@ -16,10 +16,17 @@ const CHANNEL_LABELS: Record<Channel, string> = {
 
 function WhatsAppIcon() {
   return (
-    <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5">
+    <svg viewBox="0 0 64 64" aria-hidden="true" className="h-7 w-7 drop-shadow-sm">
+      <defs>
+        <linearGradient id="waGradient" x1="0%" x2="100%" y1="0%" y2="100%">
+          <stop offset="0%" stopColor="#2BE37D" />
+          <stop offset="100%" stopColor="#1FAE5A" />
+        </linearGradient>
+      </defs>
+      <circle cx="32" cy="32" r="28" fill="url(#waGradient)" />
       <path
-        fill="currentColor"
-        d="M19.05 4.91A9.82 9.82 0 0 0 12.03 2C6.48 2 2.02 6.46 2.02 12c0 1.74.46 3.44 1.34 4.92L2 22l5.22-1.35a9.96 9.96 0 0 0 4.8 1.46h.01c5.54 0 10.01-4.46 10.01-10.01 0-2.68-1.04-5.2-2.95-7.09ZM12.04 19.1h-.01a8.28 8.28 0 0 1-4.22-1.16l-.3-.18-3.1.8.83-3.03-.2-.31A8.28 8.28 0 0 1 3.8 12a8.26 8.26 0 1 1 14.54 5.86 8.08 8.08 0 0 1 12.04 19.1Zm4.52-6.2c-.25-.12-1.47-.72-1.7-.81-.23-.09-.4-.13-.57.13-.17.25-.66.81-.81 1-.15.17-.3.2-.55.07-.25-.12-1.05-.38-1.99-1.23-.74-.66-1.24-1.47-1.38-1.72-.15-.25-.02-.39.11-.51.11-.11.25-.3.37-.45.12-.15.17-.25.25-.42.08-.17.04-.31-.02-.43-.06-.12-.57-1.37-.78-1.88-.2-.49-.41-.42-.57-.43l-.48-.01c-.17 0-.43.06-.65.31-.22.25-.86.84-.86 2.05 0 1.2.88 2.38.99 2.55.12.17 1.71 2.6 4.14 3.64.58.25 1.02.4 1.37.51.58.19 1.1.16 1.51.1.46-.07 1.47-.6 1.68-1.18.2-.58.2-1.08.14-1.18-.06-.11-.22-.17-.47-.29Z"
+        d="M41.9 22.1c-1.1-1.9-2.8-3-5.4-3.3-2.7-.3-5.4.4-7.9 2.1-2.4 1.7-4.1 4.1-5.2 7.1-1.1 3-1.1 6.2.2 9.1.6.9 1.4 1.8 2.4 2.5l-1.3 3.9 4.1-1.4c1.1.7 2.3 1.2 3.6 1.5 3 .8 6.1.5 8.8-.9 2.7-1.4 4.7-3.7 5.5-6.6 1-3.2.5-6.9-1.8-9.9Zm-8.1 16.4c-1.6 0-3.2-.4-4.6-1.2l-.3-.2-2.4.8.8-2.2-.2-.3c-1.4-2.2-1.8-4.8-1-7.4.8-2.6 2.6-4.8 5.1-6.1 2.5-1.3 5.5-1.5 8.1-.5 2.5 1 4.5 3 5.6 5.5 1.1 2.5 1 5.3-.2 7.7-1.3 2.4-3.5 4.2-6 5.1-1.4.5-2.9.8-4.3.8Zm7.1-12.2c-.3-.2-1.8-.9-2.4-1-.6-.1-1-.1-1.4.2-.4.3-.9 1-.9 1.1-.1.1-.4.5-.1 1.1.3.6 1.2 1.8 2.4 2.8 1.7 1.6 2.8 1.9 3.3 2.1.5.2 1 .1 1.4-.1.4-.2 1.3-.8 1.5-1.6.2-.8.2-1.3.1-1.5-.1-.1-.4-.2-.8-.4-.4-.2-1.9-1-2.3-1.1-.4-.1-.7-.1-1 .1Z"
+        fill="white"
       />
     </svg>
   );
@@ -27,10 +34,11 @@ function WhatsAppIcon() {
 
 function KakaoTalkIcon() {
   return (
-    <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5">
+    <svg viewBox="0 0 64 64" aria-hidden="true" className="h-7 w-7 drop-shadow-sm">
+      <circle cx="32" cy="32" r="28" fill="#FEE500" />
       <path
-        fill="currentColor"
-        d="M12 3.2c5.42 0 9.8 3.46 9.8 7.72 0 4.25-4.38 7.72-9.8 7.72a12.6 12.6 0 0 1-2.15-.19L4.8 20.5l.74-2.67A7.3 7.3 0 0 1 2.2 10.9C2.2 6.66 6.58 3.2 12 3.2Zm-3.27 5.32h-.05c-.38 0-.68.28-.68.63 0 .35.3.63.68.63h1.7l1.52 1.92 1.06-1.92h1.7c.38 0 .68-.28.68-.63 0-.35-.3-.63-.68-.63h-5.28Zm-1.54 2.73h6.7c.38 0 .68.28.68.63 0 .35-.3.63-.68.63H7.19c-.38 0-.68-.28-.68-.63 0-.35.3-.63.68-.63Zm1.56 2.6h3.58c.38 0 .68.28.68.63 0 .35-.3.63-.68.63H8.75c-.38 0-.68-.28-.68-.63 0-.35.3-.63.68-.63Z"
+        d="M32.2 15.5c-9.3 0-16.8 6.1-16.8 13.7 0 5.1 3.6 9.5 8.9 11.8l-2.1 8.4 8.4-5.6c1.2.1 2.4.2 3.5.2 9.3 0 16.8-6.1 16.8-13.7 0-7.6-7.5-13.8-16.7-13.8Zm-8.1 17.8c-.9 0-1.7-.7-1.7-1.7s.7-1.7 1.7-1.7h9.7l3.8 5.1 3.1-5.1h5.2c.9 0 1.7.7 1.7 1.7s-.7 1.7-1.7 1.7h-10.8l-3.4 5.6-3.7-5.6h-3.9Zm-3.6-5.6c0-.9.7-1.7 1.7-1.7h18.8c.9 0 1.7.7 1.7 1.7s-.7 1.7-1.7 1.7H22.2c-.9 0-1.7-.7-1.7-1.7Zm5.3 8.8h10.7c.9 0 1.7.7 1.7 1.7s-.7 1.7-1.7 1.7H25.8c-.9 0-1.7-.7-1.7-1.7s.7-1.7 1.7-1.7Z"
+        fill="#3C1E1E"
       />
     </svg>
   );
@@ -38,31 +46,39 @@ function KakaoTalkIcon() {
 
 function EmailIcon() {
   return (
-    <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5">
-      <path
-        fill="currentColor"
-        d="M20 6.5A2.5 2.5 0 0 0 17.5 4h-11A2.5 2.5 0 0 0 4 6.5v11A2.5 2.5 0 0 0 6.5 20h11a2.5 2.5 0 0 0 2.5-2.5v-11Zm-2.7 1.7-5.3 4.2-5.3-4.2h10.6Zm-10.8 8.8v-8.3l5.5 4.3 5.5-4.3v8.3H6.5Z"
-      />
+    <svg viewBox="0 0 64 64" aria-hidden="true" className="h-7 w-7 drop-shadow-sm">
+      <defs>
+        <linearGradient id="emailGradient" x1="0%" x2="100%" y1="0%" y2="100%">
+          <stop offset="0%" stopColor="#EAF2FF" />
+          <stop offset="100%" stopColor="#DCE9FF" />
+        </linearGradient>
+      </defs>
+      <rect x="8" y="12" width="48" height="40" rx="11" fill="url(#emailGradient)" />
+      <path d="M14 20.5 32 35l18-14.5" fill="none" stroke="#1D4ED8" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M16 42V22l16 12 16-12v20H16Z" fill="#DBEAFE" stroke="#1D4ED8" strokeWidth="3" strokeLinejoin="round" />
     </svg>
   );
 }
 
 function getChannelUrl(contact: Contact, channel: Channel, message: string) {
   if (channel === "whatsapp") {
-    const whatsappNumber = contact.whatsappNumber?.replace(/\D/g, "") || "";
-    const baseUrl = contact.whatsappLink || (whatsappNumber ? `https://wa.me/${whatsappNumber}` : "");
+    const rawNumber = contact.whatsappNumber?.replace(/\D/g, "") || "";
+    if (!rawNumber) return "";
 
-    if (!baseUrl) return "";
-    const separator = baseUrl.includes("?") ? "&" : "?";
-    return `${baseUrl}${separator}text=${encodeURIComponent(message)}`;
+    const normalizedNumber = rawNumber.startsWith("0") ? `62${rawNumber.slice(1)}` : rawNumber;
+    return `https://wa.me/${normalizedNumber}?text=${encodeURIComponent(message)}`;
   }
 
   if (channel === "kakaoTalk") {
-    if (contact.kakaoTalkLink) {
-      const separator = contact.kakaoTalkLink.includes("?") ? "&" : "?";
-      return `${contact.kakaoTalkLink}${separator}text=${encodeURIComponent(message)}`;
-    }
-    return "";
+    const kakaoValue = contact.kakaoTalkLink?.trim() || contact.kakaoTalkNumber?.trim() || "";
+    if (!kakaoValue) return "";
+
+    const baseUrl = kakaoValue.startsWith("http")
+      ? kakaoValue
+      : `https://open.kakao.com/o/${encodeURIComponent(kakaoValue)}`;
+
+    const separator = baseUrl.includes("?") ? "&" : "?";
+    return `${baseUrl}${separator}text=${encodeURIComponent(message)}`;
   }
 
   if (channel === "email") {
@@ -177,7 +193,7 @@ export function ContactActionCards({ contacts }: { contacts: Contact[] }) {
                   <button
                     type="button"
                     onClick={() => handleOpenComposer(contact, "whatsapp")}
-                    className="flex flex-col items-center justify-center gap-1 rounded-xl bg-emerald-600 px-2 py-2.5 text-center text-xs font-semibold text-white shadow-sm transition-all duration-200 hover:bg-emerald-700 active:scale-95"
+                    className="flex flex-col items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 px-2 py-3 text-center text-[11px] font-bold text-white shadow-md shadow-emerald-500/30 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg active:scale-95"
                     aria-label="WhatsApp"
                   >
                     <WhatsAppIcon />
@@ -187,7 +203,7 @@ export function ContactActionCards({ contacts }: { contacts: Contact[] }) {
                   <button
                     type="button"
                     onClick={() => handleOpenComposer(contact, "kakaoTalk")}
-                    className="flex flex-col items-center justify-center gap-1 rounded-xl bg-[#FEE500] px-2 py-2.5 text-center text-xs font-semibold text-[#3C1E1E] shadow-sm transition-all duration-200 hover:bg-[#FDD835] active:scale-95"
+                    className="flex flex-col items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-[#FDEB4B] to-[#F5D300] px-2 py-3 text-center text-[11px] font-bold text-[#3C1E1E] shadow-md shadow-yellow-300/30 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg active:scale-95"
                     aria-label="KakaoTalk"
                   >
                     <KakaoTalkIcon />
@@ -197,7 +213,7 @@ export function ContactActionCards({ contacts }: { contacts: Contact[] }) {
                   <button
                     type="button"
                     onClick={() => handleOpenComposer(contact, "email")}
-                    className="flex flex-col items-center justify-center gap-1 rounded-xl border border-primary/20 bg-primary/5 px-2 py-2.5 text-center text-xs font-semibold text-primary transition-all duration-200 hover:bg-primary/10 active:scale-95"
+                    className="flex flex-col items-center justify-center gap-2 rounded-2xl border border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50 px-2 py-3 text-center text-[11px] font-bold text-blue-700 shadow-sm shadow-blue-100 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md active:scale-95"
                     aria-label="Email"
                   >
                     <EmailIcon />
