@@ -41,6 +41,42 @@ export const companyProfile: SchemaTypeDefinition = {
       ],
     },
     {
+      name: "tabLogo",
+      title: "Logo Tab Browser",
+      description:
+        "Pilih apakah favicon tab diambil dari logo perusahaan, atau unggah gambar terpisah.",
+      type: "object",
+      fields: [
+        {
+          name: "mode",
+          title: "Sumber Logo Tab Browser",
+          type: "string",
+          initialValue: "companyLogo",
+          options: {
+            layout: "radio",
+            list: [
+              { title: "Gunakan logo perusahaan", value: "companyLogo" },
+              { title: "Upload logo terpisah", value: "custom" },
+            ],
+          },
+        },
+        {
+          name: "image",
+          title: "Upload Logo Tab Browser",
+          type: "image",
+          options: { hotspot: true },
+          hidden: ({ parent }) => parent?.mode !== "custom",
+          fields: [
+            {
+              name: "alt",
+              title: "Teks Alternatif",
+              type: "string",
+            },
+          ],
+        },
+      ],
+    },
+    {
       name: "heroImage",
       title: "Gambar Hero (Beranda)",
       type: "image",

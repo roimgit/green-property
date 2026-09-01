@@ -7,13 +7,28 @@ export type Category = "Land" | "Factory" | "Residence" | "Apartment";
 export type TransactionType = "Jual" | "Sewa";
 export type PropertyStatus = "Tersedia" | "Under Offer" | "Terjual";
 
+export interface SanityImageCrop {
+  top: number;
+  bottom: number;
+  left: number;
+  right: number;
+}
+
 export interface SanityImage {
   _type?: "image";
   asset?: {
     url?: string;
+    metadata?: { dimensions?: { width?: number; height?: number } };
   };
   alt?: string;
   url?: string;
+  crop?: SanityImageCrop;
+  hotspot?: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  };
 }
 
 export interface PropertySpecs {
@@ -66,12 +81,18 @@ export interface OperationalHours {
   weekend2?: string;
 }
 
+export interface TabBrowserLogo {
+  mode?: "companyLogo" | "custom";
+  image?: SanityImage;
+}
+
 export interface CompanyProfile {
   _id: string;
   _type: "companyProfile";
   title?: string;
   companyName?: string;
   logo?: SanityImage;
+  tabLogo?: TabBrowserLogo;
   heroImage?: SanityImage;
   description?: PortableTextBlock[];
   vision?: string;

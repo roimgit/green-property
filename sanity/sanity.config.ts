@@ -6,7 +6,6 @@
 
 import { defineConfig } from "sanity";
 import { structureTool } from "sanity/structure";
-import { visionTool } from "@sanity/vision";
 import { schemaTypes } from "./schema";
 
 const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!;
@@ -18,7 +17,9 @@ export default defineConfig({
   projectId,
   dataset,
   basePath: "/studio",
-  plugins: [structureTool(), visionTool()],
+  plugins: [structureTool()],
+  // 2. Tambahkan baris ini untuk memblokir tab "Releases" agar tidak muncul:
+  tools: (prevTools) => prevTools.filter((tool) => tool.name !== 'releases'),
   schema: {
     types: schemaTypes,
   },

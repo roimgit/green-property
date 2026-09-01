@@ -1,5 +1,6 @@
 import { defineField, defineType } from 'sanity'
 import { ImageInputWithUrl } from '../components/ImageInputWithUrl'
+import { PricingWithRate } from '../components/PricingWithRate'
 
 export default defineType({
     name: 'property',
@@ -32,6 +33,7 @@ export default defineType({
             name: 'pricing',
             title: 'Struktur Harga & Transaksi',
             type: 'array',
+            components: { field: PricingWithRate },
             of: [
                 {
                     type: 'object',

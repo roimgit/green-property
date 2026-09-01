@@ -63,6 +63,7 @@ const COMPANY_QUERY = groq`*[_type == "companyProfile"][0]{
   title,
   companyName,
   logo{asset->{url},url,alt},
+  tabLogo{mode,image{asset->{url,metadata{dimensions{width,height}}},url,alt,crop,hotspot}},
   heroImage{asset->{url},url,alt},
   description,
   vision,
@@ -115,8 +116,42 @@ const SERVICES_QUERY = groq`*[_type == "service"]{
 } | order(urutanTampil asc)`;
 
 /** Extract a usable image URL from a Sanity image field. */
-export function imageUrl(image?: SanityImage): string | null {
+export function imageUrl(image?: SanityImage | null): string | null {
   return image?.asset?.url ?? image?.url ?? null;
+}
+
+/**
+ * Build a square, center-cropped CDN URL that respects the crop the admin set in
+ * Sanity Studio (crop rect + fitted to a square favicon canvas). Falls back to a
+ * plain center crop when no crop/metadata is stored.
+ */
+export function croppedImageUrl(
+  image?: SanityImage | null,
+  size = 128,
+): string | null {
+  const base = imageUrl(image);
+  if (!base) return null;
+
+  const crop = image?.crop;
+  const dims = image?.asset?.metadata?.dimensions;
+
+  if (crop && dims?.width && dims?.height) {
+    const x = Math.round(crop.left * dims.width);
+    const y = Math.round(crop.top * dims.height);
+    const w = Math.round(dims.width - (crop.left + crop.right) * dims.width);
+    const h = Math.round(dims.height - (crop.top + crop.bottom) * dims.height);
+    return `${base}?rect=${x},${y},${w},${h}&w=${size}&h=${size}&fit=crop`;
+  }
+
+  return `${base}?w=${size}&h=${size}&fit=crop`;
+}
+
+/** Resolve the browser-tab favicon source: separate upload when mode is
+ *  "custom", otherwise the company logo as fallback. */
+export function tabLogoImage(profile: CompanyProfile | null): SanityImage | null {
+  const tab = profile?.tabLogo;
+  if (tab?.mode === "custom") return tab.image ?? null;
+  return profile?.logo ?? null;
 }
 
 /** Format a numeric price into an Indonesian Rupiah "Rp ..." string. */

@@ -148,14 +148,17 @@
     0% {
       transform: translateX(0);
     }
+
     100% {
       transform: translateX(-50%);
     }
   }
+
   @keyframes marquee-reverse {
     0% {
       transform: translateX(-50%);
     }
+
     100% {
       transform: translateX(0);
     }
@@ -172,7 +175,47 @@ body {
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+/* ===== Google Translate engine — keep only injected global leftovers hidden ===== */
+
+/* The Google widget itself is mounted hidden and driven programmatically by
+   LangSwitcher.tsx, so Google's own chrome never renders. We only need to hide
+   the floating bits Google injects into <body>. */
+
+/* Hide the floating translation bubble that Google injects into <body> */
+#goog-gt-tt,
+.goog-tooltip,
+.goog-te-banner-frame,
+.goog-te-balloon-frame {
+  display: none !important;
+}
+
+/* --- KUSTOMISASI GOOGLE TRANSLATE (VERSI BARU) --- */
+
+/* 1. Menyembunyikan iframe banner berdasarkan class terbaru dari Google */
+iframe.skiptranslate {
+  display: none !important;
+}
+
+/* 2. Menyembunyikan container pembungkus banner agar tidak menyisakan ruang kosong */
+body>div.skiptranslate {
+  display: none !important;
+}
+
+/* 3. Memaksa posisi body kembali ke atas (melawan top: 40px bawaan Google) */
+html,
+body {
+  top: 0px !important;
+  position: static !important;
+}
+
+/* 4. Menghilangkan efek highlight saat teks disorot */
+.goog-text-highlight {
+  background: none !important;
+  box-shadow: none !important;
 }
