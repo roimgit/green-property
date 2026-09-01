@@ -10,11 +10,15 @@ const plusJakarta = Plus_Jakarta_Sans({
 
 export const metadata: Metadata = {
   title: "Green Property - Strategic Land Partner",
+  /* SEO GOOGLE */
+  verification: {
+    google: "gBBE_Rgi4ec2R94H3A8AfIJn0AfsbtEq4qEjYhMlvR8"
+  },
   description:
     "Solusi strategis properti industrial & residensial di Indonesia. Spesialis penyedia lahan untuk Vendor Hyundai.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
       lang="id"
