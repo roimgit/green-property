@@ -1,5 +1,6 @@
 import type { SchemaTypeDefinition } from "sanity";
 import { ImageInputWithUrl } from "../components/ImageInputWithUrl";
+import { GoogleMapsUrlInput } from "../components/GoogleMapsUrlInput";
 
 /** Dokumen "Tentang Kami" (companyProfile) — singelton-ish company info. */
 export const companyProfile: SchemaTypeDefinition = {
@@ -91,6 +92,7 @@ export const companyProfile: SchemaTypeDefinition = {
       title: "Link Google Maps",
       type: "string",
       description: "Paste link Google Maps (bisa short link): https://maps.app.goo.gl/ABC123",
+      components: { input: GoogleMapsUrlInput },
     },
     {
       name: "latitude",

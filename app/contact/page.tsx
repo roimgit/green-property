@@ -13,13 +13,6 @@ export default async function ContactPage() {
   const companyProfile = await getCompanyProfile();
   const mapsUrl = companyProfile?.googleMapsUrl || null;
 
-  console.log('[ContactPage] Company Profile:', {
-    address: companyProfile?.address,
-    latitude: companyProfile?.latitude,
-    longitude: companyProfile?.longitude,
-    googleMapsUrl: companyProfile?.googleMapsUrl,
-  });
-
   return (
     <main className="max-w-container-max mx-auto w-full px-margin-mobile md:px-lg py-xl flex flex-col gap-lg">
       {/* Header */}
@@ -288,14 +281,6 @@ export default async function ContactPage() {
             <div className="h-1 w-12 bg-gradient-to-r from-primary to-primary/30 rounded-full" />
           </div>
 
-          {/* Debug Info */}
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-xs">
-            <p className="font-mono text-blue-900">
-              📍 Lat: {companyProfile.latitude}, Lng: {companyProfile.longitude}
-            </p>
-            {mapsUrl && <p className="font-mono text-blue-900 mt-1">🔗 URL: {mapsUrl}</p>}
-          </div>
-          
           <div className="rounded-2xl overflow-hidden shadow-lg border border-primary/20 hover:border-primary/40 transition-all">
             <MapDisplay 
               latitude={companyProfile.latitude} 
