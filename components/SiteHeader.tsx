@@ -9,7 +9,7 @@ const NAV_LINKS = [
   { label: "Beranda", href: "/" },
   { label: "Properti", href: "/properties" },
   { label: "Land Provider Hyundai", href: "/#land-provider" },
-  { label: "Tentang Kami", href: "/#about" },
+  { label: "Tentang Kami", href: "/about" },
   { label: "Kontak", href: "/contact" },
 ];
 
@@ -47,11 +47,14 @@ export default function SiteHeader({ children }: { children?: React.ReactNode })
         </nav>
 
         <div className="flex items-center gap-sm">
-          <button className="bg-primary text-on-primary px-6 py-2 rounded-full font-body-sm text-body-sm font-semibold hover:bg-primary/90 active:scale-95 transition-all hidden sm:inline-flex">
+          <Link
+            href="/contact"
+            className="bg-primary text-on-primary px-6 py-2 rounded-full font-body-sm text-body-sm font-semibold hover:bg-primary/90 active:scale-95 transition-all hidden sm:inline-flex"
+          >
             Hubungi Kami
-          </button>
-          
-          <button 
+          </Link>
+
+          <button
             className="hidden max-[1350px]:inline-flex text-on-surface p-2 hover:text-primary transition-colors"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label="Toggle menu"
@@ -64,10 +67,9 @@ export default function SiteHeader({ children }: { children?: React.ReactNode })
       </div>
 
       {/* Mobile Menu */}
-      <div 
-        className={`hidden max-[1350px]:block absolute top-20 left-0 w-full bg-white border-b border-primary/15 shadow-lg transition-all duration-300 overflow-hidden ${
-          isMenuOpen ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'
-        }`}
+      <div
+        className={`hidden max-[1350px]:block absolute top-20 left-0 w-full bg-white border-b border-primary/15 shadow-lg transition-all duration-300 overflow-hidden ${isMenuOpen ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'
+          }`}
       >
         <nav className="flex flex-col p-md gap-sm bg-white">
           {NAV_LINKS.map((link) => (
@@ -85,7 +87,13 @@ export default function SiteHeader({ children }: { children?: React.ReactNode })
             <LangSwitcher />
           </div>
           <button className="bg-primary text-on-primary px-6 py-3 rounded-full font-body-sm text-body-sm font-semibold hover:bg-primary/90 active:scale-95 transition-all w-full sm:hidden">
-            Hubungi Kami
+            <Link
+              href="/contact"
+              className="mt-sm bg-primary text-on-primary px-6 py-3 rounded-full font-body-sm text-body-sm font-semibold hover:bg-primary/90 active:scale-95 transition-all w-full sm:hidden"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Hubungi Kami
+            </Link>
           </button>
         </nav>
       </div>

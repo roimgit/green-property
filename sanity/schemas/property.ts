@@ -1,6 +1,10 @@
 import { defineField, defineType } from 'sanity'
 import { ImageInputWithUrl } from '../components/ImageInputWithUrl'
+<<<<<<< HEAD
 import { PricingWithRate } from '../components/PricingWithRate'
+=======
+import { PropertyPrimaryPriceInput } from '../components/PropertyPrimaryPriceInput'
+>>>>>>> 69b64c64cb05ae18daa06413dff0bb94fb8950df
 
 export default defineType({
     name: 'property',
@@ -116,6 +120,27 @@ export default defineType({
                 }
             ],
             validation: (Rule) => Rule.required().min(1),
+        }),
+
+        defineField({
+            name: 'primaryPriceIndex',
+            title: 'Harga Utama',
+            type: 'string',
+            description: 'Pilih struktur harga & transaksi yang akan dijadikan harga utama',
+            hidden: ({ parent }) => !parent?.pricing || parent?.pricing?.length <= 1,
+            validation: (Rule) => Rule.custom((value, context) => {
+                const pricing = context.parent?.pricing as Array<{ transactionType?: string; currency?: string; price?: number; pricePeriod?: string; priceUnit?: string }>
+                if (!pricing || pricing.length <= 1) return true
+                if (!value) return 'Harga utama harus dipilih jika ada lebih dari 1 harga'
+                const selectedIndex = Number(value)
+                if (Number.isNaN(selectedIndex) || selectedIndex < 0 || selectedIndex >= pricing.length) {
+                    return 'Pilihan harga utama tidak valid'
+                }
+                return true
+            }),
+            components: {
+                input: PropertyPrimaryPriceInput,
+            },
         }),
 
         defineField({

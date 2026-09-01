@@ -2,46 +2,21 @@
 
 import {
   useCallback,
+  useEffect,
+  useRef,
   useState,
   type CSSProperties,
   type ChangeEvent,
 } from "react";
 import {
+  PatchEvent,
   set,
   unset,
-  useDocumentOperation,
+  useFormCallbacks,
   useFormValue,
   type StringInputProps,
 } from "sanity";
-
-function parseCoordinates(url: string): { lat: number; lng: number } | null {
-  const atMatch = url.match(/@(-?\d+\.?\d*),\s*(-?\d+\.?\d*)/);
-  if (atMatch) {
-    return { lat: parseFloat(atMatch[1]), lng: parseFloat(atMatch[2]) };
-  }
-
-  const bangMatch = url.match(/!3d(-?\d+\.?\d*)!4d(-?\d+\.?\d*)/);
-  if (bangMatch) {
-    return { lat: parseFloat(bangMatch[1]), lng: parseFloat(bangMatch[2]) };
-  }
-
-  try {
-    const urlObj = new URL(url);
-    const qParam = urlObj.searchParams.get("q") ?? urlObj.searchParams.get("query");
-    const llParam = urlObj.searchParams.get("ll");
-    const candidate = qParam || llParam;
-    if (candidate) {
-      const qMatch = candidate.match(/(-?\d+\.?\d*),\s*(-?\d+\.?\d*)/);
-      if (qMatch) {
-        return { lat: parseFloat(qMatch[1]), lng: parseFloat(qMatch[2]) };
-      }
-    }
-  } catch {
-    // not a full URL (short link, etc.)
-  }
-
-  return null;
-}
+import { isProbablyMapsUrl, parseCoordinates } from "@/lib/maps/coordinates";
 
 const wrapStyle: CSSProperties = {
   display: "flex",
@@ -80,53 +55,141 @@ const warnStyle: CSSProperties = {
 export function GoogleMapsUrlInput(props: StringInputProps) {
   const { value, onChange, readOnly, schemaType } = props;
   const url = typeof value === "string" ? value : "";
-  const latitude = useFormValue(["latitude"]) as number | undefined;
-  const longitude = useFormValue(["longitude"]) as number | undefined;
-  const documentId = useFormValue(["_id"]) as string | undefined;
-  const documentType = useFormValue(["_type"]) as string | undefined;
-  const publishedId = documentId?.replace(/^drafts\./, "") ?? "";
-  const { patch } = useDocumentOperation(publishedId, documentType ?? "companyProfile");
+  const formLatitude = useFormValue(["latitude"]) as number | undefined;
+  const formLongitude = useFormValue(["longitude"]) as number | undefined;
+  const { onChange: onDocumentChange } = useFormCallbacks();
+
+  const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
+  const [message, setMessage] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const requestId = useRef(0);
 
   const applyCoordinates = useCallback(
     (lat: number, lng: number) => {
-      if (!publishedId) return;
-      patch.execute([{ set: { latitude: lat, longitude: lng } }]);
+      onDocumentChange(
+        PatchEvent.from([set(lat, ["latitude"]), set(lng, ["longitude"])]),
+      );
     },
-    [patch, publishedId],
+    [onDocumentChange],
   );
 
   const clearCoordinates = useCallback(() => {
-    if (!publishedId) return;
-    patch.execute([{ unset: ["latitude", "longitude"] }]);
-  }, [patch, publishedId]);
+    onDocumentChange(
+      PatchEvent.from([unset(["latitude"]), unset(["longitude"])]),
+    );
+  }, [onDocumentChange]);
+
+  const resolveFromUrl = useCallback(
+    async (nextUrl: string) => {
+      const trimmed = nextUrl.trim();
+      if (!trimmed) {
+        setStatus("idle");
+        setMessage(null);
+        return;
+      }
+
+      const local = parseCoordinates(trimmed);
+      if (local) {
+        applyCoordinates(local.lat, local.lng);
+        setStatus("idle");
+        setMessage(null);
+        return;
+      }
+
+      if (!isProbablyMapsUrl(trimmed)) {
+        setStatus("error");
+        setMessage("Tempel URL Google Maps yang valid.");
+        return;
+      }
+
+      const id = ++requestId.current;
+      setStatus("loading");
+      setMessage("Mengambil koordinat dari link...");
+
+      try {
+        const response = await fetch(
+          `/api/maps-coordinates?url=${encodeURIComponent(trimmed)}`,
+        );
+        const data = (await response.json()) as {
+          latitude?: number;
+          longitude?: number;
+          error?: string;
+        };
+
+        if (id !== requestId.current) return;
+
+        if (!response.ok || data.latitude == null || data.longitude == null) {
+          setStatus("error");
+          setMessage(
+            data.error ||
+              "Koordinat tidak ditemukan. Short link gagal diurai; tempel URL Maps lengkap atau isi lat/lng manual.",
+          );
+          return;
+        }
+
+        applyCoordinates(data.latitude, data.longitude);
+        setStatus("idle");
+        setMessage(null);
+      } catch {
+        if (id !== requestId.current) return;
+        setStatus("error");
+        setMessage("Gagal menghubungi server untuk membaca koordinat.");
+      }
+    },
+    [applyCoordinates],
+  );
+
+  const lastResolvedUrl = useRef<string | null>(null);
+
+  useEffect(() => {
+    const handle = window.setTimeout(() => {
+      const trimmed = url.trim();
+      const alreadyHaveCoords =
+        formLatitude !== undefined &&
+        formLatitude !== null &&
+        formLongitude !== undefined &&
+        formLongitude !== null;
+
+      if (lastResolvedUrl.current === trimmed) return;
+      if (lastResolvedUrl.current === null && alreadyHaveCoords && trimmed) {
+        lastResolvedUrl.current = trimmed;
+        return;
+      }
+      lastResolvedUrl.current = trimmed;
+      void resolveFromUrl(url);
+    }, 500);
+    return () => window.clearTimeout(handle);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [url]);
 
   const handleUrlChange = (event: ChangeEvent<HTMLInputElement>) => {
     const next = event.currentTarget.value;
     onChange(next ? set(next) : unset());
-    const coords = parseCoordinates(next);
-    if (coords) applyCoordinates(coords.lat, coords.lng);
+    if (!next.trim()) {
+      clearCoordinates();
+      setStatus("idle");
+      setMessage(null);
+    }
   };
 
-  const handleExtractClick = () => {
-    const coords = parseCoordinates(url);
-    if (coords) applyCoordinates(coords.lat, coords.lng);
-  };
+  const hasCoords =
+    formLatitude !== undefined &&
+    formLongitude !== undefined &&
+    formLatitude !== null &&
+    formLongitude !== null;
 
   const handleCopy = async () => {
-    if (latitude === undefined || longitude === undefined) return;
-    await navigator.clipboard.writeText(`${latitude},${longitude}`);
+    if (!hasCoords) return;
+    await navigator.clipboard.writeText(`${formLatitude},${formLongitude}`);
     setCopied(true);
     window.setTimeout(() => setCopied(false), 1500);
   };
-
-  const hasCoords = latitude !== undefined && longitude !== undefined;
 
   return (
     <div style={wrapStyle}>
       <p style={{ margin: 0, fontSize: 12, color: "#667085" }}>
         {schemaType.description ||
-          "Tempel link Google Maps. Koordinat akan diisi otomatis jika URL mengandung lat/lng."}
+          "Tempel link Google Maps. Koordinat terisi otomatis."}
       </p>
       <input
         type="url"
@@ -143,52 +206,44 @@ export function GoogleMapsUrlInput(props: StringInputProps) {
         }}
       />
 
-      <div style={rowStyle}>
-        <button
-          type="button"
-          onClick={handleExtractClick}
-          disabled={readOnly || !url}
-          style={buttonStyle}
-        >
-          Ekstrak koordinat
-        </button>
-        <button
-          type="button"
-          onClick={clearCoordinates}
-          disabled={readOnly || !hasCoords}
-          style={buttonStyle}
-        >
-          Hapus koordinat
-        </button>
-      </div>
+      {status === "loading" && (
+        <div style={{ fontSize: 12, color: "#667085" }}>{message}</div>
+      )}
 
       {hasCoords && (
         <div style={infoStyle}>
-          <div style={{ fontWeight: 600, marginBottom: 6 }}>Koordinat terisi</div>
+          <div style={{ fontWeight: 600, marginBottom: 6 }}>
+            Koordinat otomatis
+          </div>
           <div style={rowStyle}>
             <code>
-              {Number(latitude).toFixed(6)}, {Number(longitude).toFixed(6)}
+              {Number(formLatitude).toFixed(6)}, {Number(formLongitude).toFixed(6)}
             </code>
             <button type="button" onClick={handleCopy} style={buttonStyle}>
               {copied ? "Tersalin" : "Salin"}
             </button>
+            <button
+              type="button"
+              onClick={() => void resolveFromUrl(url)}
+              disabled={readOnly || !url}
+              style={buttonStyle}
+            >
+              Generate ulang
+            </button>
+            <button
+              type="button"
+              onClick={clearCoordinates}
+              disabled={readOnly}
+              style={buttonStyle}
+            >
+              Hapus
+            </button>
           </div>
-          <a
-            href={`https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ color: "#0066cc", display: "inline-block", marginTop: 8 }}
-          >
-            Lihat di Google Maps
-          </a>
         </div>
       )}
 
-      {url && !hasCoords && (
-        <div style={warnStyle}>
-          URL singkat biasanya tidak berisi koordinat. Isi Latitude dan Longitude
-          secara manual, atau tempel URL Maps lengkap yang mengandung @lat,lng.
-        </div>
+      {status === "error" && !hasCoords && message && (
+        <div style={warnStyle}>{message}</div>
       )}
     </div>
   );
