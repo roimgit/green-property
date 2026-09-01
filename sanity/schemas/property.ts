@@ -1,10 +1,7 @@
 import { defineField, defineType } from 'sanity'
 import { ImageInputWithUrl } from '../components/ImageInputWithUrl'
-<<<<<<< HEAD
 import { PricingWithRate } from '../components/PricingWithRate'
-=======
 import { PropertyPrimaryPriceInput } from '../components/PropertyPrimaryPriceInput'
->>>>>>> 69b64c64cb05ae18daa06413dff0bb94fb8950df
 
 export default defineType({
     name: 'property',
@@ -127,9 +124,13 @@ export default defineType({
             title: 'Harga Utama',
             type: 'string',
             description: 'Pilih struktur harga & transaksi yang akan dijadikan harga utama',
-            hidden: ({ parent }) => !parent?.pricing || parent?.pricing?.length <= 1,
+            hidden: ({ parent }) => {
+                const pricing = (parent as { pricing?: unknown[] } | undefined)?.pricing
+                return !pricing || pricing.length <= 1
+            },
             validation: (Rule) => Rule.custom((value, context) => {
-                const pricing = context.parent?.pricing as Array<{ transactionType?: string; currency?: string; price?: number; pricePeriod?: string; priceUnit?: string }>
+                const parentPricing = context.parent as { pricing?: Array<{ transactionType?: string; currency?: string; price?: number; pricePeriod?: string; priceUnit?: string }> } | undefined
+                const pricing = parentPricing?.pricing
                 if (!pricing || pricing.length <= 1) return true
                 if (!value) return 'Harga utama harus dipilih jika ada lebih dari 1 harga'
                 const selectedIndex = Number(value)
