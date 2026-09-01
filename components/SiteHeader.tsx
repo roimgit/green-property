@@ -37,9 +37,12 @@ export default function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-sm">
-          <button className="bg-primary text-on-primary px-6 py-2 rounded-full font-body-sm text-body-sm font-semibold hover:bg-primary/90 active:scale-95 transition-all hidden sm:inline-flex">
+          <Link
+            href="/contact"
+            className="bg-primary text-on-primary px-6 py-2 rounded-full font-body-sm text-body-sm font-semibold hover:bg-primary/90 active:scale-95 transition-all hidden sm:inline-flex"
+          >
             Hubungi Kami
-          </button>
+          </Link>
           
           <button 
             className="md:hidden text-on-surface p-2 hover:text-primary transition-colors"
@@ -70,9 +73,13 @@ export default function SiteHeader() {
               {link.label}
             </Link>
           ))}
-          <button className="mt-sm bg-primary text-on-primary px-6 py-3 rounded-full font-body-sm text-body-sm font-semibold hover:bg-primary/90 active:scale-95 transition-all w-full sm:hidden">
+          <Link
+            href="/contact"
+            className="mt-sm bg-primary text-on-primary px-6 py-3 rounded-full font-body-sm text-body-sm font-semibold hover:bg-primary/90 active:scale-95 transition-all w-full sm:hidden"
+            onClick={() => setIsMenuOpen(false)}
+          >
             Hubungi Kami
-          </button>
+          </Link>
         </nav>
       </div>
     </header>

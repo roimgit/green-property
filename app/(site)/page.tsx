@@ -151,12 +151,12 @@ export default async function Home() {
                 >
                   Lihat Properti
                 </Link>
-                <a
-                  href="#"
+                <Link
+                  href="/contact"
                   className="bg-transparent border-2 border-surface-container-lowest text-surface-container-lowest backdrop-blur-sm px-8 py-3 rounded-full font-body-md text-body-md font-semibold hover:bg-surface-container-lowest/20 transition-colors flex items-center justify-center gap-2"
                 >
                   <span className="material-symbols-outlined">chat</span> Hubungi Kami via WhatsApp
-                </a>
+                </Link>
               </div>
             </div>
 
@@ -351,14 +351,14 @@ export default async function Home() {
             </p>
           </div>
           <div className="flex flex-col md:flex-row gap-md">
-            <a
-              href="#"
+            <Link
+              href="/contact"
               className="bg-[#25D366] text-white px-8 py-4 rounded-full font-bold flex items-center gap-2 hover:scale-105 transition-transform shadow-md"
             >
               <span className="material-symbols-outlined">chat</span> Chat via WhatsApp
-            </a>
+            </Link>
             <Link
-              href="/properties"
+              href="/contact"
               className="border-2 border-white/30 text-white px-8 py-4 rounded-full font-bold hover:bg-white/10 transition-colors"
             >
               Lihat Semua Kontak
