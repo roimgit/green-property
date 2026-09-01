@@ -1,13 +1,23 @@
-import Image from "next/image";
 import Link from "next/link";
+import LogoImage from "@/components/LogoImage";
 import { getCompanyProfile, imageUrl } from "@/lib/sanity/data";
 
 /** Header brand logo — pulled from Sanity (companyProfile.logo), with a text
  *  fallback when no logo has been uploaded yet. Server component: best-effort. */
 export default async function Logo() {
   const profile = await getCompanyProfile();
-  const logoUrl = profile?.logo ? imageUrl(profile.logo) : null;
-  const alt = profile?.logo?.alt || profile?.companyName || "Green Property";
+  const logo = profile?.logo;
+  const logoUrl = logo ? imageUrl(logo) : null;
+  const alt = logo?.alt || profile?.companyName || "Green Property";
+
+  // Display height is 48px; derive width from the real aspect ratio so the
+  // <Image> geometry never distorts or letterboxes the uploaded logo.
+  const HEIGHT = 48;
+  const dims = logo?.asset?.metadata?.dimensions;
+  const width =
+    dims?.width && dims?.height
+      ? Math.max(48, Math.round((dims.width / dims.height) * HEIGHT))
+      : 160;
 
   if (!logoUrl) {
     return (
@@ -23,15 +33,7 @@ export default async function Logo() {
 
   return (
     <Link href="/" className="flex items-center" translate="no">
-      <Image
-        src={logoUrl}
-        alt={alt}
-        width={160}
-        height={48}
-        priority
-        unoptimized={false}
-        className="notranslate h-12 w-auto object-contain text-transparent"
-      />
+      <LogoImage src={logoUrl} alt={alt} width={width} height={HEIGHT} />
     </Link>
   );
 }

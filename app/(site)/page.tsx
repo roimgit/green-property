@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import PropertyCard from "@/components/PropertyCard";
+import HeroBannerImage from "@/components/HeroBannerImage";
 import {
   getPropertyList,
   getCompanyProfile,
@@ -122,11 +123,10 @@ export default async function Home() {
       <section className="max-w-container-max mx-auto px-4 lg:px-8 mb-xl">
         <div className="relative w-full h-[600px] rounded-xl overflow-hidden shadow-soft group">
 
-          {/* Background Image */}
-          <div
-            className="absolute inset-0 bg-cover bg-center w-full h-full transition-transform duration-1000 group-hover:scale-105"
-            style={{ backgroundImage: `url('${heroImage}')` }}
-          />
+          {/* Background Image — rendered via onLoad (fade-in after loaded) */}
+          <div className="absolute inset-0 transition-transform duration-1000 group-hover:scale-105">
+            <HeroBannerImage src={heroImage} alt="Banner properti strategis Green Property" />
+          </div>
 
           {/* Gradient Overlay */}
           <div className="absolute inset-0 bg-gradient-to-r from-on-background/90 via-on-background/60 to-transparent z-0" />
