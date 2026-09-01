@@ -60,6 +60,12 @@ export interface Property {
   isFeatured?: boolean;
 }
 
+export interface OperationalHours {
+  weekdays?: string;
+  weekend?: string;
+  weekend2?: string;
+}
+
 export interface CompanyProfile {
   _id: string;
   _type: "companyProfile";
@@ -73,6 +79,8 @@ export interface CompanyProfile {
   contactEmail?: string;
   contactPhone?: string;
   address?: string;
+  operationalHours?: OperationalHours;
+  googleMapsUrl?: string;
 }
 
 export interface PartnerLogo {

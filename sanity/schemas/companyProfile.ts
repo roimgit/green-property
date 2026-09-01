@@ -86,5 +86,37 @@ export const companyProfile: SchemaTypeDefinition = {
       title: "Alamat",
       type: "string",
     },
+    {
+      name: "googleMapsUrl",
+      title: "Link Google Maps",
+      type: "string",
+      description: "Gunakan EMBED CODE dari Google Maps untuk hasil terbaik. Buka maps > Bagikan > Embed map > copy src URL. Atau paste link reguler: https://maps.app.goo.gl/... atau https://www.google.com/maps/...",
+    },
+    {
+      name: "operationalHours",
+      title: "Jam Operasional",
+      type: "object",
+      fields: [
+        {
+          name: "weekdays",
+          title: "Senin - Jumat",
+          type: "string",
+          description: "Contoh: 08:00 - 17:00 atau Tutup",
+          validation: (Rule) => Rule.required(),
+        },
+        {
+          name: "weekend",
+          title: "Sabtu",
+          type: "string",
+          description: "Contoh: 09:00 - 15:00 atau Tutup (kosongkan jika libur)",
+        },
+        {
+          name: "weekend2",
+          title: "Minggu",
+          type: "string",
+          description: "Contoh: 09:00 - 15:00 atau Tutup (kosongkan jika libur)",
+        },
+      ],
+    },
   ],
 };
