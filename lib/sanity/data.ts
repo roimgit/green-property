@@ -16,6 +16,8 @@ const PROPERTY_LIST_QUERY = groq`*[_type == "property"]{
   category,
   transactionType,
   price,
+  pricing,
+  primaryPriceIndex,
   status,
   locationShort,
   fullAddress,
@@ -23,6 +25,7 @@ const PROPERTY_LIST_QUERY = groq`*[_type == "property"]{
   mainImage{asset->{url},url,alt},
   gallery[]{asset->{url},url,alt},
   specs,
+  contact->{_id,name,phoneNumber,whatsappNumber,whatsappLink,kakaoTalkNumber,kakaoTalkLink,email},
   facilities
 } | order(_createdAt desc)`;
 
@@ -33,6 +36,8 @@ const PROPERTY_BY_SLUG_QUERY = groq`*[_type == "property" && slug.current == $sl
   category,
   transactionType,
   price,
+  pricing,
+  primaryPriceIndex,
   status,
   locationShort,
   fullAddress,
@@ -40,6 +45,7 @@ const PROPERTY_BY_SLUG_QUERY = groq`*[_type == "property" && slug.current == $sl
   mainImage{asset->{url},url,alt},
   gallery[]{asset->{url},url,alt},
   specs,
+  contact->{_id,name,phoneNumber,whatsappNumber,whatsappLink,kakaoTalkNumber,kakaoTalkLink,email},
   facilities,
   description
 }`;
@@ -51,11 +57,14 @@ const SIMILAR_PROPERTIES_QUERY = groq`*[_type == "property" && slug.current != $
   category,
   transactionType,
   price,
+  pricing,
+  primaryPriceIndex,
   status,
   locationShort,
   isFeatured,
   mainImage{asset->{url},url,alt},
-  specs
+  specs,
+  contact->{_id,name,phoneNumber,whatsappNumber,whatsappLink,kakaoTalkNumber,kakaoTalkLink,email}
 }`;
 
 const COMPANY_QUERY = groq`*[_type == "companyProfile"][0]{
@@ -123,6 +132,35 @@ export function imageUrl(image?: SanityImage): string | null {
 export function formatPrice(price?: number): string | null {
   if (!price || price <= 0) return null;
   return "Rp " + price.toLocaleString("id-ID");
+}
+
+/** Format price with flexible currency support (USD, IDR, EUR, etc.) */
+export function formatPriceWithCurrency(price?: number, currency?: string): string | null {
+  if (!price || price <= 0) return null;
+  const curr = (currency ?? "IDR").toUpperCase();
+  
+  if (curr === "USD" || curr === "US$") {
+    return "$" + price.toLocaleString("en-US", { maximumFractionDigits: 0 });
+  }
+  if (curr === "IDR" || curr === "RP") {
+    return "Rp " + price.toLocaleString("id-ID");
+  }
+  if (curr === "EUR" || curr === "€") {
+    return "€" + price.toLocaleString("de-DE", { maximumFractionDigits: 0 });
+  }
+  return `${curr} ${price.toLocaleString("id-ID")}`;
+}
+
+/** Normalize a contact number to WhatsApp-ready Indonesia format (e.g. 0812... -> 62812...). */
+export function normalizeWhatsAppNumber(number?: string | null): string {
+  const digits = (number ?? "").replace(/\D/g, "");
+  if (!digits) return "";
+
+  if (digits.startsWith("62")) return digits;
+  if (digits.startsWith("0")) return `62${digits.slice(1)}`;
+  if (digits.startsWith("8")) return `62${digits}`;
+
+  return digits;
 }
 
 /** Convert Sanity portable text blocks into a plain text string. */

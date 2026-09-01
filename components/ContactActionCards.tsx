@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { normalizeWhatsAppNumber } from "@/lib/sanity/data";
 import type { Contact } from "@/types/sanity";
 
 type Channel = "whatsapp" | "kakaoTalk" | "email";
@@ -62,10 +63,9 @@ function EmailIcon() {
 
 function getChannelUrl(contact: Contact, channel: Channel, message: string) {
   if (channel === "whatsapp") {
-    const rawNumber = contact.whatsappNumber?.replace(/\D/g, "") || "";
-    if (!rawNumber) return "";
+    const normalizedNumber = normalizeWhatsAppNumber(contact.whatsappNumber);
+    if (!normalizedNumber) return "";
 
-    const normalizedNumber = rawNumber.startsWith("0") ? `62${rawNumber.slice(1)}` : rawNumber;
     return `https://wa.me/${normalizedNumber}?text=${encodeURIComponent(message)}`;
   }
 
@@ -92,6 +92,20 @@ function getChannelUrl(contact: Contact, channel: Channel, message: string) {
 export function ContactActionCards({ contacts }: { contacts: Contact[] }) {
   const [selected, setSelected] = useState<{ contact: Contact; channel: Channel } | null>(null);
   const [message, setMessage] = useState(DEFAULT_MESSAGE);
+  const composerRef = useRef<HTMLElement | null>(null);
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+
+  useEffect(() => {
+    if (!selected) return;
+
+    const frame = window.requestAnimationFrame(() => {
+      composerRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      textareaRef.current?.focus();
+      textareaRef.current?.setSelectionRange(textareaRef.current.value.length, textareaRef.current.value.length);
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [selected]);
 
   const handleOpenComposer = (contact: Contact, channel: Channel) => {
     setSelected({ contact, channel });
@@ -173,7 +187,7 @@ export function ContactActionCards({ contacts }: { contacts: Contact[] }) {
                       <span className="material-symbols-outlined mt-0.5 flex-shrink-0 text-lg text-primary">chat</span>
                       <div className="min-w-0 flex-1">
                         <p className="text-xs font-medium uppercase tracking-wider text-on-surface-variant">WhatsApp</p>
-                        <p className="font-body-sm font-medium text-on-surface">{contact.whatsappNumber}</p>
+                        <p className="font-body-sm font-medium text-on-surface">{normalizeWhatsAppNumber(contact.whatsappNumber)}</p>
                       </div>
                     </div>
                   )}
@@ -236,7 +250,10 @@ export function ContactActionCards({ contacts }: { contacts: Contact[] }) {
       )}
 
       {selected && (
-        <section className="mt-xl rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/5 to-primary/10 p-lg shadow-sm">
+        <section
+          ref={composerRef}
+          className="mt-xl rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/5 to-primary/10 p-lg shadow-sm"
+        >
           <div className="mb-md flex flex-col gap-sm md:flex-row md:items-center md:justify-between">
             <div>
               <p className="text-xs font-medium uppercase tracking-wider text-on-surface-variant">Menghubungi</p>
@@ -250,6 +267,7 @@ export function ContactActionCards({ contacts }: { contacts: Contact[] }) {
             Pesan {CHANNEL_LABELS[selected.channel]}
           </label>
           <textarea
+            ref={textareaRef}
             value={message}
             onChange={(event) => setMessage(event.target.value)}
             rows={7}

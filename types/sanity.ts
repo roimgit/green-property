@@ -20,12 +20,21 @@ export interface PropertySpecs {
   certificate?: string;
   landArea?: number;
   buildingArea?: number;
+  furnishing?: string;
   bedrooms?: string;
   bathrooms?: string;
   floors?: number;
   electricity?: string;
   carport?: string;
   orientation?: string;
+}
+
+export interface PricingEntry {
+  transactionType?: "jual" | "sewa";
+  currency?: string;
+  price?: number;
+  pricePeriod?: string;
+  priceUnit?: string;
 }
 
 export interface PortableTextBlock {
@@ -49,12 +58,24 @@ export interface Property {
   category?: Category;
   transactionType?: TransactionType;
   price?: number;
+  pricing?: PricingEntry[];
+  primaryPriceIndex?: number | string;
   status?: PropertyStatus;
   locationShort?: string;
   fullAddress?: string;
   mainImage?: SanityImage;
   gallery?: SanityImage[];
   specs?: PropertySpecs;
+  contact?: {
+    _id?: string;
+    name?: string;
+    phoneNumber?: string;
+    whatsappNumber?: string;
+    whatsappLink?: string;
+    kakaoTalkNumber?: string;
+    kakaoTalkLink?: string;
+    email?: string;
+  };
   description?: PortableTextBlock[];
   facilities?: string[];
   isFeatured?: boolean;

@@ -56,7 +56,7 @@ export default async function AboutPage() {
               </div>
 
               <div className="relative z-10 grid grid-cols-1 lg:grid-cols-[1fr_1.1fr] gap-12 items-center">
-                <div className="space-y-8">
+                <div className="space-y-8 lg:pr-6">
                   {logoImage && (
                     <div className="inline-flex items-center gap-3 rounded-full border border-white/25 bg-white/10 px-4 py-2 text-xs font-semibold text-white uppercase tracking-wider backdrop-blur-md">
                       <div className="relative h-6 w-6 overflow-hidden rounded-full bg-white/20 flex items-center justify-center">
@@ -93,7 +93,7 @@ export default async function AboutPage() {
                   </div>
                 </div>
 
-                <div className="relative h-[400px] lg:h-[500px]">
+                <div className="relative h-[400px] lg:h-[500px] w-full lg:max-w-[620px] lg:justify-self-end">
                   <div className="absolute inset-0 rounded-3xl overflow-hidden shadow-2xl border border-white/20">
                     {heroImage && (
                       <Image
