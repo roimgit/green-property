@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import PropertyGallery from "@/components/PropertyGallery";
 import PropertyCard from "@/components/PropertyCard";
 import PropertyInquiryForm from "@/components/PropertyInquiryForm";
+import CopyLinkButton from "@/components/CopyLinkButton";
 import {
   getPropertyBySlug,
   getSimilarProperties,
@@ -41,19 +42,40 @@ function PriceMetaBadge({ label, value }: { label: string; value?: string | numb
 
 const FACILITY_ICONS: Record<string, string> = {
   pool: "pool",
+  kolam: "pool",
   garden: "yard",
+  taman: "yard",
   kitchen: "kitchen",
+  dapur: "kitchen",
   internet: "wifi",
   wifi: "wifi",
   security: "security",
+  keamanan: "security",
+  satpam: "security",
   "24/7": "security",
   ac: "ac_unit",
+  pendingin: "ac_unit",
   tol: "directions_car",
+  akses: "directions_car",
+  jalan: "add_road",
   dock: "local_shipping",
+  loading: "local_shipping",
+  logistik: "local_shipping",
   cctv: "videocam",
   fire: "local_fire_department",
+  pemadam: "local_fire_department",
   parking: "local_parking",
+  parkir: "local_parking",
+  garasi: "garage",
   storage: "warehouse",
+  gudang: "warehouse",
+  pabrik: "factory",
+  listrik: "bolt",
+  power: "bolt",
+  air: "water_drop",
+  pam: "water_drop",
+  pos: "shield",
+  pagar: "fence",
 };
 
 function facilityIcon(facility: string): string {
@@ -112,6 +134,8 @@ export default async function PropertyDetailPage({ params }: Props) {
           displayPrice: formatPriceWithCurrency(property.price, "IDR"),
           currency: "IDR",
           price: property.price,
+          pricePeriod: undefined as string | undefined,
+          priceUnit: undefined as string | undefined,
         }]
       : [];
   const specs = property.specs;
@@ -168,7 +192,68 @@ export default async function PropertyDetailPage({ params }: Props) {
             <PropertyGallery images={galleryImages} />
           </div>
 
-
+          {/* Struktur Harga & Transaksi (dari property.ts) */}
+          {pricingEntries.length > 0 && (
+            <div className="bg-surface-container-lowest rounded-xl p-md border border-outline-variant shadow-soft flex flex-col gap-md">
+              <div className="flex items-center justify-between border-b border-outline-variant/50 pb-sm">
+                <h2 className="font-headline-sm text-headline-sm text-on-surface flex items-center gap-2">
+                  <span className="material-symbols-outlined text-primary">payments</span>
+                  Struktur Harga &amp; Transaksi
+                </h2>
+                <span className="text-body-sm text-on-surface-variant font-medium">
+                  {pricingEntries.length} Opsi Transaksi
+                </span>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-md">
+                {pricingEntries.map((entry, idx) => {
+                  const isPrimary =
+                    Number(property.primaryPriceIndex ?? 0) === idx ||
+                    (pricingEntries.length === 1 && idx === 0);
+                  return (
+                    <div
+                      key={entry.id}
+                      className={`p-md rounded-xl border transition-all ${
+                        isPrimary
+                          ? "bg-primary/5 border-primary shadow-sm"
+                          : "bg-surface-container-low border-outline-variant/50"
+                      }`}
+                    >
+                      <div className="flex justify-between items-center mb-xs">
+                        <span className="font-label-caps text-label-caps uppercase px-2.5 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-semibold">
+                          {entry.displayTransaction}
+                        </span>
+                        {isPrimary && (
+                          <span className="text-xs bg-primary text-on-primary px-2.5 py-0.5 rounded-full font-semibold">
+                            Harga Utama
+                          </span>
+                        )}
+                      </div>
+                      <div className="font-price-display text-xl font-bold text-primary mt-sm">
+                        {entry.displayPrice}
+                      </div>
+                      <div className="mt-xs text-xs text-on-surface-variant flex flex-wrap gap-x-3 gap-y-1 pt-1">
+                        {entry.pricePeriod && (
+                          <span>
+                            Periode: <strong className="text-on-surface">{entry.pricePeriod}</strong>
+                          </span>
+                        )}
+                        {entry.priceUnit && (
+                          <span>
+                            Unit: <strong className="text-on-surface">{entry.priceUnit}</strong>
+                          </span>
+                        )}
+                        {entry.currency && (
+                          <span>
+                            Mata Uang: <strong className="text-on-surface">{entry.currency}</strong>
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
 
           {/* Specification Table */}
           <div className="bg-surface-container-lowest rounded-xl p-md border border-outline-variant shadow-soft">
@@ -205,24 +290,25 @@ export default async function PropertyDetailPage({ params }: Props) {
             </div>
 
             {property.facilities && property.facilities.length > 0 && (
-              <>
-                <h3 className="font-headline-sm text-headline-sm text-on-surface mt-xl mb-md">
+              <div className="mt-xl pt-lg border-t border-outline-variant/40">
+                <h3 className="font-headline-sm text-headline-sm text-on-surface mb-md flex items-center gap-2">
+                  <span className="material-symbols-outlined text-primary">verified</span>
                   Fasilitas Utama
                 </h3>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-sm">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-sm">
                   {property.facilities.map((f, i) => (
                     <div
                       key={i}
-                      className="flex items-center gap-2 text-on-surface-variant font-body-sm text-body-sm"
+                      className="flex items-center gap-2.5 p-3 rounded-xl bg-surface-container-low border border-outline-variant/30 text-on-surface font-body-md shadow-xs hover:border-primary/40 transition-colors"
                     >
-                      <span className="material-symbols-outlined text-primary text-[20px]">
+                      <span className="material-symbols-outlined text-primary text-[22px]">
                         {facilityIcon(f)}
                       </span>
-                      <span>{f}</span>
+                      <span className="font-medium">{f}</span>
                     </div>
                   ))}
                 </div>
-              </>
+              </div>
             )}
 
             <div className="mt-xl rounded-2xl border border-primary/15 bg-primary/5 p-md">
@@ -291,6 +377,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                   <span className="material-symbols-outlined">call</span>
                   Telepon Sekarang
                 </a>
+                <CopyLinkButton />
               </div>
             </div>
 

@@ -3,22 +3,47 @@
 import { useMemo, useState } from "react";
 import PropertyCard from "@/components/PropertyCard";
 import type { Property } from "@/types/sanity";
+import { getPrimaryPriceAmount } from "@/lib/sanity/data";
 
-const CATEGORIES = ["Land", "Factory", "Residence", "Apartment"];
+const DEFAULT_CATEGORIES = ["Land", "Factory", "Residence", "Apartment"];
 
 export default function PropertyFilters({
   properties,
+  allCategories = [],
 }: {
   properties: Property[];
+  allCategories?: string[];
 }) {
   const [query, setQuery] = useState("");
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [transactionType, setTransactionType] = useState<string>("Jual");
+  const [transactionType, setTransactionType] = useState<string>("Semua");
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const [location, setLocation] = useState("");
   const [sort, setSort] = useState("Terbaru");
   const [applied, setApplied] = useState(false);
+
+  const availableCategories = useMemo(() => {
+    const set = new Set<string>();
+
+    if (Array.isArray(allCategories)) {
+      allCategories.forEach((cat) => {
+        if (cat && cat.trim()) set.add(cat.trim());
+      });
+    }
+
+    properties.forEach((p) => {
+      if (typeof p.category === "string" && p.category.trim()) {
+        set.add(p.category.trim());
+      }
+    });
+
+    if (set.size === 0) {
+      DEFAULT_CATEGORIES.forEach((cat) => set.add(cat));
+    }
+
+    return Array.from(set).sort();
+  }, [allCategories, properties]);
 
   const toggleCategory = (cat: string) => {
     setSelectedCategories((prev) =>
@@ -33,7 +58,7 @@ export default function PropertyFilters({
   const resetFilters = () => {
     setQuery("");
     setSelectedCategories([]);
-    setTransactionType("Jual");
+    setTransactionType("Semua");
     setMinPrice("");
     setMaxPrice("");
     setLocation("");
@@ -46,21 +71,36 @@ export default function PropertyFilters({
 
     if (applied) {
       if (selectedCategories.length > 0) {
-        list = list.filter((p) => p.category && selectedCategories.includes(p.category));
+        list = list.filter(
+          (p) => typeof p.category === "string" && selectedCategories.includes(p.category),
+        );
       }
-      if (transactionType) {
-        list = list.filter((p) => p.transactionType === transactionType);
+      if (transactionType && transactionType !== "Semua") {
+        const target = transactionType.toLowerCase();
+        list = list.filter((p) => {
+          if (Array.isArray(p.pricing) && p.pricing.length > 0) {
+            return p.pricing.some(
+              (entry) => entry.transactionType?.toLowerCase() === target,
+            );
+          }
+          return p.transactionType?.toLowerCase() === target;
+        });
       }
-      if (minPrice) {
-        list = list.filter((p) => (p.price ?? 0) >= Number(minPrice));
+      if (minPrice && !Number.isNaN(Number(minPrice))) {
+        list = list.filter(
+          (p) => getPrimaryPriceAmount(p) >= Number(minPrice),
+        );
       }
-      if (maxPrice) {
-        list = list.filter((p) => (p.price ?? Infinity) <= Number(maxPrice));
+      if (maxPrice && !Number.isNaN(Number(maxPrice))) {
+        list = list.filter(
+          (p) => getPrimaryPriceAmount(p) <= Number(maxPrice),
+        );
       }
       if (location) {
         const loc = location.toLowerCase();
         list = list.filter(
           (p) =>
+            p.locationShort?.toLowerCase() === loc ||
             p.locationShort?.toLowerCase().includes(loc) ||
             p.fullAddress?.toLowerCase().includes(loc),
         );
@@ -78,9 +118,9 @@ export default function PropertyFilters({
     }
 
     if (sort === "Harga Terendah") {
-      list = list.sort((a, b) => (a.price ?? 0) - (b.price ?? 0));
+      list = list.sort((a, b) => getPrimaryPriceAmount(a) - getPrimaryPriceAmount(b));
     } else if (sort === "Harga Tertinggi") {
-      list = list.sort((a, b) => (b.price ?? 0) - (a.price ?? 0));
+      list = list.sort((a, b) => getPrimaryPriceAmount(b) - getPrimaryPriceAmount(a));
     }
 
     return list;
@@ -89,9 +129,11 @@ export default function PropertyFilters({
   const locations = useMemo(() => {
     const set = new Set<string>();
     properties.forEach((p) => {
-      if (p.locationShort) set.add(p.locationShort.split(",")[0].trim());
+      if (p.locationShort && p.locationShort.trim()) {
+        set.add(p.locationShort.trim());
+      }
     });
-    return Array.from(set);
+    return Array.from(set).sort();
   }, [properties]);
 
   return (
@@ -103,7 +145,7 @@ export default function PropertyFilters({
           <div className="flex flex-col gap-sm">
             <h3 className="font-headline-sm text-headline-sm text-on-surface">Kategori</h3>
             <div className="flex flex-col gap-xs">
-              {CATEGORIES.map((cat) => (
+              {availableCategories.map((cat) => (
                 <label key={cat} className="flex items-center gap-sm cursor-pointer group">
                   <input
                     type="checkbox"
@@ -123,7 +165,7 @@ export default function PropertyFilters({
           <div className="flex flex-col gap-sm">
             <h3 className="font-headline-sm text-headline-sm text-on-surface">Tipe Transaksi</h3>
             <div className="flex bg-surface-container p-1 rounded-lg">
-              {["Jual", "Sewa"].map((t) => (
+              {["Semua", "Jual", "Sewa"].map((t) => (
                 <button
                   key={t}
                   type="button"

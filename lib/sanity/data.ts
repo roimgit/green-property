@@ -1,6 +1,7 @@
 import { sanityFetch, groq } from "@/lib/sanity/client";
 import type {
   Property,
+  PricingEntry,
   CompanyProfile,
   PartnerLogo,
   Testimonial,
@@ -13,7 +14,7 @@ const PROPERTY_LIST_QUERY = groq`*[_type == "property"]{
   _id,
   title,
   slug,
-  category,
+  "category": coalesce(category->title, category),
   transactionType,
   price,
   pricing,
@@ -33,7 +34,7 @@ const PROPERTY_BY_SLUG_QUERY = groq`*[_type == "property" && slug.current == $sl
   _id,
   title,
   slug,
-  category,
+  "category": coalesce(category->title, category),
   transactionType,
   price,
   pricing,
@@ -54,7 +55,7 @@ const SIMILAR_PROPERTIES_QUERY = groq`*[_type == "property" && slug.current != $
   _id,
   title,
   slug,
-  category,
+  "category": coalesce(category->title, category),
   transactionType,
   price,
   pricing,
@@ -124,6 +125,12 @@ const SERVICES_QUERY = groq`*[_type == "service"]{
   urutanTampil
 } | order(urutanTampil asc)`;
 
+const CATEGORIES_QUERY = groq`*[_type == "category"]{
+  _id,
+  title,
+  slug
+} | order(title asc)`;
+
 /** Extract a usable image URL from a Sanity image field. */
 export function imageUrl(image?: SanityImage | null): string | null {
   return image?.asset?.url ?? image?.url ?? null;
@@ -186,6 +193,110 @@ export function formatPriceWithCurrency(price?: number, currency?: string): stri
   return `${curr} ${price.toLocaleString("id-ID")}`;
 }
 
+/**
+ * Get the primary pricing entry of a property based on sanity schema rules:
+ * - If pricing array has 1 item, return that item.
+ * - If pricing array has > 1 items, return item at primaryPriceIndex.
+ * - If pricing array is empty/missing, fallback to root price.
+ */
+export function getPrimaryPricingEntry(property: Property): PricingEntry | null {
+  const pricing = property.pricing;
+  if (Array.isArray(pricing) && pricing.length > 0) {
+    if (pricing.length === 1) {
+      return pricing[0];
+    }
+    const idx = Number(property.primaryPriceIndex);
+    if (!Number.isNaN(idx) && idx >= 0 && idx < pricing.length) {
+      return pricing[idx];
+    }
+    return pricing[0];
+  }
+  if (property.price && property.price > 0) {
+    return {
+      price: property.price,
+      currency: "IDR",
+      transactionType: (property.transactionType ?? "jual").toLowerCase() as "jual" | "sewa",
+    };
+  }
+  return null;
+}
+
+/**
+ * Get numerical price amount of the primary price for sorting and range filtering.
+ */
+export function getPrimaryPriceAmount(property: Property): number {
+  const entry = getPrimaryPricingEntry(property);
+  if (entry?.price && entry.price > 0) return entry.price;
+  if (property.price && property.price > 0) return property.price;
+  return 0;
+}
+
+/**
+ * Format primary price with currency, period (e.g. / thn, / bln), and unit for display.
+ */
+export function getPrimaryPriceDisplay(property: Property): string | null {
+  const entry = getPrimaryPricingEntry(property);
+  if (!entry || !entry.price || entry.price <= 0) {
+    if (property.price && property.price > 0) {
+      return formatPriceWithCurrency(property.price, "IDR");
+    }
+    return null;
+  }
+
+  const basePrice = formatPriceWithCurrency(entry.price, entry.currency ?? "IDR");
+  if (!basePrice) return null;
+
+  let suffix = "";
+  if (entry.pricePeriod) {
+    const periodMap: Record<string, string> = {
+      year: " / thn",
+      month: " / bln",
+      day: " / hr",
+      once: "",
+    };
+    suffix += periodMap[entry.pricePeriod] ?? ` / ${entry.pricePeriod}`;
+  }
+
+  if (entry.priceUnit) {
+    suffix += ` (${entry.priceUnit})`;
+  }
+
+  return `${basePrice}${suffix}`;
+}
+
+/**
+ * Format a single PricingEntry object from property.ts pricing array into a human readable string.
+ * Example output:
+ * - "Jual: Rp 1.500.000.000"
+ * - "Sewa: Rp 50.000.000 / thn (Per Hektar)"
+ */
+export function formatPricingEntry(entry: PricingEntry): string {
+  const txLabel = entry.transactionType?.toLowerCase() === "sewa" ? "Sewa" : "Jual";
+  const formattedPrice = entry.price
+    ? formatPriceWithCurrency(entry.price, entry.currency ?? "IDR")
+    : null;
+
+  if (!formattedPrice) return `${txLabel}: Harga belum diatur`;
+
+  let periodStr = "";
+  if (entry.pricePeriod) {
+    const periodMap: Record<string, string> = {
+      year: " / thn",
+      month: " / bln",
+      day: " / hr",
+      once: "",
+    };
+    periodStr = periodMap[entry.pricePeriod] ?? ` / ${entry.pricePeriod}`;
+  }
+
+  let unitStr = "";
+  if (entry.priceUnit && entry.priceUnit.trim()) {
+    unitStr = ` (${entry.priceUnit.trim()})`;
+  }
+
+  return `${txLabel}: ${formattedPrice}${periodStr}${unitStr}`;
+}
+
 /** Normalize a contact number to WhatsApp-ready Indonesia format (e.g. 0812... -> 62812...). */
 export function normalizeWhatsAppNumber(number?: string | null): string {
   const digits = (number ?? "").replace(/\D/g, "");
@@ -198,12 +309,31 @@ export function normalizeWhatsAppNumber(number?: string | null): string {
   return digits;
 }
 
-/** Convert Sanity portable text blocks into a plain text string. */
-export function portableTextToText(blocks?: Array<{ children?: Array<{ text?: string }> }>): string {
+/** Convert Sanity portable text blocks or string into a plain text string. */
+export function portableTextToText(blocks?: unknown): string {
   if (!blocks) return "";
-  return blocks
-    .map((block) => (block.children ?? []).map((c) => c.text ?? "").join(""))
-    .join("\n\n");
+  if (typeof blocks === "string") return blocks;
+  if (Array.isArray(blocks)) {
+    return blocks
+      .map((block) => {
+        if (typeof block === "string") return block;
+        if (typeof block === "object" && block !== null) {
+          const children = (block as { children?: Array<{ text?: string }> }).children;
+          if (Array.isArray(children)) {
+            return children
+              .map((c) => (typeof c === "object" && c !== null ? c.text ?? "" : String(c)))
+              .join("");
+          }
+          if ("text" in block && typeof (block as { text?: unknown }).text === "string") {
+            return (block as { text: string }).text;
+          }
+        }
+        return "";
+      })
+      .filter(Boolean)
+      .join("\n\n");
+  }
+  return "";
 }
 
 export async function getPropertyList(): Promise<Property[]> {
@@ -268,4 +398,41 @@ export async function getServices(): Promise<Service[]> {
   } catch {
     return [];
   }
+}
+
+export async function getCategories(): Promise<string[]> {
+  try {
+    const list = await sanityFetch<Array<{ title?: string }>>(CATEGORIES_QUERY);
+    return list.map((c) => c.title).filter((t): t is string => Boolean(t));
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Extract all unique transaction types ("Jual", "Sewa") available for a property.
+ * If a property has both Jual and Sewa pricing entries, returns ["Jual", "Sewa"].
+ */
+export function getTransactionTypes(property: Property): string[] {
+  const typesSet = new Set<string>();
+
+  if (Array.isArray(property.pricing) && property.pricing.length > 0) {
+    property.pricing.forEach((entry) => {
+      if (entry.transactionType) {
+        const normalized = entry.transactionType.toLowerCase() === "sewa" ? "Sewa" : "Jual";
+        typesSet.add(normalized);
+      }
+    });
+  }
+
+  if (typesSet.size === 0 && property.transactionType) {
+    const normalized = property.transactionType.toLowerCase() === "sewa" ? "Sewa" : "Jual";
+    typesSet.add(normalized);
+  }
+
+  if (typesSet.size === 0) {
+    typesSet.add("Jual");
+  }
+
+  return Array.from(typesSet);
 }
