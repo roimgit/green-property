@@ -5,12 +5,6 @@ import {
   getPrimaryPriceDisplay,
   getTransactionTypes,
 } from "@/lib/sanity/data";
-
-function formatArea(area?: number): string | null {
-  if (!area) return null;
-  return area.toLocaleString("id-ID") + " m²";
-}
-import { imageUrl, formatPrice } from "@/lib/sanity/data";
 import { landAreaLabel, electricityValue } from "@/lib/sanity/specifications";
 
 export default function PropertyCard({ property }: { property: Property }) {

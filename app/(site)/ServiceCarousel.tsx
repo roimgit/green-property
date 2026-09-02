@@ -88,7 +88,9 @@ export default function ServiceCarousel({ services }: ServiceCarouselProps) {
               </h3>
               <div className="font-body-md text-body-md text-on-surface-variant leading-relaxed">
                 <span className="font-bold text-primary">Jual &amp; Sewa</span>{" "}
-                {service.desc && service.desc.length > 0 ? (
+                {typeof service.desc === "string" ? (
+                  service.desc
+                ) : service.desc && service.desc.length > 0 ? (
                   <PortableText value={service.desc} />
                 ) : (
                   ""

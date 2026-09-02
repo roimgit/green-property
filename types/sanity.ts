@@ -91,6 +91,7 @@ export interface Property {
   contact?: {
     _id?: string;
     name?: string;
+    jabatan?: string;
     phoneNumber?: string;
     whatsappNumber?: string;
     whatsappLink?: string;
@@ -167,12 +168,24 @@ export interface Testimonial {
   urutanTampil?: number;
 }
 
+export interface TestimonialSettings {
+  _id: string;
+  _type: "testimonialSettings";
+  title?: string;
+  source?: "manual" | "google";
+  googleMapsUrl?: string;
+  googlePlaceId?: string;
+  maxReviews?: number;
+  hideIfEmpty?: boolean;
+}
+
 export interface Service {
   _id: string;
   _type: "service";
   title?: string;
   icon?: string;
-  desc?: PortableTextBlock[];
+  // Legacy docs menyimpan string, docs baru menyimpan PortableText array
+  desc?: string | PortableTextBlock[];
   url?: string;
   urutanTampil?: number;
 }
@@ -181,6 +194,7 @@ export interface Contact {
   _id: string;
   _type: "contact";
   name?: string;
+  jabatan?: string;
   phoneNumber?: string;
   whatsappNumber?: string;
   whatsappLink?: string;

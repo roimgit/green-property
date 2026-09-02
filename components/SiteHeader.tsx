@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import GoogleTranslate from "@/components/GoogleTranslate";
 import LangSwitcher from "@/components/LangSwitcher";
 
@@ -15,6 +16,16 @@ const NAV_LINKS = [
 
 export default function SiteHeader({ children }: { children?: React.ReactNode }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const pathname = usePathname();
+
+  const isActive = (href: string) => {
+    if (href.includes("#")) {
+      const [base] = href.split("#");
+      return pathname === base || pathname === `${base}/`;
+    }
+    if (href === "/") return pathname === "/";
+    return pathname === href || pathname.startsWith(`${href}/`);
+  };
 
   return (
     <header className="w-full top-0 sticky z-50 bg-white border-b border-primary/15 shadow-sm">
@@ -33,15 +44,23 @@ export default function SiteHeader({ children }: { children?: React.ReactNode })
         )}
 
         <nav className="hidden min-[1350px]:flex items-center gap-lg">
-          {NAV_LINKS.map((link) => (
-            <Link
-              key={link.label}
-              href={link.href}
-              className="text-on-surface hover:text-primary transition-colors font-body-md text-body-md"
-            >
-              {link.label}
-            </Link>
-          ))}
+          {NAV_LINKS.map((link) => {
+            const active = isActive(link.href);
+            return (
+              <Link
+                key={link.label}
+                href={link.href}
+                aria-current={active ? "page" : undefined}
+                className={`relative py-1 font-body-md text-body-md transition-colors ${
+                  active
+                    ? "text-primary font-semibold after:absolute after:left-0 after:-bottom-1 after:h-0.5 after:w-full after:bg-primary after:rounded-full"
+                    : "text-on-surface hover:text-primary"
+                }`}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
           {/* Translation dropdown — aligned with the navigation on desktop */}
           <LangSwitcher />
         </nav>
@@ -72,16 +91,22 @@ export default function SiteHeader({ children }: { children?: React.ReactNode })
           }`}
       >
         <nav className="flex flex-col p-md gap-sm bg-white">
-          {NAV_LINKS.map((link) => (
-            <Link
-              key={link.label}
-              href={link.href}
-              onClick={() => setIsMenuOpen(false)}
-              className="text-on-surface hover:text-primary py-2 font-body-md text-body-md transition-colors"
-            >
-              {link.label}
-            </Link>
-          ))}
+          {NAV_LINKS.map((link) => {
+            const active = isActive(link.href);
+            return (
+              <Link
+                key={link.label}
+                href={link.href}
+                onClick={() => setIsMenuOpen(false)}
+                aria-current={active ? "page" : undefined}
+                className={`py-2 font-body-md text-body-md transition-colors ${
+                  active ? "text-primary font-semibold" : "text-on-surface hover:text-primary"
+                }`}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
           {/* Translation dropdown — sits directly below the navigation links */}
           <div className="pt-xs border-t border-primary/10">
             <LangSwitcher />

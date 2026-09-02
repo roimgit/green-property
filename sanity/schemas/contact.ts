@@ -12,6 +12,13 @@ export const contact = defineType({
             validation: (Rule) => Rule.required(),
         }),
         defineField({
+            name: 'jabatan',
+            title: 'Jabatan / Posisi',
+            type: 'string',
+            description: 'Contoh: Marketing Executive, Sales Manager, Customer Service — ditampilkan di bawah nama.',
+            placeholder: 'Marketing Executive',
+        }),
+        defineField({
             name: 'phoneNumber',
             title: 'Nomor Telepon',
             type: 'string',
@@ -48,7 +55,7 @@ export const contact = defineType({
     preview: {
         select: {
             title: 'name',
-            subtitle: 'phoneNumber',
+            subtitle: 'jabatan',
         },
     },
 })

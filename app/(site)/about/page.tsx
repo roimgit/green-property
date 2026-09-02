@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { getCompanyProfile, getPartnerLogos, imageUrl } from "@/lib/sanity/data";
 import { MapDisplay } from "@/app/contact/MapDisplay";
+import { CompanyProfile } from "@/types/sanity";
 
 export const dynamic = "force-dynamic";
 
@@ -16,8 +17,7 @@ export default async function AboutPage() {
   ]);
 
   const companyName = profile?.companyName ?? "Green Property";
-  const heroImage = imageUrl(profile?.heroImage) ?? "/hero.svg";
-  const logoImage = imageUrl(profile?.logo) ?? null;
+  const heroImage = imageUrl(profile?.heroBanner?.image) ?? "/hero.svg";
 
   const descriptionText = (profile?.description ?? [])
     .map((block) =>
@@ -32,16 +32,16 @@ export default async function AboutPage() {
     profile?.mission && profile.mission.length > 0
       ? profile.mission
       : [
-          "Memberikan solusi properti yang strategis dan terpercaya.",
-          "Membantu pelanggan menemukan kebutuhan hunian dan investasi yang tepat.",
-          "Menyediakan layanan profesional, cepat, dan transparan.",
-        ];
+        "Memberikan solusi properti yang strategis dan terpercaya.",
+        "Membantu pelanggan menemukan kebutuhan hunian dan investasi yang tepat.",
+        "Menyediakan layanan profesional, cepat, dan transparan.",
+      ];
 
   const partnerItems = partnerLogos.length > 0
     ? partnerLogos.map((logo) => ({
-        name: logo.namaPerusahaan ?? "Partner",
-        url: imageUrl(logo.logo),
-      }))
+      name: logo.namaPerusahaan ?? "Partner",
+      url: imageUrl(logo.logo),
+    }))
     : [];
 
   const mapsUrl = profile?.googleMapsUrl ?? null;
@@ -54,15 +54,6 @@ export default async function AboutPage() {
           <div className="relative flex flex-col lg:flex-row justify-between items-center gap-xl w-full">
             {/* Text Side - Extends wide horizontally */}
             <div className="flex-1 space-y-6 w-full">
-              {logoImage && (
-                <div className="inline-flex items-center gap-3 rounded-full border border-white/25 bg-white/10 px-4 py-2 text-xs font-semibold text-white uppercase tracking-wider backdrop-blur-md">
-                  <div className="relative h-6 w-6 overflow-hidden rounded-full bg-white/20 flex items-center justify-center">
-                    <Image src={logoImage} alt="Logo" fill className="object-contain" />
-                  </div>
-                  Tentang Perusahaan
-                </div>
-              )}
-
               <div className="space-y-4">
                 <h1 className="font-display text-display text-white leading-tight">
                   Tentang Kami
@@ -79,13 +70,6 @@ export default async function AboutPage() {
                 >
                   Lihat Properti
                   <span className="material-symbols-outlined text-sm">arrow_forward</span>
-                </Link>
-                <Link
-                  href="/contact"
-                  className="inline-flex items-center gap-2 border-2 border-white text-white px-8 py-3 rounded-full font-semibold hover:bg-white/10 transition-all"
-                >
-                  Hubungi Kami
-                  <span className="material-symbols-outlined text-sm">mail</span>
                 </Link>
               </div>
             </div>
@@ -116,10 +100,10 @@ export default async function AboutPage() {
               {/* Text Area - Extends horizontally */}
               <div className="flex-1 space-y-md">
                 <div className="flex items-center gap-3">
-                  <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary-container text-on-primary-container">
-                    <span className="material-symbols-outlined text-primary text-xl">business</span>
+                  <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary/10">
+                    <span className="material-symbols-outlined text-primary text-lg">business</span>
                   </div>
-                  <h2 className="font-headline-lg text-headline-lg font-bold text-on-surface">Profil Kami</h2>
+                  <h2 className="font-headline-md text-headline-md font-bold text-on-surface">Profil Kami</h2>
                 </div>
 
                 <div className="font-body-md text-body-md text-on-surface-variant leading-relaxed space-y-4">
@@ -151,10 +135,10 @@ export default async function AboutPage() {
           {/* Visi & Misi Section */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-lg">
             {/* Vision Card */}
-            <div className="rounded-2xl border border-primary/15 bg-gradient-to-br from-primary/5 to-primary/10 p-lg shadow-soft flex flex-col justify-between">
+            <div className="rounded-2xl border border-primary/15 bg-surface-container-lowest p-lg shadow-soft flex flex-col justify-between">
               <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                  <span className="material-symbols-outlined text-primary text-2xl">visibility</span>
+                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                  <span className="material-symbols-outlined text-primary text-lg">visibility</span>
                 </div>
                 <div className="space-y-sm">
                   <h3 className="font-headline-md text-headline-md font-bold text-on-surface">Visi Kami</h3>
@@ -189,7 +173,9 @@ export default async function AboutPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-lg">
             <div className="rounded-2xl border border-primary/15 bg-surface-container-lowest p-lg shadow-soft">
               <div className="flex items-center gap-3 mb-sm">
-                <span className="material-symbols-outlined text-primary text-xl">location_on</span>
+                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary/10 shrink-0">
+                  <span className="material-symbols-outlined text-primary text-lg">location_on</span>
+                </div>
                 <h4 className="font-headline-sm text-headline-sm font-bold text-on-surface">Lokasi Kantor</h4>
               </div>
               <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed whitespace-pre-line">
@@ -199,7 +185,9 @@ export default async function AboutPage() {
 
             <div className="rounded-2xl border border-primary/15 bg-surface-container-lowest p-lg shadow-soft">
               <div className="flex items-center gap-3 mb-sm">
-                <span className="material-symbols-outlined text-primary text-xl">schedule</span>
+                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary/10 shrink-0">
+                  <span className="material-symbols-outlined text-primary text-lg">schedule</span>
+                </div>
                 <h4 className="font-headline-sm text-headline-sm font-bold text-on-surface">Jam Operasional</h4>
               </div>
               <div className="space-y-xs font-body-md text-body-md">

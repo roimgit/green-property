@@ -21,7 +21,7 @@ export default async function ContactPage() {
         <div>
           <h1 className="font-display text-display text-on-surface">Hubungi Kami</h1>
           <p className="text-on-surface-variant font-body-md mt-sm">
-            Tim profesional Green Property siap membantu Anda menemukan properti impian. Hubungi kami untuk konsultasi gratis.
+            Tim profesional Green Property siap membantu Anda menemukan properti impian. Hubungi kami untuk konsultasi.
           </p>
         </div>
       </section>
@@ -99,10 +99,10 @@ export default async function ContactPage() {
           </div>
 
           <div className="rounded-2xl overflow-hidden shadow-lg border border-primary/20 hover:border-primary/40 transition-all">
-            <MapDisplay 
-              latitude={companyProfile.latitude} 
-              longitude={companyProfile.longitude} 
-              address={companyProfile?.address} 
+            <MapDisplay
+              latitude={companyProfile.latitude}
+              longitude={companyProfile.longitude}
+              address={companyProfile?.address}
             />
           </div>
 

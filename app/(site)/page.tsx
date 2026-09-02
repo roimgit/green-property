@@ -8,7 +8,7 @@ import {
   getPropertyList,
   getCompanyProfile,
   getPartnerLogos,
-  getTestimonials,
+  getEffectiveTestimonials,
   getServices,
   imageUrl,
 } from "@/lib/sanity/data";
@@ -98,7 +98,7 @@ async function PartnerLogoMarquee() {
 export default async function Home() {
   const [properties, testimonials, company, services] = await Promise.all([
     getPropertyList(),
-    getTestimonials(),
+    getEffectiveTestimonials(),
     getCompanyProfile(),
     getServices(),
   ]);
@@ -122,52 +122,51 @@ export default async function Home() {
       {/* ===== Hero ===== */}
       {heroImage && (
         <section className="max-w-container-max mx-auto px-4 lg:px-8 mb-xl">
-        <div className="relative w-full h-[600px] rounded-xl overflow-hidden shadow-soft group">
+          <div className="relative w-full h-[600px] rounded-xl overflow-hidden shadow-soft group">
 
-          {/* Background Image — rendered via onLoad (fade-in after loaded) */}
-          <div className="absolute inset-0 transition-transform duration-1000 group-hover:scale-105">
-            <HeroBannerImage
-              src={heroImage}
-              alt={heroBanner?.image?.alt ?? "Banner properti strategis Green Property"}
-            />
-          </div>
-
-          {/* Gradient Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-r from-on-background/90 via-on-background/60 to-transparent z-0" />
-
-          {/* Content Container - Memisahkan Posisi dan Lebar */}
-          <div className="absolute inset-0 flex flex-col justify-center px-6 md:px-12 lg:px-16 z-10 w-full">
-
-            {/* Inner Wrapper untuk membatasi lebar teks */}
-            <div className="max-w-2xl lg:max-w-3xl">
-              <h1 className="font-display text-display text-surface-container-lowest mb-md drop-shadow-md leading-tight">
-                {heroBanner?.heading ??
-                  "Solusi Strategis Properti Industrial &amp; Residensial di Indonesia"}
-              </h1>
-              <p className="font-body-lg text-body-lg text-surface-bright mb-lg">
-                {heroBanner?.description ??
-                  "Spesialis penyedia lahan untuk Vendor Hyundai dan hunian eksklusif dengan layanan terpercaya."}
-              </p>
-
-              {/* Button Group - Ditambah flex-wrap agar responsif di mobile */}
-              <div className="flex flex-wrap gap-4">
-                {(heroBanner?.links?.filter((l) => l.label) ?? []).map((button) =>
-                  renderLink(
-                    button,
-                    `${
-                      button.style !== "ghost"
-                        ? "bg-primary-container text-on-primary hover:bg-primary"
-                        : "bg-transparent border-2 border-surface-container-lowest text-surface-container-lowest backdrop-blur-sm hover:bg-surface-container-lowest/20"
-                    } px-8 py-3 rounded-full font-body-md text-body-md font-semibold transition-colors shadow-sm flex items-center justify-center gap-2`,
-                  ),
-                )}
-              </div>
+            {/* Background Image — rendered via onLoad (fade-in after loaded) */}
+            <div className="absolute inset-0 transition-transform duration-1000 group-hover:scale-105">
+              <HeroBannerImage
+                src={heroImage}
+                alt={heroBanner?.image?.alt ?? "Banner properti strategis Green Property"}
+              />
             </div>
 
+            {/* Gradient Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-r from-on-background/90 via-on-background/60 to-transparent z-0" />
+
+            {/* Content Container - Memisahkan Posisi dan Lebar */}
+            <div className="absolute inset-0 flex flex-col justify-center px-6 md:px-12 lg:px-16 z-10 w-full">
+
+              {/* Inner Wrapper untuk membatasi lebar teks */}
+              <div className="max-w-2xl lg:max-w-3xl">
+                <h1 className="font-display text-display text-surface-container-lowest mb-md drop-shadow-md leading-tight">
+                  {heroBanner?.heading ??
+                    "Solusi Strategis Properti Industrial &amp; Residensial di Indonesia"}
+                </h1>
+                <p className="font-body-lg text-body-lg text-surface-bright mb-lg">
+                  {heroBanner?.description ??
+                    "Spesialis penyedia lahan untuk Vendor Hyundai dan hunian eksklusif dengan layanan terpercaya."}
+                </p>
+
+                {/* Button Group - Ditambah flex-wrap agar responsif di mobile */}
+                <div className="flex flex-wrap gap-4">
+                  {(heroBanner?.links?.filter((l) => l.label) ?? []).map((button) =>
+                    renderLink(
+                      button,
+                      `${button.style !== "ghost"
+                        ? "bg-primary-container text-on-primary hover:bg-primary"
+                        : "bg-transparent border-2 border-surface-container-lowest text-surface-container-lowest backdrop-blur-sm hover:bg-surface-container-lowest/20"
+                      } px-8 py-3 rounded-full font-body-md text-body-md font-semibold transition-colors shadow-sm flex items-center justify-center gap-2`,
+                    ),
+                  )}
+                </div>
+              </div>
+
+            </div>
           </div>
-        </div>
-      </section>
-    )}
+        </section>
+      )}
 
       {/* ===== Service Portfolio ===== */}
       {services.length > 0 && (

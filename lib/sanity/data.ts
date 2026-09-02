@@ -5,6 +5,7 @@ import type {
   CompanyProfile,
   PartnerLogo,
   Testimonial,
+  TestimonialSettings,
   Contact,
   Service,
   SanityImage,
@@ -26,7 +27,7 @@ const PROPERTY_LIST_QUERY = groq`*[_type == "property"]{
   mainImage{asset->{url},url,alt},
   gallery[]{asset->{url},url,alt},
   specs,
-  contact->{_id,name,phoneNumber,whatsappNumber,whatsappLink,kakaoTalkNumber,kakaoTalkLink,email},
+  contact->{_id,name,jabatan,phoneNumber,whatsappNumber,whatsappLink,kakaoTalkNumber,kakaoTalkLink,email},
   facilities
 } | order(_createdAt desc)`;
 
@@ -46,7 +47,7 @@ const PROPERTY_BY_SLUG_QUERY = groq`*[_type == "property" && slug.current == $sl
   mainImage{asset->{url},url,alt},
   gallery[]{asset->{url},url,alt},
   specs,
-  contact->{_id,name,phoneNumber,whatsappNumber,whatsappLink,kakaoTalkNumber,kakaoTalkLink,email},
+  contact->{_id,name,jabatan,phoneNumber,whatsappNumber,whatsappLink,kakaoTalkNumber,kakaoTalkLink,email},
   facilities,
   description
 }`;
@@ -65,7 +66,7 @@ const SIMILAR_PROPERTIES_QUERY = groq`*[_type == "property" && slug.current != $
   isFeatured,
   mainImage{asset->{url},url,alt},
   specs,
-  contact->{_id,name,phoneNumber,whatsappNumber,whatsappLink,kakaoTalkNumber,kakaoTalkLink,email}
+  contact->{_id,name,jabatan,phoneNumber,whatsappNumber,whatsappLink,kakaoTalkNumber,kakaoTalkLink,email}
 }`;
 
 const COMPANY_QUERY = groq`*[_type == "companyProfile"][0]{
@@ -113,6 +114,7 @@ const TESTIMONIALS_QUERY = groq`*[_type == "testimonial"]{
 const CONTACTS_QUERY = groq`*[_type == "contact"]{
   _id,
   name,
+  jabatan,
   phoneNumber,
   whatsappNumber,
   whatsappLink,
@@ -135,6 +137,16 @@ const CATEGORIES_QUERY = groq`*[_type == "category"]{
   title,
   slug
 } | order(title asc)`;
+
+const TESTIMONIAL_SETTINGS_QUERY = groq`*[_type == "testimonialSettings"][0]{
+  _id,
+  title,
+  source,
+  googleMapsUrl,
+  googlePlaceId,
+  maxReviews,
+  hideIfEmpty
+}`;
 
 /** Extract a usable image URL from a Sanity image field. */
 export function imageUrl(image?: SanityImage | null): string | null {
@@ -387,6 +399,77 @@ export async function getTestimonials(): Promise<Testimonial[]> {
   } catch {
     return [];
   }
+}
+
+export async function getTestimonialSettings(): Promise<TestimonialSettings | null> {
+  try {
+    return (await sanityFetch<TestimonialSettings | null>(TESTIMONIAL_SETTINGS_QUERY)) ?? null;
+  } catch {
+    return null;
+  }
+}
+
+/** Extract Place ID dari URL Google Maps jika admin tidak mengisi field googlePlaceId. */
+function extractPlaceIdFromUrl(url?: string | null): string | null {
+  if (!url) return null;
+  // Pola ?place_id=ChIJ... atau &place_id=...
+  const m1 = url.match(/[?&]place_id=([^&]+)/i);
+  if (m1) return decodeURIComponent(m1[1]);
+  // Pola /place/.../data=...!1s0x...:0x... (hex place id kadang dalam data)
+  // fallback: cari ChIJ... (27+ char)
+  const m2 = url.match(/(ChIJ[0-9A-Za-z_-]{20,})/);
+  if (m2) return m2[1];
+  return null;
+}
+
+interface GoogleReview {
+  author_name?: string;
+  rating?: number;
+  text?: string;
+  relative_time_description?: string;
+  profile_photo_url?: string;
+  time?: number;
+}
+
+/** Ambil reviews dari Google Places API (classic). Kembalikan array Testimonial yang kompatibel. */
+async function fetchGoogleReviews(placeId: string, maxReviews = 6): Promise<Testimonial[]> {
+  const apiKey = process.env.GOOGLE_PLACES_API_KEY || process.env.GOOGLE_MAPS_API_KEY || process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+  if (!apiKey) {
+    console.warn("[testimonials] GOOGLE_PLACES_API_KEY belum diset, skip Google Reviews");
+    return [];
+  }
+  try {
+    const url = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${encodeURIComponent(placeId)}&fields=reviews,rating,user_ratings_total&key=${encodeURIComponent(apiKey)}&language=id`;
+    const res = await fetch(url, { next: { revalidate: 3600 } });
+    if (!res.ok) return [];
+    const json = (await res.json()) as { status?: string; result?: { reviews?: GoogleReview[] } };
+    if (json.status !== "OK" || !json.result?.reviews) return [];
+    const reviews = json.result.reviews.slice(0, maxReviews);
+    return reviews.map((r, idx) => ({
+      _id: `google-${placeId}-${r.time ?? idx}`,
+      nama: r.author_name ?? "Google User",
+      rating: typeof r.rating === "number" ? r.rating : 5,
+      kutipan: r.text ?? "",
+      jabatan: r.relative_time_description ? `Google Reviews · ${r.relative_time_description}` : "Google Reviews",
+      photo: r.profile_photo_url ? ({ url: r.profile_photo_url } as SanityImage) : undefined,
+      urutanTampil: idx,
+    }));
+  } catch {
+    return [];
+  }
+}
+
+/** Pilihan admin: ambil testimoni dari Sanity manual ATAU Google Maps. Jika sumber=google tapi gagal/kosong, kembalikan [] agar section hide (opsional). */
+export async function getEffectiveTestimonials(): Promise<Testimonial[]> {
+  const settings = await getTestimonialSettings();
+  // default manual jika belum ada dokumen pengaturan
+  if (settings?.source === "google") {
+    const placeId = (settings.googlePlaceId?.trim() || extractPlaceIdFromUrl(settings.googleMapsUrl) || "").trim();
+    if (!placeId) return [];
+    const google = await fetchGoogleReviews(placeId, settings.maxReviews ?? 6);
+    return google;
+  }
+  return getTestimonials();
 }
 
 export async function getContacts(): Promise<Contact[]> {

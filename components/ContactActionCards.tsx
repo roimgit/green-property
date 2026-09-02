@@ -16,47 +16,64 @@ const CHANNEL_LABELS: Record<Channel, string> = {
 };
 
 function WhatsAppIcon() {
+  // Premium WhatsApp — official green with authentic glyph, subtle highlight ring
   return (
     <svg viewBox="0 0 64 64" aria-hidden="true" className="h-7 w-7 drop-shadow-sm">
       <defs>
-        <linearGradient id="waGradient" x1="0%" x2="100%" y1="0%" y2="100%">
-          <stop offset="0%" stopColor="#2BE37D" />
-          <stop offset="100%" stopColor="#1FAE5A" />
+        <linearGradient id="waGradient2" x1="12%" y1="12%" x2="88%" y2="88%">
+          <stop offset="0%" stopColor="#34E17A" />
+          <stop offset="100%" stopColor="#128C7E" />
         </linearGradient>
       </defs>
-      <circle cx="32" cy="32" r="28" fill="url(#waGradient)" />
+      <circle cx="32" cy="32" r="28" fill="url(#waGradient2)" />
+      <circle cx="32" cy="32" r="28" fill="none" stroke="white" strokeOpacity="0.18" strokeWidth="1.5" />
+      {/* speech bubble + handset — simplified authentic WhatsApp glyph */}
       <path
-        d="M41.9 22.1c-1.1-1.9-2.8-3-5.4-3.3-2.7-.3-5.4.4-7.9 2.1-2.4 1.7-4.1 4.1-5.2 7.1-1.1 3-1.1 6.2.2 9.1.6.9 1.4 1.8 2.4 2.5l-1.3 3.9 4.1-1.4c1.1.7 2.3 1.2 3.6 1.5 3 .8 6.1.5 8.8-.9 2.7-1.4 4.7-3.7 5.5-6.6 1-3.2.5-6.9-1.8-9.9Zm-8.1 16.4c-1.6 0-3.2-.4-4.6-1.2l-.3-.2-2.4.8.8-2.2-.2-.3c-1.4-2.2-1.8-4.8-1-7.4.8-2.6 2.6-4.8 5.1-6.1 2.5-1.3 5.5-1.5 8.1-.5 2.5 1 4.5 3 5.6 5.5 1.1 2.5 1 5.3-.2 7.7-1.3 2.4-3.5 4.2-6 5.1-1.4.5-2.9.8-4.3.8Zm7.1-12.2c-.3-.2-1.8-.9-2.4-1-.6-.1-1-.1-1.4.2-.4.3-.9 1-.9 1.1-.1.1-.4.5-.1 1.1.3.6 1.2 1.8 2.4 2.8 1.7 1.6 2.8 1.9 3.3 2.1.5.2 1 .1 1.4-.1.4-.2 1.3-.8 1.5-1.6.2-.8.2-1.3.1-1.5-.1-.1-.4-.2-.8-.4-.4-.2-1.9-1-2.3-1.1-.4-.1-.7-.1-1 .1Z"
+        d="M32 18.2c-7.1 0-12.9 5.4-12.9 12 0 2.1.6 4.1 1.7 5.9l-1.1 4 4.2-1.1c1.7 1 3.6 1.5 5.6 1.5 7.1 0 12.9-5.4 12.9-12S39.1 18.2 32 18.2Zm7.1 17.2c-.4 1.2-2.2 2.2-3 2.3-.8.2-1.6.2-2.6-.1-.6-.2-1.4-.5-2.4-1-2.1-1-3.8-2.5-5.1-4.3-1-1.4-1.5-2.9-1.6-4.2 0-.8.2-1.6.6-2.1.3-.4.7-.5 1-.5h.7c.2 0 .5 0 .7.6.2.5.8 1.9.9 2 .1.1.1.3 0 .5-.1.2-.2.4-.4.6-.2.2-.3.3-.5.5-.1.2-.3.3-.1.7.2.4.9 1.5 1.9 2.4 1.3 1.2 2.4 1.6 2.9 1.8.4.2.6.1.8-.1.2-.2.9-1 1.1-1.3.2-.3.4-.3.7-.2.3.1 1.7.8 2 1 .3.1.5.2.6.3.1.1.2.5-.1 1Z"
         fill="white"
       />
+      <circle cx="46.5" cy="16.5" r="3.2" fill="white" fillOpacity="0.95" />
+      <path d="M44.8 16.5l1.1 1.1 2.2-2.2" fill="none" stroke="#128C7E" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
 
 function KakaoTalkIcon() {
+  // Premium KakaoTalk — official yellow #FEE500 with brown #3C1E1E bubble, crisp TALK dots
   return (
     <svg viewBox="0 0 64 64" aria-hidden="true" className="h-7 w-7 drop-shadow-sm">
       <circle cx="32" cy="32" r="28" fill="#FEE500" />
+      <circle cx="32" cy="32" r="28" fill="none" stroke="#3C1E1E" strokeOpacity="0.08" strokeWidth="1.5" />
       <path
-        d="M32.2 15.5c-9.3 0-16.8 6.1-16.8 13.7 0 5.1 3.6 9.5 8.9 11.8l-2.1 8.4 8.4-5.6c1.2.1 2.4.2 3.5.2 9.3 0 16.8-6.1 16.8-13.7 0-7.6-7.5-13.8-16.7-13.8Zm-8.1 17.8c-.9 0-1.7-.7-1.7-1.7s.7-1.7 1.7-1.7h9.7l3.8 5.1 3.1-5.1h5.2c.9 0 1.7.7 1.7 1.7s-.7 1.7-1.7 1.7h-10.8l-3.4 5.6-3.7-5.6h-3.9Zm-3.6-5.6c0-.9.7-1.7 1.7-1.7h18.8c.9 0 1.7.7 1.7 1.7s-.7 1.7-1.7 1.7H22.2c-.9 0-1.7-.7-1.7-1.7Zm5.3 8.8h10.7c.9 0 1.7.7 1.7 1.7s-.7 1.7-1.7 1.7H25.8c-.9 0-1.7-.7-1.7-1.7s.7-1.7 1.7-1.7Z"
+        d="M32 16.2c-8.7 0-15.8 5.7-15.8 12.7 0 4.3 2.7 8.1 6.8 10.4l-1.5 5.9 6.2-4.1c1.1.2 2.2.3 3.4.3 8.7 0 15.8-5.7 15.8-12.7S40.7 16.2 32 16.2Z"
         fill="#3C1E1E"
+      />
+      <path
+        d="M26.2 28.5c0-.7.6-1.3 1.3-1.3h9.1c.7 0 1.3.6 1.3 1.3s-.6 1.3-1.3 1.3h-9.1c-.7 0-1.3-.6-1.3-1.3Zm-4.4 4.6c0-.7.6-1.3 1.3-1.3h17c.7 0 1.3.6 1.3 1.3s-.6 1.3-1.3 1.3h-17c-.7 0-1.3-.6-1.3-1.3Zm3.6 4.6c0-.7.6-1.3 1.3-1.3h10.1c.7 0 1.3.6 1.3 1.3s-.6 1.3-1.3 1.3H26.7c-.7 0-1.3-.6-1.3-1.3Z"
+        fill="#FEE500"
       />
     </svg>
   );
 }
 
 function EmailIcon() {
+  // Premium Email — indigo gradient envelope with soft highlight
   return (
     <svg viewBox="0 0 64 64" aria-hidden="true" className="h-7 w-7 drop-shadow-sm">
       <defs>
-        <linearGradient id="emailGradient" x1="0%" x2="100%" y1="0%" y2="100%">
-          <stop offset="0%" stopColor="#EAF2FF" />
-          <stop offset="100%" stopColor="#DCE9FF" />
+        <linearGradient id="emailGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#EFF6FF" />
+          <stop offset="100%" stopColor="#DBEAFE" />
+        </linearGradient>
+        <linearGradient id="envGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#3B82F6" />
+          <stop offset="100%" stopColor="#1E40AF" />
         </linearGradient>
       </defs>
-      <rect x="8" y="12" width="48" height="40" rx="11" fill="url(#emailGradient)" />
-      <path d="M14 20.5 32 35l18-14.5" fill="none" stroke="#1D4ED8" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M16 42V22l16 12 16-12v20H16Z" fill="#DBEAFE" stroke="#1D4ED8" strokeWidth="3" strokeLinejoin="round" />
+      <rect x="7" y="13" width="50" height="38" rx="12" fill="url(#emailGrad2)" stroke="#1E40AF" strokeOpacity="0.12" />
+      <path d="M10 18.5 32 34l22-15.5" fill="none" stroke="url(#envGrad)" strokeWidth="3.8" strokeLinecap="round" strokeLinejoin="round" opacity="0.95" />
+      <path d="M9 42.5V20.5L32 36l23-15.5v22a4 4 0 0 1-4 4H13a4 4 0 0 1-4-4Z" fill="white" fillOpacity="0.9" stroke="url(#envGrad)" strokeWidth="2.2" strokeLinejoin="round" />
+      <path d="M14 27.5l8 6.5M50 27.5l-8 6.5" stroke="#1E40AF" strokeOpacity="0.18" strokeWidth="1.6" strokeLinecap="round" />
     </svg>
   );
 }
@@ -150,9 +167,18 @@ export function ContactActionCards({ contacts }: { contacts: Contact[] }) {
                     <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-primary/10 transition-colors group-hover:bg-primary/20">
                       <span className="material-symbols-outlined text-xl text-primary">person</span>
                     </div>
-                    <h2 className="line-clamp-2 font-headline-sm text-headline-sm text-on-surface">
-                      {contact.name || "Tim Sales"}
-                    </h2>
+                    <div className="min-w-0 flex-1">
+                      <h2 className="line-clamp-1 font-headline-sm text-headline-sm text-on-surface">
+                        {contact.name || "Tim Sales"}
+                      </h2>
+                      {contact.jabatan ? (
+                        <p className="mt-0.5 line-clamp-1 text-xs font-semibold uppercase tracking-wider text-primary/80">
+                          {contact.jabatan}
+                        </p>
+                      ) : (
+                        <p className="mt-0.5 text-xs font-medium text-on-surface-variant">Tim Green Property</p>
+                      )}
+                    </div>
                   </div>
                   <div className="mt-1 h-0.5 w-8 rounded-full bg-gradient-to-r from-primary to-primary/30" />
                 </div>

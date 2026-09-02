@@ -126,7 +126,6 @@ export default async function SiteFooter() {
           </div>
 
           <div className="space-y-md">
-            <h4 className="font-headline-sm text-headline-sm font-semibold text-white">Hubungi Kami</h4>
             <ContactLink contacts={contacts} />
           </div>
         </div>
