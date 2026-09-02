@@ -1,4 +1,4 @@
-import { getContacts, getCompanyProfile } from "@/lib/sanity/data";
+import { getContacts, getCompanyProfile, getFormattedOperationalHours } from "@/lib/sanity/data";
 import type { Contact } from "@/types/sanity";
 import { MapDisplay } from "./MapDisplay";
 import { ContactActionCards } from "@/components/ContactActionCards";
@@ -65,23 +65,14 @@ export default async function ContactPage() {
                 <h3 className="font-headline-sm text-headline-sm text-on-surface mb-xs">
                   Jam Operasional
                 </h3>
-                <p className="text-on-surface-variant font-body-md">
-                  {companyProfile?.operationalHours ? (
-                    <>
-                      {companyProfile.operationalHours.weekdays && (
-                        <>Senin - Jumat: {companyProfile.operationalHours.weekdays}<br /></>
-                      )}
-                      {companyProfile.operationalHours.weekend && (
-                        <>Sabtu: {companyProfile.operationalHours.weekend}<br /></>
-                      )}
-                      {companyProfile.operationalHours.weekend2 && (
-                        <>Minggu: {companyProfile.operationalHours.weekend2}</>
-                      )}
-                    </>
-                  ) : (
-                    <>Jam operasional tidak tersedia</>
-                  )}
-                </p>
+                <div className="text-on-surface-variant font-body-md space-y-1">
+                  {getFormattedOperationalHours(companyProfile?.operationalHours).map((item) => (
+                    <div key={item.label} className="flex justify-between gap-4">
+                      <span>{item.label}:</span>
+                      <span className="font-semibold text-on-surface">{item.value}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>

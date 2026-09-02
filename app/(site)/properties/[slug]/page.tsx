@@ -8,12 +8,11 @@ import {
   getPropertyBySlug,
   getSimilarProperties,
   getCompanyProfile,
-  formatPrice,
   formatPriceWithCurrency,
   normalizeWhatsAppNumber,
   portableTextToText,
 } from "@/lib/sanity/data";
-import { normalizeSpecs } from "@/lib/sanity/specifications";
+import { normalizePropertySpecs } from "@/lib/sanity/specifications";
 
 export const dynamic = "force-dynamic";
 
@@ -145,7 +144,7 @@ export default async function PropertyDetailPage({ params }: Props) {
         }]
       : [];
   const specs = property.specs;
-  const displaySpecs = normalizeSpecs(specs);
+  const displaySpecs = normalizePropertySpecs(property);
   const description = portableTextToText(property.description);
   const category =
     typeof property.category === "string" ? property.category : "";

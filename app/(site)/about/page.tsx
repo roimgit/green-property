@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { getCompanyProfile, getPartnerLogos, imageUrl } from "@/lib/sanity/data";
+import { getCompanyProfile, getPartnerLogos, getFormattedOperationalHours, imageUrl } from "@/lib/sanity/data";
 import { MapDisplay } from "@/app/contact/MapDisplay";
 import { CompanyProfile } from "@/types/sanity";
 
@@ -191,18 +191,17 @@ export default async function AboutPage() {
                 <h4 className="font-headline-sm text-headline-sm font-bold text-on-surface">Jam Operasional</h4>
               </div>
               <div className="space-y-xs font-body-md text-body-md">
-                <div className="flex justify-between border-b border-outline-variant/30 py-1">
-                  <span className="text-on-surface-variant">Senin - Jumat</span>
-                  <span className="font-semibold text-on-surface">{profile?.operationalHours?.weekdays ?? "08:00 - 17:00"}</span>
-                </div>
-                <div className="flex justify-between border-b border-outline-variant/30 py-1">
-                  <span className="text-on-surface-variant">Sabtu</span>
-                  <span className="font-semibold text-on-surface">{profile?.operationalHours?.weekend ?? "08:00 - 12:00"}</span>
-                </div>
-                <div className="flex justify-between py-1">
-                  <span className="text-on-surface-variant">Minggu</span>
-                  <span className="font-semibold text-on-surface">{profile?.operationalHours?.weekend2 ?? "Tutup"}</span>
-                </div>
+                {getFormattedOperationalHours(profile?.operationalHours).map((item, idx, arr) => (
+                  <div
+                    key={item.label}
+                    className={`flex justify-between py-1.5 ${
+                      idx < arr.length - 1 ? "border-b border-outline-variant/30" : ""
+                    }`}
+                  >
+                    <span className="text-on-surface-variant font-medium">{item.label}</span>
+                    <span className="font-semibold text-on-surface">{item.value}</span>
+                  </div>
+                ))}
               </div>
             </div>
           </div>

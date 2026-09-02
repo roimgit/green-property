@@ -88,6 +88,7 @@ export interface Property {
   mainImage?: SanityImage;
   gallery?: SanityImage[];
   specs?: PropertySpecs;
+  specsList?: PropertySpecItem[];
   contact?: {
     _id?: string;
     name?: string;
@@ -105,6 +106,13 @@ export interface Property {
 }
 
 export interface OperationalHours {
+  monday?: string;
+  tuesday?: string;
+  wednesday?: string;
+  thursday?: string;
+  friday?: string;
+  saturday?: string;
+  sunday?: string;
   weekdays?: string;
   weekend?: string;
   weekend2?: string;
