@@ -1,11 +1,12 @@
 import type { SchemaTypeDefinition } from "sanity";
 import { ImageInputWithUrl } from "../components/ImageInputWithUrl";
 import { GoogleMapsUrlInput } from "../components/GoogleMapsUrlInput";
+import { ColorInput } from "../components/ColorInput";
 
-/** Dokumen "Tentang Kami" (companyProfile) — singelton-ish company info. */
+/** Dokumen "Setting Brand" — gabungan Tentang Kami + Pengaturan Brand/Warna (singleton). */
 export const companyProfile: SchemaTypeDefinition = {
   name: "companyProfile",
-  title: "Tentang Kami",
+  title: "Setting Brand",
   type: "document",
   fields: [
     {
@@ -13,6 +14,18 @@ export const companyProfile: SchemaTypeDefinition = {
       title: "Judul",
       type: "string",
       validation: (Rule) => Rule.required(),
+    },
+    {
+      name: "primaryColor",
+      title: "Primary Color Brand",
+      description: "Warna utama brand (hex). Semua warna primary di website akan mengikuti warna ini. Contoh #00602c — kosongkan untuk pakai default #00602c",
+      type: "string",
+      initialValue: "#00602c",
+      validation: (Rule) =>
+        Rule.regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/, { name: "hex color" }).error(
+          "Gunakan format hex #RRGGBB, contoh #00602c",
+        ),
+      components: { input: ColorInput },
     },
     {
       name: "slug",

@@ -8,12 +8,11 @@ import {
   getPropertyBySlug,
   getSimilarProperties,
   getCompanyProfile,
-  formatPrice,
   formatPriceWithCurrency,
   normalizeWhatsAppNumber,
   portableTextToText,
 } from "@/lib/sanity/data";
-import { normalizeSpecs } from "@/lib/sanity/specifications";
+import { normalizePropertySpecs } from "@/lib/sanity/specifications";
 
 export const dynamic = "force-dynamic";
 
@@ -104,11 +103,17 @@ export default async function PropertyDetailPage({ params }: Props) {
     notFound();
   }
 
-  const galleryImages = property.gallery?.length
-    ? property.gallery
-    : property.mainImage
-      ? [property.mainImage]
-      : [];
+  const hasValidImage = (img: unknown) => {
+    const u = (img as { asset?: { url?: string }; url?: string })?.asset?.url ?? (img as { url?: string })?.url;
+    return typeof u === "string" && u.trim() !== "";
+  };
+  const galleryValid = (property.gallery ?? []).filter(hasValidImage);
+  const galleryImages =
+    galleryValid.length > 0
+      ? galleryValid
+      : hasValidImage(property.mainImage)
+        ? [property.mainImage as NonNullable<typeof property.mainImage>]
+        : [];
   const pricingItems = Array.isArray(property.pricing) ? property.pricing : [];
   const selectedPricingIndex = Number(property.primaryPriceIndex ?? 0);
   const selectedPricing =
@@ -145,7 +150,7 @@ export default async function PropertyDetailPage({ params }: Props) {
         }]
       : [];
   const specs = property.specs;
-  const displaySpecs = normalizeSpecs(specs);
+  const displaySpecs = normalizePropertySpecs(property);
   const description = portableTextToText(property.description);
   const category =
     typeof property.category === "string" ? property.category : "";

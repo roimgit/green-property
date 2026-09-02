@@ -1,10 +1,10 @@
 import type { SchemaTypeDefinition } from "sanity";
 import { ImageInputWithUrl } from "../components/ImageInputWithUrl";
 
-/** Dokumen "Testimoni" (testimonial). */
+/** Dokumen "Testimoni" (testimonial) — legacy items, tetap dibaca sebagai fallback. Untuk input baru, gunakan Testimoni (pengaturan) dengan sumber Manual. */
 export const testimonial: SchemaTypeDefinition = {
   name: "testimonial",
-  title: "Testimoni",
+  title: "Item Testimoni (Legacy)",
   type: "document",
   fields: [
     {

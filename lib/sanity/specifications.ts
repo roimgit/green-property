@@ -1,4 +1,4 @@
-import type { PropertySpecItem, PropertySpecs } from "@/types/sanity";
+import type { Property, PropertySpecItem, PropertySpecs } from "@/types/sanity";
 
 interface SpecEntry {
   label: string;
@@ -61,19 +61,57 @@ export function normalizeSpecs(specs?: PropertySpecs): SpecEntry[] {
   return legacySpecsToItems(specs);
 }
 
-export function specValue(specs: PropertySpecs | undefined, label: RegExp): string | undefined {
-  for (const item of specs?.specsList ?? []) {
+/** Normalisasi dari dokumen Property (top-level specsList + fallback legacy specs) */
+export function normalizePropertySpecs(property: Pick<Property, "specs" | "specsList">): SpecEntry[] {
+  const topList = (property.specsList ?? []).filter(
+    (item) => item && (item.label || item.value),
+  );
+  if (topList.length > 0) {
+    return topList.map((item) => ({
+      label: item.label?.trim() || "Spesifikasi",
+      icon: item.icon || "check_circle",
+      value: item.value?.trim() || "",
+    }));
+  }
+  return normalizeSpecs(property.specs);
+}
+
+function specValueFromList(list: PropertySpecItem[] | undefined, label: RegExp): string | undefined {
+  for (const item of list ?? []) {
     if (item.label && label.test(item.label.toLowerCase())) return item.value;
   }
   return undefined;
 }
 
-export function landAreaLabel(specs?: PropertySpecs): string | undefined {
-  if (specs?.landArea) return specs.landArea.toLocaleString("id-ID") + " m²";
+export function specValue(specs: PropertySpecs | undefined, label: RegExp): string | undefined {
+  return specValueFromList(specs?.specsList, label);
+}
+
+// Backcompat: terima Property (top-level specsList) ATAU PropertySpecs (legacy object)
+export function landAreaLabel(
+  input?: Pick<Property, "specs" | "specsList"> | PropertySpecs,
+): string | undefined {
+  if (!input) return undefined;
+  const maybeProp = input as Pick<Property, "specs" | "specsList">;
+  if ("specs" in maybeProp || "specsList" in maybeProp) {
+    if (maybeProp.specs?.landArea) return maybeProp.specs.landArea.toLocaleString("id-ID") + " m²";
+    return specValueFromList(maybeProp.specsList ?? maybeProp.specs?.specsList, /(tanah|land)/i);
+  }
+  const specs = input as PropertySpecs;
+  if (specs.landArea) return specs.landArea.toLocaleString("id-ID") + " m²";
   return specValue(specs, /(tanah|land)/i);
 }
 
-export function electricityValue(specs?: PropertySpecs): string | undefined {
-  if (specs?.electricity) return specs.electricity;
+export function electricityValue(
+  input?: Pick<Property, "specs" | "specsList"> | PropertySpecs,
+): string | undefined {
+  if (!input) return undefined;
+  const maybeProp = input as Pick<Property, "specs" | "specsList">;
+  if ("specs" in maybeProp || "specsList" in maybeProp) {
+    if (maybeProp.specs?.electricity) return maybeProp.specs.electricity;
+    return specValueFromList(maybeProp.specsList ?? maybeProp.specs?.specsList, /(listrik|watt|va|electricity|power)/i);
+  }
+  const specs = input as PropertySpecs;
+  if (specs.electricity) return specs.electricity;
   return specValue(specs, /(listrik|watt|va|electricity|power)/i);
 }

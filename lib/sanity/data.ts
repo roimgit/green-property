@@ -27,6 +27,7 @@ const PROPERTY_LIST_QUERY = groq`*[_type == "property"]{
   mainImage{asset->{url},url,alt},
   gallery[]{asset->{url},url,alt},
   specs,
+  specsList[]{icon,label,value},
   contact->{_id,name,jabatan,phoneNumber,whatsappNumber,whatsappLink,kakaoTalkNumber,kakaoTalkLink,email},
   facilities
 } | order(_createdAt desc)`;
@@ -47,6 +48,7 @@ const PROPERTY_BY_SLUG_QUERY = groq`*[_type == "property" && slug.current == $sl
   mainImage{asset->{url},url,alt},
   gallery[]{asset->{url},url,alt},
   specs,
+  specsList[]{icon,label,value},
   contact->{_id,name,jabatan,phoneNumber,whatsappNumber,whatsappLink,kakaoTalkNumber,kakaoTalkLink,email},
   facilities,
   description
@@ -66,6 +68,7 @@ const SIMILAR_PROPERTIES_QUERY = groq`*[_type == "property" && slug.current != $
   isFeatured,
   mainImage{asset->{url},url,alt},
   specs,
+  specsList[]{icon,label,value},
   contact->{_id,name,jabatan,phoneNumber,whatsappNumber,whatsappLink,kakaoTalkNumber,kakaoTalkLink,email}
 }`;
 
@@ -73,6 +76,7 @@ const COMPANY_QUERY = groq`*[_type == "companyProfile"][0]{
   _id,
   title,
   companyName,
+  primaryColor,
   logo{asset->{url,metadata{dimensions{width,height}}},url,alt},
   tabLogo{mode,image{asset->{url,metadata{dimensions{width,height}}},url,alt,crop,hotspot}},
   heroBanner{
@@ -127,6 +131,7 @@ const SERVICES_QUERY = groq`*[_type == "service"]{
   _id,
   title,
   icon,
+  subtitle,
   desc,
   url,
   urutanTampil
@@ -145,7 +150,14 @@ const TESTIMONIAL_SETTINGS_QUERY = groq`*[_type == "testimonialSettings"][0]{
   googleMapsUrl,
   googlePlaceId,
   maxReviews,
-  hideIfEmpty
+  hideIfEmpty,
+  manualTestimonials[]{_key,nama,rating,kutipan,jabatan,photo{asset->{url},url,alt}}
+}`;
+
+const SITE_SETTINGS_QUERY = groq`*[_type == "siteSettings"][0]{
+  _id,
+  title,
+  primaryColor
 }`;
 
 /** Extract a usable image URL from a Sanity image field. */
@@ -409,16 +421,29 @@ export async function getTestimonialSettings(): Promise<TestimonialSettings | nu
   }
 }
 
-/** Extract Place ID dari URL Google Maps jika admin tidak mengisi field googlePlaceId. */
-function extractPlaceIdFromUrl(url?: string | null): string | null {
+/** Extract Place ID dari URL Google Maps jika admin tidak mengisi field googlePlaceId. Mendukung short link maps.app.goo.gl via redirect. */
+async function extractPlaceIdFromUrl(url?: string | null): Promise<string | null> {
   if (!url) return null;
-  // Pola ?place_id=ChIJ... atau &place_id=...
-  const m1 = url.match(/[?&]place_id=([^&]+)/i);
-  if (m1) return decodeURIComponent(m1[1]);
-  // Pola /place/.../data=...!1s0x...:0x... (hex place id kadang dalam data)
-  // fallback: cari ChIJ... (27+ char)
-  const m2 = url.match(/(ChIJ[0-9A-Za-z_-]{20,})/);
-  if (m2) return m2[1];
+  const direct = (u: string): string | null => {
+    const m1 = u.match(/[?&]place_id=([^&]+)/i);
+    if (m1) return decodeURIComponent(m1[1]);
+    const m2 = u.match(/(ChIJ[0-9A-Za-z_-]{20,})/);
+    if (m2) return m2[1];
+    return null;
+  };
+  const found = direct(url);
+  if (found) return found;
+  // Short link (maps.app.goo.gl / goo.gl) → ikuti redirect untuk dapat URL panjang
+  if (url.includes("maps.app.goo.gl") || url.includes("goo.gl")) {
+    try {
+      const res = await fetch(url, { redirect: "follow", next: { revalidate: 86400 } } as RequestInit);
+      const finalUrl = (res as unknown as { url?: string })?.url || url;
+      const fromFinal = direct(finalUrl);
+      if (fromFinal) return fromFinal;
+    } catch {
+      // abaikan, fallback di bawah
+    }
+  }
   return null;
 }
 
@@ -459,17 +484,63 @@ async function fetchGoogleReviews(placeId: string, maxReviews = 6): Promise<Test
   }
 }
 
-/** Pilihan admin: ambil testimoni dari Sanity manual ATAU Google Maps. Jika sumber=google tapi gagal/kosong, kembalikan [] agar section hide (opsional). */
+/** Pilihan admin: manual / google / gabungan. Strict: manual hanya manual, google hanya google, combined = gabungan. */
 export async function getEffectiveTestimonials(): Promise<Testimonial[]> {
   const settings = await getTestimonialSettings();
-  // default manual jika belum ada dokumen pengaturan
-  if (settings?.source === "google") {
-    const placeId = (settings.googlePlaceId?.trim() || extractPlaceIdFromUrl(settings.googleMapsUrl) || "").trim();
+
+  const mapInlineManual = async (): Promise<Testimonial[] | null> => {
+    if (Array.isArray(settings?.manualTestimonials) && settings.manualTestimonials.length > 0) {
+      return settings.manualTestimonials.map((t, idx) => ({
+        _id: t._key || `manual-${idx}`,
+        nama: t.nama,
+        rating: t.rating,
+        kutipan: t.kutipan,
+        jabatan: t.jabatan,
+        photo: t.photo,
+        urutanTampil: idx,
+      }));
+    }
+    // Fallback ke koleksi legacy Item Testimoni agar data lama tetap tampil di dalam 1 setting
+    const legacy = await getTestimonials();
+    if (legacy.length > 0) return legacy;
+    return null;
+  };
+
+  const fetchGoogle = async (): Promise<Testimonial[]> => {
+    const placeId = (settings?.googlePlaceId?.trim() || (await extractPlaceIdFromUrl(settings?.googleMapsUrl ?? null)) || "").trim();
     if (!placeId) return [];
-    const google = await fetchGoogleReviews(placeId, settings.maxReviews ?? 6);
+    return fetchGoogleReviews(placeId, settings?.maxReviews ?? 6);
+  };
+
+  const source = settings?.source || "manual";
+
+  if (source === "google") {
+    const google = await fetchGoogle();
+    // Strict google: hanya google, cek ada data
     return google;
   }
-  return getTestimonials();
+
+  if (source === "combined") {
+    const [manual, google] = await Promise.all([mapInlineManual(), fetchGoogle()]);
+    const manualList = manual ?? [];
+    const googleList = google;
+    // Gabungan: manual dulu lalu google, batasi maxReviews untuk google sudah di atas
+    const merged = [...manualList, ...googleList];
+    return merged;
+  }
+
+  // source === "manual"
+  const manual = await mapInlineManual();
+  if (manual) return manual;
+  return [];
+}
+
+export async function getSiteSettings(): Promise<import("@/types/sanity").SiteSettings | null> {
+  try {
+    return (await sanityFetch<import("@/types/sanity").SiteSettings | null>(SITE_SETTINGS_QUERY)) ?? null;
+  } catch {
+    return null;
+  }
 }
 
 export async function getContacts(): Promise<Contact[]> {

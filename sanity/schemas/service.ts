@@ -23,6 +23,13 @@ export const service: SchemaTypeDefinition = {
       validation: (Rule) => Rule.required(),
     },
     {
+      name: "subtitle",
+      title: "Sub Judul (Label)",
+      type: "string",
+      description: "Label kecil sebelum deskripsi, contoh: Jual & Sewa. Kosongkan jika tidak ingin menampilkan label.",
+      initialValue: "Jual & Sewa",
+    },
+    {
       name: "desc",
       title: "Deskripsi",
       type: "array",
@@ -42,7 +49,7 @@ export const service: SchemaTypeDefinition = {
           ],
         },
       ],
-      description: "Deskripsi layanan setelah label 'Jual & Sewa'. Gunakan formatting untuk menekankan poin penting.",
+      description: "Deskripsi layanan setelah sub judul. Gunakan formatting untuk menekankan poin penting.",
       validation: (Rule) => Rule.required(),
     },
     {

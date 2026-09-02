@@ -10,7 +10,6 @@ import { landAreaLabel, electricityValue } from "@/lib/sanity/specifications";
 export default function PropertyCard({ property }: { property: Property }) {
   const img = imageUrl(property.mainImage);
   const priceDisplay = getPrimaryPriceDisplay(property);
-  const specs = property.specs;
   const transactionTypes = getTransactionTypes(property);
 
   // `category` could be a plain string (current schema) or a Sanity reference
@@ -70,12 +69,12 @@ export default function PropertyCard({ property }: { property: Property }) {
         <div className="flex justify-between items-center text-on-surface-variant font-body-sm border-t border-outline-variant/30 pt-sm mt-auto">
           <div className="flex items-center gap-1" title="Luas Tanah">
             <span className="material-symbols-outlined text-[18px]">aspect_ratio</span>
-            <span>{landAreaLabel(specs) ?? "-"}</span>
+            <span>{landAreaLabel(property) ?? "-"}</span>
           </div>
-          {(electricityValue(specs)) && (
+          {(electricityValue(property)) && (
             <div className="flex items-center gap-1" title="Daya Listrik">
               <span className="material-symbols-outlined text-[18px]">bolt</span>
-              <span>{electricityValue(specs)}</span>
+              <span>{electricityValue(property)}</span>
             </div>
           )}
         </div>

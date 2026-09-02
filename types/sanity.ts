@@ -88,6 +88,7 @@ export interface Property {
   mainImage?: SanityImage;
   gallery?: SanityImage[];
   specs?: PropertySpecs;
+  specsList?: PropertySpecItem[];
   contact?: {
     _id?: string;
     name?: string;
@@ -135,6 +136,7 @@ export interface CompanyProfile {
   _type: "companyProfile";
   title?: string;
   companyName?: string;
+  primaryColor?: string;
   logo?: SanityImage;
   tabLogo?: TabBrowserLogo;
   heroBanner?: HeroBanner;
@@ -172,11 +174,19 @@ export interface TestimonialSettings {
   _id: string;
   _type: "testimonialSettings";
   title?: string;
-  source?: "manual" | "google";
+  source?: "manual" | "google" | "combined";
   googleMapsUrl?: string;
   googlePlaceId?: string;
   maxReviews?: number;
   hideIfEmpty?: boolean;
+  manualTestimonials?: Array<{
+    _key?: string;
+    nama?: string;
+    rating?: number;
+    kutipan?: string;
+    jabatan?: string;
+    photo?: SanityImage;
+  }>;
 }
 
 export interface Service {
@@ -184,6 +194,7 @@ export interface Service {
   _type: "service";
   title?: string;
   icon?: string;
+  subtitle?: string;
   // Legacy docs menyimpan string, docs baru menyimpan PortableText array
   desc?: string | PortableTextBlock[];
   url?: string;
@@ -201,4 +212,11 @@ export interface Contact {
   kakaoTalkNumber?: string;
   kakaoTalkLink?: string;
   email?: string;
+}
+
+export interface SiteSettings {
+  _id: string;
+  _type: "siteSettings";
+  title?: string;
+  primaryColor?: string;
 }

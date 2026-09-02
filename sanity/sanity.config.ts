@@ -18,8 +18,6 @@ export default defineConfig({
   dataset,
   basePath: "/studio",
   plugins: [structureTool()],
-  // 2. Tambahkan baris ini untuk memblokir tab "Releases" agar tidak muncul:
-  tools: (prevTools) => prevTools.filter((tool) => tool.name !== 'releases'),
   schema: {
     types: schemaTypes,
   },
