@@ -5,12 +5,13 @@ import {
   getPrimaryPriceDisplay,
   getTransactionTypes,
 } from "@/lib/sanity/data";
-import { landAreaLabel, electricityValue } from "@/lib/sanity/specifications";
+import { normalizePropertySpecs } from "@/lib/sanity/specifications";
 
 export default function PropertyCard({ property }: { property: Property }) {
   const img = imageUrl(property.mainImage);
   const priceDisplay = getPrimaryPriceDisplay(property);
   const transactionTypes = getTransactionTypes(property);
+  const displaySpecs = normalizePropertySpecs(property).slice(0, 6);
 
   // `category` could be a plain string (current schema) or a Sanity reference
   // object `{ _ref, _type }` from older documents. Only render a plain string
@@ -34,23 +35,31 @@ export default function PropertyCard({ property }: { property: Property }) {
         ) : (
           <div className="w-full h-full bg-surface-container-low" />
         )}
-        {categoryLabel && (
-          <span className="absolute top-3 left-3 z-10 bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full font-label-caps text-label-caps uppercase shadow-sm">
-            {categoryLabel}
-          </span>
-        )}
-        {transactionTypes.length > 0 && (
-          <div className="absolute top-3 right-3 z-10 flex flex-wrap gap-1 justify-end">
-            {transactionTypes.map((tx) => (
-              <span
-                key={tx}
-                className="bg-primary text-on-primary px-3 py-1 rounded-full font-label-caps text-label-caps uppercase shadow-sm"
-              >
-                {tx}
-              </span>
-            ))}
-          </div>
-        )}
+        <div className="absolute top-3 left-3 z-10 flex flex-col items-start gap-1">
+          {categoryLabel && (
+            <span className="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full font-label-caps text-label-caps uppercase shadow-sm">
+              {categoryLabel}
+            </span>
+          )}
+          {transactionTypes.length > 0 && (
+            <div className="flex flex-wrap gap-1">
+              {transactionTypes.map((tx) => (
+                <span
+                  key={tx}
+                  className="bg-primary text-on-primary px-3 py-1 rounded-full font-label-caps text-label-caps uppercase shadow-sm"
+                >
+                  {tx}
+                </span>
+              ))}
+            </div>
+          )}
+          {property.status && (
+            <span className="inline-flex items-center gap-1 bg-surface/90 backdrop-blur text-on-surface px-3 py-1 rounded-full font-label-caps text-label-caps uppercase shadow-sm border border-outline-variant/40">
+              <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+              {property.status}
+            </span>
+          )}
+        </div>
       </div>
 
       <div className="p-sm flex flex-col gap-sm flex-grow">
@@ -66,6 +75,24 @@ export default function PropertyCard({ property }: { property: Property }) {
           </div>
         </div>
 
+        {displaySpecs.length > 0 && (
+          <div className="grid grid-cols-2 gap-x-sm gap-y-1.5 border-t border-outline-variant/30 pt-sm">
+            {displaySpecs.map((s, i) =>
+              s.value ? (
+                <div
+                  key={`${s.label}-${i}`}
+                  className="flex items-center gap-1.5 text-on-surface-variant font-body-sm min-w-0"
+                  title={s.label}
+                >
+                  <span className="material-symbols-outlined text-[16px] text-primary shrink-0 leading-none">
+                    {s.icon || "check_circle"}
+                  </span>
+                  <span className="truncate font-semibold text-on-surface">{s.value}</span>
+                </div>
+              ) : null,
+            )}
+          </div>
+        )}
         <div className="flex justify-between items-center text-on-surface-variant font-body-sm border-t border-outline-variant/30 pt-sm mt-auto">
           <div className="flex items-center gap-1" title="Luas Tanah">
             <span className="material-symbols-outlined text-[18px]">aspect_ratio</span>
@@ -79,7 +106,7 @@ export default function PropertyCard({ property }: { property: Property }) {
           )}
         </div>
 
-        <div className="pt-xs">
+        <div className="pt-xs mt-auto">
           <div className="font-price-display text-headline-sm font-bold text-primary tracking-tight line-clamp-1">
             {priceDisplay ?? "Harga Belum Diatur"}
           </div>

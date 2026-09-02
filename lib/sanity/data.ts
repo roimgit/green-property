@@ -3,6 +3,7 @@ import type {
   Property,
   PricingEntry,
   CompanyProfile,
+  OperationalHours,
   PartnerLogo,
   Testimonial,
   TestimonialSettings,
@@ -27,6 +28,7 @@ const PROPERTY_LIST_QUERY = groq`*[_type == "property"]{
   mainImage{asset->{url},url,alt},
   gallery[]{asset->{url},url,alt},
   specs,
+  specsList,
   specsList[]{icon,label,value},
   contact->{_id,name,jabatan,phoneNumber,whatsappNumber,whatsappLink,kakaoTalkNumber,kakaoTalkLink,email},
   facilities
@@ -48,6 +50,7 @@ const PROPERTY_BY_SLUG_QUERY = groq`*[_type == "property" && slug.current == $sl
   mainImage{asset->{url},url,alt},
   gallery[]{asset->{url},url,alt},
   specs,
+  specsList,
   specsList[]{icon,label,value},
   contact->{_id,name,jabatan,phoneNumber,whatsappNumber,whatsappLink,kakaoTalkNumber,kakaoTalkLink,email},
   facilities,
@@ -68,6 +71,7 @@ const SIMILAR_PROPERTIES_QUERY = groq`*[_type == "property" && slug.current != $
   isFeatured,
   mainImage{asset->{url},url,alt},
   specs,
+  specsList,
   specsList[]{icon,label,value},
   contact->{_id,name,jabatan,phoneNumber,whatsappNumber,whatsappLink,kakaoTalkNumber,kakaoTalkLink,email}
 }`;
@@ -102,7 +106,11 @@ const LOGOS_QUERY = groq`*[_type == "partnerLogo"]{
   namaPerusahaan,
   logo{asset->{url},url,alt},
   urutanTampil,
-  url
+  url,
+  keteranganKerjasama,
+  testimoni,
+  testimoniPenulis,
+  dokumentasi[]{asset->{url},url,alt}
 } | order(urutanTampil asc)`;
 
 const TESTIMONIALS_QUERY = groq`*[_type == "testimonial"]{
@@ -209,7 +217,7 @@ export function formatPrice(price?: number): string | null {
 export function formatPriceWithCurrency(price?: number, currency?: string): string | null {
   if (!price || price <= 0) return null;
   const curr = (currency ?? "IDR").toUpperCase();
-  
+
   if (curr === "USD" || curr === "US$") {
     return "$" + price.toLocaleString("en-US", { maximumFractionDigits: 0 });
   }
@@ -395,6 +403,63 @@ export async function getCompanyProfile(): Promise<CompanyProfile | null> {
   } catch {
     return null;
   }
+}
+
+/** Utility to format operational hours for display. Smartly groups consecutive days with identical hours while displaying custom individual days. */
+export function getFormattedOperationalHours(hours?: OperationalHours | null): Array<{ label: string; value: string }> {
+  if (!hours) {
+    return [
+      { label: "Senin - Jumat", value: "08:00 - 17:00" },
+      { label: "Sabtu", value: "08:00 - 12:00" },
+      { label: "Minggu", value: "Tutup" },
+    ];
+  }
+
+  const DAY_KEYS = [
+    { key: "monday", name: "Senin" },
+    { key: "tuesday", name: "Selasa" },
+    { key: "wednesday", name: "Rabu" },
+    { key: "thursday", name: "Kamis" },
+    { key: "friday", name: "Jumat" },
+    { key: "saturday", name: "Sabtu" },
+    { key: "sunday", name: "Minggu" },
+  ] as const;
+
+  const filledDays: Array<{ name: string; value: string }> = [];
+  for (const d of DAY_KEYS) {
+    const val = hours[d.key as keyof OperationalHours];
+    if (typeof val === "string" && val.trim().length > 0) {
+      filledDays.push({ name: d.name, value: val.trim() });
+    }
+  }
+
+  if (filledDays.length > 0) {
+    const result: Array<{ label: string; value: string }> = [];
+    let i = 0;
+    while (i < filledDays.length) {
+      let j = i;
+      while (j + 1 < filledDays.length && filledDays[j + 1].value === filledDays[i].value) {
+        j++;
+      }
+
+      let label = "";
+      if (i === j) {
+        label = filledDays[i].name;
+      } else {
+        label = `${filledDays[i].name} - ${filledDays[j].name}`;
+      }
+      result.push({ label, value: filledDays[i].value });
+      i = j + 1;
+    }
+    return result;
+  }
+
+  // Fallback to legacy fields (weekdays, weekend, weekend2)
+  return [
+    { label: "Senin - Jumat", value: hours.weekdays ?? "08:00 - 17:00" },
+    { label: "Sabtu", value: hours.weekend ?? "08:00 - 12:00" },
+    { label: "Minggu", value: hours.weekend2 ?? "Tutup" },
+  ].filter((item) => Boolean(item.value && item.value.trim().length > 0));
 }
 
 export async function getPartnerLogos(): Promise<PartnerLogo[]> {

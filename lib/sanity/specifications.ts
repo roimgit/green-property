@@ -51,14 +51,34 @@ export function normalizeSpecs(specs?: PropertySpecs): SpecEntry[] {
   );
 
   if (flexible.length > 0) {
-    return flexible.map((item) => ({
+    return toSpecEntries(flexible);
+  }
+
+  return legacySpecsToItems(specs);
+}
+
+export function toSpecEntries(items: PropertySpecItem[]): SpecEntry[] {
+  return items
+    .filter((item) => item && (item.label || item.value))
+    .map((item) => ({
       label: item.label?.trim() || "Spesifikasi",
       icon: item.icon || "check_circle",
       value: item.value?.trim() || "",
     }));
-  }
+}
 
-  return legacySpecsToItems(specs);
+/**
+ * Spesifikasi properti sesuai schema `property.ts`: kolom utamanya adalah
+ * `specsList` (array fleksibel icon + label + value di level dokumen).
+ * Fallback ke objek `specs` lama bila `specsList` belum terisi.
+ */
+export function normalizePropertySpecs(
+  property?: { specs?: PropertySpecs; specsList?: PropertySpecItem[] } | null,
+): SpecEntry[] {
+  if (Array.isArray(property?.specsList) && property.specsList.length > 0) {
+    return toSpecEntries(property.specsList);
+  }
+  return normalizeSpecs(property?.specs);
 }
 
 /** Normalisasi dari dokumen Property (top-level specsList + fallback legacy specs) */

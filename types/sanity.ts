@@ -106,6 +106,13 @@ export interface Property {
 }
 
 export interface OperationalHours {
+  monday?: string;
+  tuesday?: string;
+  wednesday?: string;
+  thursday?: string;
+  friday?: string;
+  saturday?: string;
+  sunday?: string;
   weekdays?: string;
   weekend?: string;
   weekend2?: string;
@@ -158,6 +165,10 @@ export interface PartnerLogo {
   logo?: SanityImage;
   urutanTampil?: number;
   url?: string;
+  keteranganKerjasama?: PortableTextBlock[];
+  testimoni?: string;
+  testimoniPenulis?: string;
+  dokumentasi?: SanityImage[];
 }
 
 export interface Testimonial {
