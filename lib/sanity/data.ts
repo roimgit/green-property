@@ -154,10 +154,6 @@ const CATEGORIES_QUERY = groq`*[_type == "category"]{
 const TESTIMONIAL_SETTINGS_QUERY = groq`*[_type == "testimonialSettings"][0]{
   _id,
   title,
-  source,
-  googleMapsUrl,
-  googlePlaceId,
-  maxReviews,
   hideIfEmpty,
   manualTestimonials[]{_key,nama,rating,kutipan,jabatan,photo{asset->{url},url,alt}}
 }`;
@@ -486,117 +482,27 @@ export async function getTestimonialSettings(): Promise<TestimonialSettings | nu
   }
 }
 
-/** Extract Place ID dari URL Google Maps jika admin tidak mengisi field googlePlaceId. Mendukung short link maps.app.goo.gl via redirect. */
-async function extractPlaceIdFromUrl(url?: string | null): Promise<string | null> {
-  if (!url) return null;
-  const direct = (u: string): string | null => {
-    const m1 = u.match(/[?&]place_id=([^&]+)/i);
-    if (m1) return decodeURIComponent(m1[1]);
-    const m2 = u.match(/(ChIJ[0-9A-Za-z_-]{20,})/);
-    if (m2) return m2[1];
-    return null;
-  };
-  const found = direct(url);
-  if (found) return found;
-  // Short link (maps.app.goo.gl / goo.gl) → ikuti redirect untuk dapat URL panjang
-  if (url.includes("maps.app.goo.gl") || url.includes("goo.gl")) {
-    try {
-      const res = await fetch(url, { redirect: "follow", next: { revalidate: 86400 } } as RequestInit);
-      const finalUrl = (res as unknown as { url?: string })?.url || url;
-      const fromFinal = direct(finalUrl);
-      if (fromFinal) return fromFinal;
-    } catch {
-      // abaikan, fallback di bawah
-    }
-  }
-  return null;
-}
-
-interface GoogleReview {
-  author_name?: string;
-  rating?: number;
-  text?: string;
-  relative_time_description?: string;
-  profile_photo_url?: string;
-  time?: number;
-}
-
-/** Ambil reviews dari Google Places API (classic). Kembalikan array Testimonial yang kompatibel. */
-async function fetchGoogleReviews(placeId: string, maxReviews = 6): Promise<Testimonial[]> {
-  const apiKey = process.env.GOOGLE_PLACES_API_KEY || process.env.GOOGLE_MAPS_API_KEY || process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-  if (!apiKey) {
-    console.warn("[testimonials] GOOGLE_PLACES_API_KEY belum diset, skip Google Reviews");
-    return [];
-  }
-  try {
-    const url = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${encodeURIComponent(placeId)}&fields=reviews,rating,user_ratings_total&key=${encodeURIComponent(apiKey)}&language=id`;
-    const res = await fetch(url, { next: { revalidate: 3600 } });
-    if (!res.ok) return [];
-    const json = (await res.json()) as { status?: string; result?: { reviews?: GoogleReview[] } };
-    if (json.status !== "OK" || !json.result?.reviews) return [];
-    const reviews = json.result.reviews.slice(0, maxReviews);
-    return reviews.map((r, idx) => ({
-      _id: `google-${placeId}-${r.time ?? idx}`,
-      nama: r.author_name ?? "Google User",
-      rating: typeof r.rating === "number" ? r.rating : 5,
-      kutipan: r.text ?? "",
-      jabatan: r.relative_time_description ? `Google Reviews · ${r.relative_time_description}` : "Google Reviews",
-      photo: r.profile_photo_url ? ({ url: r.profile_photo_url } as SanityImage) : undefined,
-      urutanTampil: idx,
-    }));
-  } catch {
-    return [];
-  }
-}
-
-/** Pilihan admin: manual / google / gabungan. Strict: manual hanya manual, google hanya google, combined = gabungan. */
+/** Testimoni manual dari pengaturan Sanity. */
 export async function getEffectiveTestimonials(): Promise<Testimonial[]> {
   const settings = await getTestimonialSettings();
 
-  const mapInlineManual = async (): Promise<Testimonial[] | null> => {
-    if (Array.isArray(settings?.manualTestimonials) && settings.manualTestimonials.length > 0) {
-      return settings.manualTestimonials.map((t, idx) => ({
-        _id: t._key || `manual-${idx}`,
-        nama: t.nama,
-        rating: t.rating,
-        kutipan: t.kutipan,
-        jabatan: t.jabatan,
-        photo: t.photo,
-        urutanTampil: idx,
-      }));
-    }
-    // Fallback ke koleksi legacy Item Testimoni agar data lama tetap tampil di dalam 1 setting
-    const legacy = await getTestimonials();
-    if (legacy.length > 0) return legacy;
-    return null;
-  };
-
-  const fetchGoogle = async (): Promise<Testimonial[]> => {
-    const placeId = (settings?.googlePlaceId?.trim() || (await extractPlaceIdFromUrl(settings?.googleMapsUrl ?? null)) || "").trim();
-    if (!placeId) return [];
-    return fetchGoogleReviews(placeId, settings?.maxReviews ?? 6);
-  };
-
-  const source = settings?.source || "manual";
-
-  if (source === "google") {
-    const google = await fetchGoogle();
-    // Strict google: hanya google, cek ada data
-    return google;
+  const inline = settings?.manualTestimonials;
+  if (Array.isArray(inline) && inline.length > 0) {
+    return inline.map((t, idx) => ({
+      _id: t._key || `manual-${idx}`,
+      nama: t.nama,
+      rating: t.rating,
+      kutipan: t.kutipan,
+      jabatan: t.jabatan,
+      photo: t.photo,
+      urutanTampil: idx,
+    }));
   }
 
-  if (source === "combined") {
-    const [manual, google] = await Promise.all([mapInlineManual(), fetchGoogle()]);
-    const manualList = manual ?? [];
-    const googleList = google;
-    // Gabungan: manual dulu lalu google, batasi maxReviews untuk google sudah di atas
-    const merged = [...manualList, ...googleList];
-    return merged;
-  }
+  // Fallback ke koleksi legacy Item Testimoni agar data lama tetap tampil
+  const legacy = await getTestimonials();
+  if (legacy.length > 0) return legacy;
 
-  // source === "manual"
-  const manual = await mapInlineManual();
-  if (manual) return manual;
   return [];
 }
 

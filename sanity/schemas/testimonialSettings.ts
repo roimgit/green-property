@@ -11,51 +11,12 @@ export const testimonialSettings: SchemaTypeDefinition = {
       title: "Judul Pengaturan",
       type: "string",
       initialValue: "Pengaturan Testimoni",
-      description: "Dokumen tunggal untuk mengatur sumber testimoni di beranda. Buat 1 dokumen saja.",
-    },
-    {
-      name: "source",
-      title: "Sumber Testimoni",
-      type: "string",
-      initialValue: "manual",
-      options: {
-        list: [
-          { title: "Input Manual (Sanity)", value: "manual" },
-          { title: "Google Maps / Google Reviews", value: "google" },
-          { title: "Gabungan (Manual + Google)", value: "combined" },
-        ],
-        layout: "radio",
-      },
-      validation: (Rule) => Rule.required(),
-    },
-    {
-      name: "googleMapsUrl",
-      title: "Link Google Maps",
-      type: "string",
-      description:
-        "Tempel link Google Maps bisnis (contoh: https://maps.app.goo.gl/... atau https://www.google.com/maps/place/...). Dipakai untuk membantu menemukan Place ID. Wajib isi jika sumber = Google atau Gabungan.",
-      hidden: ({ parent }) => parent?.source !== "google" && parent?.source !== "combined",
-    },
-    {
-      name: "googlePlaceId",
-      title: "Google Place ID",
-      type: "string",
-      description:
-        "Place ID Google (contoh: ChIJ...). Jika dikosongkan, sistem akan mencoba mengekstrak dari Link Google Maps. Cara menemukan: cari bisnis di https://developers.google.com/maps/documentation/javascript/examples/places-placeid-finder",
-      hidden: ({ parent }) => parent?.source !== "google" && parent?.source !== "combined",
-    },
-    {
-      name: "maxReviews",
-      title: "Jumlah Maksimal Review Ditampilkan",
-      type: "number",
-      initialValue: 6,
-      validation: (Rule) => Rule.min(1).max(10),
-      hidden: ({ parent }) => parent?.source !== "google" && parent?.source !== "combined",
+      description: "Dokumen tunggal pengatur testimoni. Buat 1 dokumen saja.",
     },
     {
       name: "manualTestimonials",
-      title: "Daftar Testimoni Manual",
-      description: "Isi testimoni yang akan ditampilkan jika Sumber = Manual atau Gabungan. Tambah/hapus langsung di sini. Data lama dari Item Testimoni (Legacy) sudah dimigrasikan ke sini dan bisa ditambah lagi.",
+      title: "Daftar Testimoni",
+      description: "Daftar testimoni yang akan ditampilkan di website. Tambah/hapus langsung di sini.",
       type: "array",
       of: [
         {
@@ -87,23 +48,21 @@ export const testimonialSettings: SchemaTypeDefinition = {
           },
         },
       ],
-      hidden: ({ parent }) => parent?.source !== "manual" && parent?.source !== "combined",
     },
     {
       name: "hideIfEmpty",
       title: "Sembunyikan Section Jika Tidak Ada Data",
       type: "boolean",
       initialValue: true,
-      description: "Jika true dan tidak ada testimoni (manual kosong atau Google gagal), section testimoni di beranda otomatis hide.",
+      description: "Jika true dan tidak ada testimoni, section testimoni di beranda otomatis hide.",
     },
   ],
   preview: {
-    select: { title: "title", source: "source" },
+    select: { title: "title" },
     prepare(selection) {
-      const map: Record<string, string> = { manual: "Sumber: Manual", google: "Sumber: Google Maps", combined: "Sumber: Gabungan" };
       return {
         title: selection.title || "Pengaturan Testimoni",
-        subtitle: map[selection.source] || "Sumber: Manual",
+        subtitle: "Testimoni Manual",
       };
     },
   },

@@ -185,10 +185,6 @@ export interface TestimonialSettings {
   _id: string;
   _type: "testimonialSettings";
   title?: string;
-  source?: "manual" | "google" | "combined";
-  googleMapsUrl?: string;
-  googlePlaceId?: string;
-  maxReviews?: number;
   hideIfEmpty?: boolean;
   manualTestimonials?: Array<{
     _key?: string;

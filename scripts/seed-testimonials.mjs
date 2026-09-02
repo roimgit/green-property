@@ -50,7 +50,7 @@ async function main() {
     // Update dokumen yang sudah ada
     await client
       .patch(existing)
-      .set({ source: "manual", manualTestimonials: TESTIMONIALS })
+      .set({ manualTestimonials: TESTIMONIALS })
       .commit();
     console.log(`Updated testimonialSettings (${existing}) dengan ${TESTIMONIALS.length} testimoni manual.`);
   } else {
@@ -58,7 +58,6 @@ async function main() {
     const doc = await client.create({
       _type: "testimonialSettings",
       title: "Pengaturan Testimoni",
-      source: "manual",
       manualTestimonials: TESTIMONIALS,
       hideIfEmpty: true,
     });
