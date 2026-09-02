@@ -1,13 +1,24 @@
 import Link from "next/link";
 import type { Property } from "@/types/sanity";
+import {
+  imageUrl,
+  getPrimaryPriceDisplay,
+  getTransactionTypes,
+} from "@/lib/sanity/data";
+
+function formatArea(area?: number): string | null {
+  if (!area) return null;
+  return area.toLocaleString("id-ID") + " m²";
+}
 import { imageUrl, formatPrice } from "@/lib/sanity/data";
 import { landAreaLabel, electricityValue } from "@/lib/sanity/specifications";
 
 export default function PropertyCard({ property }: { property: Property }) {
   const img = imageUrl(property.mainImage);
-  const price = formatPrice(property.price);
+  const priceDisplay = getPrimaryPriceDisplay(property);
   const specs = property.specs;
-  const transactionLabel = property.transactionType === "Sewa" ? "Sewa" : "Jual";
+  const transactionTypes = getTransactionTypes(property);
+
   // `category` could be a plain string (current schema) or a Sanity reference
   // object `{ _ref, _type }` from older documents. Only render a plain string
   // to avoid crashing the card render.
@@ -35,10 +46,17 @@ export default function PropertyCard({ property }: { property: Property }) {
             {categoryLabel}
           </span>
         )}
-        {transactionLabel && (
-          <span className="absolute top-3 right-3 z-10 bg-primary text-on-primary px-3 py-1 rounded-full font-label-caps text-label-caps uppercase shadow-sm">
-            {transactionLabel}
-          </span>
+        {transactionTypes.length > 0 && (
+          <div className="absolute top-3 right-3 z-10 flex flex-wrap gap-1 justify-end">
+            {transactionTypes.map((tx) => (
+              <span
+                key={tx}
+                className="bg-primary text-on-primary px-3 py-1 rounded-full font-label-caps text-label-caps uppercase shadow-sm"
+              >
+                {tx}
+              </span>
+            ))}
+          </div>
         )}
       </div>
 
@@ -68,16 +86,10 @@ export default function PropertyCard({ property }: { property: Property }) {
           )}
         </div>
 
-        <div className="flex justify-between items-end mt-sm">
-          <div className="font-price-display text-price-display text-primary">
-            {price ?? "Hubungi Kami"}
+        <div className="pt-xs">
+          <div className="font-price-display text-headline-sm font-bold text-primary tracking-tight line-clamp-1">
+            {priceDisplay ?? "Harga Belum Diatur"}
           </div>
-          <span
-            className="w-10 h-10 rounded-full bg-[#25D366] text-white flex items-center justify-center"
-            title="Hubungi via WhatsApp"
-          >
-            <span className="material-symbols-outlined">chat</span>
-          </span>
         </div>
       </div>
     </Link>

@@ -1,7 +1,6 @@
 import Link from "next/link";
-import { getPropertyList } from "@/lib/sanity/data";
+import { getPropertyList, getCategories } from "@/lib/sanity/data";
 import PropertyFilters from "./PropertyFilters";
-import type { Property } from "@/types/sanity";
 
 export const dynamic = "force-dynamic";
 
@@ -10,7 +9,10 @@ export const metadata = {
 };
 
 export default async function PropertiesPage() {
-  const properties: Property[] = await getPropertyList();
+  const [properties, allCategories] = await Promise.all([
+    getPropertyList(),
+    getCategories(),
+  ]);
 
   return (
     <main className="flex-grow max-w-container-max mx-auto w-full px-margin-mobile md:px-lg py-xl flex flex-col gap-lg">
@@ -26,7 +28,7 @@ export default async function PropertiesPage() {
         <h1 className="font-display text-display text-on-surface">Semua Listing Properti</h1>
       </section>
 
-      <PropertyFilters properties={properties} />
+      <PropertyFilters properties={properties} allCategories={allCategories} />
     </main>
   );
 }
