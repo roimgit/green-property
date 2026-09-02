@@ -102,7 +102,11 @@ const LOGOS_QUERY = groq`*[_type == "partnerLogo"]{
   namaPerusahaan,
   logo{asset->{url},url,alt},
   urutanTampil,
-  url
+  url,
+  keteranganKerjasama,
+  testimoni,
+  testimoniPenulis,
+  dokumentasi[]{asset->{url},url,alt}
 } | order(urutanTampil asc)`;
 
 const TESTIMONIALS_QUERY = groq`*[_type == "testimonial"]{

@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import PropertyCard from "@/components/PropertyCard";
 import HeroBannerImage from "@/components/HeroBannerImage";
 import ServiceCarousel from "./ServiceCarousel";
@@ -42,11 +41,7 @@ function renderLink(button: HeroBannerCTA, className: string) {
   );
 }
 
-const ECOSYSTEM_POINTS = [
-  "Proksimitas Strategis ke Pabrik Perakitan Utama",
-  "Infrastruktur Teroptimasi untuk Logistik Berat",
-  "Dukungan Perizinan & Regulasi yang Komprehensif",
-];
+const ALBUM_SECTION_LABEL = "ALBUM KERJASAMA";
 
 async function PartnerLogoMarquee() {
   const logos = await getPartnerLogos();
@@ -96,12 +91,22 @@ async function PartnerLogoMarquee() {
 }
 
 export default async function Home() {
-  const [properties, testimonials, company, services] = await Promise.all([
+  const [properties, testimonials, company, services, partners] = await Promise.all([
     getPropertyList(),
     getEffectiveTestimonials(),
     getCompanyProfile(),
     getServices(),
+    getPartnerLogos(),
   ]);
+
+  const documentation = partners.flatMap(
+    (p) =>
+      p.dokumentasi?.map((img, i) => ({
+        company: p.namaPerusahaan ?? "Partner",
+        url: imageUrl(img) ?? "",
+        alt: img?.alt ?? `Dokumentasi ${p.namaPerusahaan ?? "partner"} ${i + 1}`,
+      })) ?? [],
+  );
 
   const featured = properties.filter((p) => p.isFeatured);
   const unggulan = (featured.length > 0 ? featured : properties).slice(0, 8);
@@ -183,47 +188,86 @@ export default async function Home() {
         </section>
       )}
 
-      {/* ===== Ecosystem (Land Provider Hyundai) ===== */}
-      <section id="land-provider" className="max-w-container-max mx-auto px-sm lg:px-xl mb-xl">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-lg items-stretch bg-surface-container-low rounded-xl overflow-hidden border border-surface-container-highest shadow-soft">
-          <div className="relative h-[400px] md:h-auto overflow-hidden">
-            <Image
-              src={HERO_IMAGE_FALLBACK}
-              alt="Industrial park landscape"
-              fill
-              sizes="(min-width: 768px) 50vw, 100vw"
-              className="object-cover"
-            />
-          </div>
-          <div className="p-lg md:p-xl flex flex-col justify-center">
-            <div className="inline-block px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container font-label-caps text-label-caps mb-md w-fit">
-              LAND PROVIDER FOR HYUNDAI VENDOR
+      {/* ===== Album Kerjasama ===== */}
+      <section className="max-w-container-max mx-auto px-sm lg:px-xl mb-xl">
+        <div className="flex flex-col md:flex-row justify-between items-end gap-md mb-lg">
+          <div>
+            <div className="inline-block px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container font-label-caps text-label-caps mb-md">
+              {ALBUM_SECTION_LABEL}
             </div>
-            <h2 className="font-headline-lg text-headline-lg text-on-surface mb-md">
-              Spesialis Land Provider untuk Ekosistem Vendor Hyundai
+            <h2 className="font-headline-lg text-headline-lg text-on-surface mb-xs">
+              Momen Kerjasama Bersama Mitra
             </h2>
-            <p className="font-body-md text-body-md text-on-surface-variant mb-lg">
-              Kami menyediakan solusi lahan strategis yang terintegrasi penuh dengan rantai pasok industri otomotif.
+            <p className="font-body-md text-body-md text-on-surface-variant">
+              Dokumentasi kolaborasi nyata kami bersama para partner. Klik album untuk melihat detail kerjasama.
             </p>
-            <ul className="space-y-md mb-xl">
-              {ECOSYSTEM_POINTS.map((point) => (
-                <li key={point} className="flex items-start gap-sm">
-                  <span className="material-symbols-outlined" style={{ color: "#C6A15B" }}>
-                    check_circle
-                  </span>
-                  <span className="font-body-md text-body-md text-on-surface">{point}</span>
-                </li>
-              ))}
-            </ul>
-            <a
-              href="#"
-              className="w-fit bg-transparent border-2 px-8 py-3 rounded-full font-body-md text-body-md font-semibold transition-all hover:bg-surface-container-highest flex items-center gap-2"
-              style={{ borderColor: "#C6A15B", color: "#C6A15B" }}
-            >
-              Lihat Studi Kasus <span className="material-symbols-outlined text-sm">arrow_forward</span>
-            </a>
           </div>
+          <Link
+            href="/kerjasama"
+            className="hidden md:inline-flex items-center gap-1 text-primary font-semibold hover:underline"
+          >
+            Lihat Detail Kerjasama <span className="material-symbols-outlined text-sm">arrow_forward</span>
+          </Link>
         </div>
+
+        {documentation.length > 0 ? (
+          <Link
+            href="/kerjasama"
+            aria-label="Lihat album kerjasama di halaman Kerjasama"
+            className="group relative grid grid-cols-2 md:grid-cols-4 gap-3 auto-rows-[140px] md:auto-rows-[180px]"
+          >
+            {documentation.slice(0, 8).map((doc, i) => (
+              <div
+                key={`${doc.company}-${i}`}
+                className={`relative rounded-xl overflow-hidden border border-outline-variant/40 shadow-soft ${
+                  i === 0 ? "row-span-2" : ""
+                }`}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={doc.url}
+                  alt={doc.alt}
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+                <div className="absolute bottom-0 left-0 right-0 p-sm flex items-center gap-2">
+                  <span className="material-symbols-outlined text-white/90 text-base">business</span>
+                  <span className="font-body-sm text-body-sm font-semibold text-white">
+                    {doc.company}
+                  </span>
+                </div>
+              </div>
+            ))}
+            <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/20 transition-colors duration-300 rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-100">
+              <span className="bg-white/90 text-primary px-6 py-2 rounded-full font-semibold text-body-sm shadow-md flex items-center gap-2">
+                Lihat Album <span className="material-symbols-outlined text-sm">arrow_forward</span>
+              </span>
+            </div>
+          </Link>
+        ) : (
+          <Link
+            href="/kerjasama"
+            className="group flex flex-col items-center justify-center gap-sm rounded-xl bg-surface-container-low border border-outline-variant/40 shadow-soft p-xl text-center hover:bg-surface-container-lowest transition-colors"
+          >
+            <span className="material-symbols-outlined text-4xl text-primary/60">photo_library</span>
+            <h3 className="font-headline-md text-headline-md font-bold text-on-surface">
+              Album Kerjasama
+            </h3>
+            <p className="font-body-md text-body-md text-on-surface-variant max-w-lg">
+              Lihat dokumentasi momen kerjasama kami bersama para mitra di halaman Kerjasama.
+            </p>
+            <span className="inline-flex items-center gap-2 bg-primary text-on-primary px-6 py-2.5 rounded-full font-semibold text-body-sm mt-sm group-hover:bg-surface-tint transition-colors">
+              Lihat Detail Kerjasama <span className="material-symbols-outlined text-sm">arrow_forward</span>
+            </span>
+          </Link>
+        )}
+
+        <Link
+          href="/kerjasama"
+          className="md:hidden flex items-center justify-center gap-1 text-primary font-semibold mt-md"
+        >
+          Lihat Detail Kerjasama <span className="material-symbols-outlined text-sm">arrow_forward</span>
+        </Link>
       </section>
 
       {/* ===== Listing Unggulan ===== */}

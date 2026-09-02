@@ -164,6 +164,10 @@ export interface PartnerLogo {
   logo?: SanityImage;
   urutanTampil?: number;
   url?: string;
+  keteranganKerjasama?: PortableTextBlock[];
+  testimoni?: string;
+  testimoniPenulis?: string;
+  dokumentasi?: SanityImage[];
 }
 
 export interface Testimonial {

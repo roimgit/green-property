@@ -23,7 +23,7 @@ const COMPANY_PROFILE_QUERY = groq`*[_type == "companyProfile"][0]{
 const NAV_LINKS = [
   { label: "Beranda", href: "/" },
   { label: "Properti", href: "/properties" },
-  { label: "Land Provider Hyundai", href: "/#land-provider" },
+  { label: "Kerjasama", href: "/kerjasama" },
   { label: "Tentang Kami", href: "/about" },
   { label: "Kontak", href: "/contact" },
 ];
