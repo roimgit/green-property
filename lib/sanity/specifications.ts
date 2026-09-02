@@ -67,20 +67,6 @@ export function toSpecEntries(items: PropertySpecItem[]): SpecEntry[] {
     }));
 }
 
-/**
- * Spesifikasi properti sesuai schema `property.ts`: kolom utamanya adalah
- * `specsList` (array fleksibel icon + label + value di level dokumen).
- * Fallback ke objek `specs` lama bila `specsList` belum terisi.
- */
-export function normalizePropertySpecs(
-  property?: { specs?: PropertySpecs; specsList?: PropertySpecItem[] } | null,
-): SpecEntry[] {
-  if (Array.isArray(property?.specsList) && property.specsList.length > 0) {
-    return toSpecEntries(property.specsList);
-  }
-  return normalizeSpecs(property?.specs);
-}
-
 /** Normalisasi dari dokumen Property (top-level specsList + fallback legacy specs) */
 export function normalizePropertySpecs(property: Pick<Property, "specs" | "specsList">): SpecEntry[] {
   const topList = (property.specsList ?? []).filter(

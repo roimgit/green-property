@@ -5,7 +5,7 @@ import {
   getPrimaryPriceDisplay,
   getTransactionTypes,
 } from "@/lib/sanity/data";
-import { normalizePropertySpecs } from "@/lib/sanity/specifications";
+import { normalizePropertySpecs, landAreaLabel, electricityValue } from "@/lib/sanity/specifications";
 
 export default function PropertyCard({ property }: { property: Property }) {
   const img = imageUrl(property.mainImage);
