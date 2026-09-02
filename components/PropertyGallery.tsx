@@ -10,6 +10,7 @@ export default function PropertyGallery({ images }: { images: SanityImage[] }) {
 
   if (urls.length === 0) return null;
 
+
   const showPrev = () => setActive((prev) => (prev === 0 ? urls.length - 1 : prev - 1));
   const showNext = () => setActive((prev) => (prev === urls.length - 1 ? 0 : prev + 1));
 

@@ -1,11 +1,7 @@
 import Link from "next/link";
 import type { Property } from "@/types/sanity";
 import { imageUrl, formatPrice } from "@/lib/sanity/data";
-
-function formatArea(area?: number): string | null {
-  if (!area) return null;
-  return area.toLocaleString("id-ID") + " m²";
-}
+import { landAreaLabel, electricityValue } from "@/lib/sanity/specifications";
 
 export default function PropertyCard({ property }: { property: Property }) {
   const img = imageUrl(property.mainImage);
@@ -62,12 +58,12 @@ export default function PropertyCard({ property }: { property: Property }) {
         <div className="flex justify-between items-center text-on-surface-variant font-body-sm border-t border-outline-variant/30 pt-sm mt-auto">
           <div className="flex items-center gap-1" title="Luas Tanah">
             <span className="material-symbols-outlined text-[18px]">aspect_ratio</span>
-            <span>{formatArea(specs?.landArea) ?? "-"}</span>
+            <span>{landAreaLabel(specs) ?? "-"}</span>
           </div>
-          {specs?.electricity && (
+          {(electricityValue(specs)) && (
             <div className="flex items-center gap-1" title="Daya Listrik">
               <span className="material-symbols-outlined text-[18px]">bolt</span>
-              <span>{specs.electricity}</span>
+              <span>{electricityValue(specs)}</span>
             </div>
           )}
         </div>

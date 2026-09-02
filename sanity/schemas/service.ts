@@ -3,7 +3,7 @@ import { MaterialIconInput } from "../components/MaterialIconInput";
 
 export const service: SchemaTypeDefinition = {
   name: "service",
-  title: "Layanan (Service Portfolio)",
+  title: "Layanan",
   type: "document",
   fields: [
     {
@@ -25,8 +25,24 @@ export const service: SchemaTypeDefinition = {
     {
       name: "desc",
       title: "Deskripsi",
-      type: "string",
-      description: "Deskripsi layanan setelah label 'Jual & Sewa'.",
+      type: "array",
+      of: [
+        {
+          type: "block",
+          marks: {
+            decorators: [
+              { title: "Bold", value: "strong" },
+              { title: "Italic", value: "em" },
+              { title: "Underline", value: "underline" },
+            ],
+          },
+          lists: [
+            { title: "Bullet", value: "bullet" },
+            { title: "Numbered", value: "number" },
+          ],
+        },
+      ],
+      description: "Deskripsi layanan setelah label 'Jual & Sewa'. Gunakan formatting untuk menekankan poin penting.",
       validation: (Rule) => Rule.required(),
     },
     {

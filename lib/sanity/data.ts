@@ -73,7 +73,12 @@ const COMPANY_QUERY = groq`*[_type == "companyProfile"][0]{
   companyName,
   logo{asset->{url,metadata{dimensions{width,height}}},url,alt},
   tabLogo{mode,image{asset->{url,metadata{dimensions{width,height}}},url,alt,crop,hotspot}},
-  heroImage{asset->{url},url,alt},
+  heroBanner{
+    image{asset->{url},url,crop,hotspot,alt},
+    heading,
+    description,
+    links
+  },
   description,
   vision,
   mission,

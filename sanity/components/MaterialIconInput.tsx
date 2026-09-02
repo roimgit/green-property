@@ -2,138 +2,16 @@
 
 import { useState, useEffect, useMemo, type ChangeEvent, type CSSProperties } from "react";
 import { set, type StringInputProps } from "sanity";
+import { MATERIAL_SYMBOLS } from "./materialSymbolsList";
 
 /**
- * Curated list of Material Symbols icon names relevant to a property /
- * industrial / residential business. Editors can search and pick visually.
+ * Picker ikon Material Symbols. Menampilkan SEMUA ligature yang tersedia di
+ * font Material Symbols (3.900+ nama), dengan kotak pencarian, lazy load via
+ * tombol "Tampilkan lebih banyak", dan tombol ikuti nama untuk item yang aktif.
  */
-const ICONS: string[] = [
-  // Land & industrial
-  "landscape",
-  "terrain",
-  "map",
-  "pin_drop",
-  "apartment",
-  "domain",
-  "factory",
-  "warehouse",
-  "business",
-  "location_city",
-  "corporate_fare",
-  "home",
-  "house",
-  "home_work",
-  "villa",
-  "holiday_village",
-  "meeting_room",
-  "storefront",
-  "store",
-  "business_center",
-  // Commercial / sales
-  "attach_money",
-  "payments",
-  "sell",
-  "currency_exchange",
-  "price_change",
-  "receipt_long",
-  "request_quote",
-  "handshake",
-  "verified",
-  "verified_user",
-  "check_circle",
-  "star",
-  "trending_up",
-  "trending_down",
-  "show_chart",
-  "insights",
-  "monitoring",
-  // Building / construction
-  "construction",
-  "hard_hat",
-  "engineering",
-  "architecture",
-  "design_services",
-  "handyman",
-  "electric_bolt",
-  "bolt",
-  "water_drop",
-  "gas_meter",
-  "solar_power",
-  "power",
-  "lightbulb",
-  "door_sliding",
-  "window",
-  "grid_view",
-  "foundation",
-  "roofing",
-  "stairs",
-  "security",
-  "door_front",
-  "key",
-  "lock",
-  "vpn_key",
-  // Transport & logistics
-  "local_shipping",
-  "truck",
-  "directions_car",
-  "car_rental",
-  "commute",
-  "airport_shuttle",
-  "garage",
-  "directions_bus",
-  "train",
-  "flight",
-  "local_parking",
-  "parking",
-  // Lifestyle / residence
-  "family_restroom",
-  "groups",
-  "person",
-  "people",
-  "bed",
-  "king_bed",
-  "chair",
-  "coffee",
-  "restaurant",
-  "pool",
-  "fitness_center",
-  "spa",
-  "park",
-  "forest",
-  "yard",
-  "local_florist",
-  "nature",
-  "wifi",
-  "sensors",
-  "local_cafe",
-  "breakfast_dining",
-  // Contact / communication
-  "call",
-  "phone_in_talk",
-  "chat",
-  "forum",
-  "email",
-  "markunread_mailbox",
-  "support_agent",
-  "headset_mic",
-  "schedule",
-  "event",
-  "calendar_month",
-  "clock",
-  "update",
-  // Misc useful
-  "arrow_forward",
-  "arrow_outward",
-  "open_in_new",
-  "link",
-  "location_on",
-  "distance",
-  "percent",
-  "calculate",
-  "savings",
-  "account_balance",
-  "real_estate_agent",
-];
+
+/** Berapa banyak ikon yang dirender bertahap dalam satu halaman grid. */
+const PAGE_SIZE = 400;
 
 const LINK = "https://fonts.google.com/icons";
 
@@ -157,7 +35,7 @@ const gridStyle: CSSProperties = {
   gridTemplateColumns: "repeat(auto-fill, minmax(56px, 1fr))",
   gap: 6,
   marginTop: 10,
-  maxHeight: 240,
+  maxHeight: 300,
   overflowY: "auto",
 };
 const cellStyle = (active: boolean): CSSProperties => ({
@@ -176,9 +54,16 @@ const cellStyle = (active: boolean): CSSProperties => ({
 export function MaterialIconInput(props: StringInputProps) {
   const { value, onChange, readOnly } = props;
   const icon = typeof value === "string" ? value.trim() : "";
-
+  const [activeIcon, setActiveIcon] = useState<string | undefined>(icon || "landscape");
   const [search, setSearch] = useState("");
   const [fontReady, setFontReady] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+
+  // Ikuti nilai saat Sanity mengubahnya dari luar (mis. reset/draft).
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- sync nilai eksternal
+    setActiveIcon(icon || undefined);
+  }, [icon]);
 
   // Force the glyph font to finish loading so icons render as symbols (not
   // text/ligature fallback) before/while the grid is shown.
@@ -202,16 +87,31 @@ export function MaterialIconInput(props: StringInputProps) {
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
-    if (!q) return ICONS;
-    return ICONS.filter((name) => name.toLowerCase().includes(q));
+    if (!q) return MATERIAL_SYMBOLS;
+    return MATERIAL_SYMBOLS.filter((name) => name.toLowerCase().includes(q));
   }, [search]);
 
-  const handleSearch = (e: ChangeEvent<HTMLInputElement>) =>
+  const visible = search.trim() ? filtered.slice(0, 600) : filtered.slice(0, visibleCount);
+  const hasMore = search.trim() ? filtered.length > 600 : visibleCount < filtered.length;
+
+  const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
+    setVisibleCount(PAGE_SIZE);
     setSearch(e.currentTarget.value);
+  };
 
   const handleSelect = (name: string) => {
     if (readOnly) return;
+    setActiveIcon(name);
     onChange(set(name));
+  };
+
+  const handleClearSearch = () => {
+    setSearch("");
+  };
+
+  const handleShowMore = () => {
+    if (search.trim()) return;
+    setVisibleCount((prev) => prev + PAGE_SIZE);
   };
 
   return (
@@ -226,13 +126,13 @@ export function MaterialIconInput(props: StringInputProps) {
       {props.renderDefault(props)}
 
       <div style={boxStyle}>
-        <label style={labelStyle}>Atau pilih ikon &amp; cari namanya</label>
+        <label style={labelStyle}>Pilih ikon &amp; cari namanya</label>
 
         <input
           type="search"
           value={search}
           onChange={handleSearch}
-          placeholder="Cari ikon, contoh: factory, home, map"
+          placeholder="Cari ikon (mis. factory, home, map, pool)"
           readOnly={readOnly}
           style={{
             width: "100%",
@@ -245,7 +145,10 @@ export function MaterialIconInput(props: StringInputProps) {
         />
 
         <div style={{ marginTop: 8, fontSize: 12, color: "#667085" }}>
-          {filtered.length} ikon tersedia ·{" "}
+          {filtered.length.toLocaleString("id-ID")} ikon tersedia
+          {!search.trim() && visibleCount < filtered.length
+            ? ` · menampilkan ${visibleCount.toLocaleString("id-ID")}`
+            : ""}{" "}
           <a
             href={LINK}
             target="_blank"
@@ -270,21 +173,21 @@ export function MaterialIconInput(props: StringInputProps) {
               Memuat ikon…
             </div>
           ) : (
-            filtered.map((name) => (
+            visible.map((name) => (
               <button
                 key={name}
                 type="button"
                 onClick={() => handleSelect(name)}
                 disabled={readOnly}
                 title={name}
-                style={cellStyle(name === icon)}
+                style={cellStyle(name === activeIcon)}
               >
                 <span
                   className="material-symbols-outlined"
                   style={{
                     fontFamily: '"Material Symbols Outlined"',
                     fontSize: 26,
-                    color: name === icon ? "#1f7a3f" : "#333",
+                    color: name === activeIcon ? "#1f7a3f" : "#333",
                   }}
                   aria-hidden="true"
                 >
@@ -314,10 +217,45 @@ export function MaterialIconInput(props: StringInputProps) {
                 textAlign: "center",
               }}
             >
-              Ikon &quot;{search}&quot; tidak ditemukan.
+              Ikon &quot;{search}&quot; tidak ditemukan.{" "}
+              <button
+                type="button"
+                onClick={handleClearSearch}
+                style={{
+                  background: "none",
+                  border: "none",
+                  color: "#1f7a3f",
+                  cursor: "pointer",
+                  textDecoration: "underline",
+                  padding: 0,
+                }}
+              >
+                Reset pencarian
+              </button>
             </div>
           )}
         </div>
+
+        {hasMore && fontReady && (
+          <button
+            type="button"
+            onClick={handleShowMore}
+            disabled={readOnly}
+            style={{
+              marginTop: 10,
+              width: "100%",
+              padding: "8px 12px",
+              border: "1px solid #d0d5dd",
+              borderRadius: 8,
+              background: "#fff",
+              fontSize: 13,
+              color: "#1f7a3f",
+              cursor: "pointer",
+            }}
+          >
+            Tampilkan lebih banyak ikon
+          </button>
+        )}
       </div>
     </div>
   );

@@ -12,7 +12,7 @@ export default async function AboutPage() {
   ]);
 
   const companyName = profile?.companyName ?? "Green Property";
-  const heroImage = imageUrl(profile?.heroImage) ?? "/images/hero-fallback.jpg";
+  const heroImage = imageUrl(profile?.heroBanner?.image) ?? "/hero.svg";
   const logoImage = imageUrl(profile?.logo) ?? null;
 
   const descriptionText = (profile?.description ?? [])

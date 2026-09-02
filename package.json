@@ -7,9 +7,12 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "regenerate:icons": "node scripts/generate-material-symbols.cjs",
     "sanity:dev": "cd sanity && sanity dev"
   },
   "dependencies": {
+    "@material-symbols/font-400": "0.47.0",
+    "@portabletext/react": "^3.1.0",
     "@sanity/vision": "^6.11.0",
     "dotenv": "^17.4.2",
     "groq": "^6.11.0",

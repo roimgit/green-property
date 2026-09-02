@@ -2,6 +2,7 @@ import { defineField, defineType } from 'sanity'
 import { ImageInputWithUrl } from '../components/ImageInputWithUrl'
 import { PricingWithRate } from '../components/PricingWithRate'
 import { PropertyPrimaryPriceInput } from '../components/PropertyPrimaryPriceInput'
+import { MaterialIconInput } from '../components/MaterialIconInput'
 
 export default defineType({
     name: 'property',
@@ -194,36 +195,56 @@ export default defineType({
             ],
         }),
 
-        // --- SPESIFIKASI ---
+        // --- SPESIFIKASI (FLEKSIBEL: bebas tambah/hapus item + pilih ikon) ---
         defineField({
-            name: 'specs',
+            name: 'specsList',
             title: 'Spesifikasi Properti',
-            type: 'object',
-            fields: [
-                { name: 'certificate', title: 'Sertifikat', type: 'string' },
-                { name: 'landArea', title: 'Luas Tanah (m²)', type: 'number' },
-                { name: 'buildingArea', title: 'Luas Bangunan (m²)', type: 'number' },
+            description:
+                'Tambah atau hapus setiap baris spesifikasi. Untuk setiap item Anda dapat memberi nama (label), nilai, dan memilih ikon Material dari panel yang tersedia.',
+            type: 'array',
+            of: [
                 {
-                    name: 'furnishing',
-                    title: 'Kondisi Interior',
-                    type: 'string',
-                    options: {
-                        list: [
-                            { title: 'Unfurnished', value: 'Unfurnished' },
-                            { title: 'Furnished', value: 'Furnished' },
-                            { title: 'Full Furnished', value: 'Full Furnished' },
-                            { title: 'Semi Furnished', value: 'Semi Furnished' },
-                        ],
-                        layout: 'dropdown', // Membuat tampilannya jadi combobox / pilihan dropdown
+                    type: 'object',
+                    name: 'specItem',
+                    title: 'Spesifikasi',
+                    fields: [
+                        {
+                            name: 'icon',
+                            title: 'Ikon (Material Symbols)',
+                            type: 'string',
+                            description:
+                                'Nama ikon Material Symbols. Pilih dari panel di bawah, atau cari nama di https://fonts.google.com/icons',
+                            components: { input: MaterialIconInput },
+                        },
+                        {
+                            name: 'label',
+                            title: 'Nama Spesifikasi',
+                            type: 'string',
+                            validation: (Rule) => Rule.required(),
+                        },
+                        {
+                            name: 'value',
+                            title: 'Nilai',
+                            type: 'string',
+                            description: 'Contoh: 200 m², SHM, 2200 VA, 3, 2',
+                        },
+                    ],
+                    preview: {
+                        select: {
+                            icon: 'icon',
+                            label: 'label',
+                            value: 'value',
+                        },
+                        prepare(selection) {
+                            return {
+                                title: selection.label || '(Tanpa nama)',
+                                subtitle: selection.icon
+                                    ? `ikon: ${selection.icon}`
+                                    : selection.value || '',
+                            }
+                        },
                     },
-                    initialValue: 'Unfurnished',
                 },
-                { name: 'bedrooms', title: 'Kamar Tidur', type: 'string' },
-                { name: 'bathrooms', title: 'Kamar Mandi', type: 'string' },
-                { name: 'floors', title: 'Jumlah Lantai', type: 'number' },
-                { name: 'electricity', title: 'Daya Listrik', type: 'string' },
-                { name: 'carport', title: 'Garasi / Carport', type: 'string' },
-                { name: 'orientation', title: 'Hadap', type: 'string' },
             ],
         }),
 

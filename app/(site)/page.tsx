@@ -2,6 +2,8 @@ import Link from "next/link";
 import Image from "next/image";
 import PropertyCard from "@/components/PropertyCard";
 import HeroBannerImage from "@/components/HeroBannerImage";
+import ServiceCarousel from "./ServiceCarousel";
+import type { HeroBannerCTA } from "@/types/sanity";
 import {
   getPropertyList,
   getCompanyProfile,
@@ -10,46 +12,35 @@ import {
   getServices,
   imageUrl,
 } from "@/lib/sanity/data";
-import type { Service } from "@/types/sanity";
 
 export const dynamic = "force-dynamic";
 
 const HERO_IMAGE_FALLBACK = "/hero.svg";
 
-const SERVICES_FALLBACK: Service[] = [
-  {
-    _id: "fallback-1",
-    _type: "service",
-    icon: "landscape",
-    title: "Industrial Land",
-    desc: "industrial plots optimized for manufacturing.",
-    urutanTampil: 1,
-  },
-  {
-    _id: "fallback-2",
-    _type: "service",
-    icon: "factory",
-    title: "Turnkey Factories",
-    desc: "ready-to-operate facilities built to international standards.",
-    urutanTampil: 2,
-  },
-  {
-    _id: "fallback-3",
-    _type: "service",
-    icon: "real_estate_agent",
-    title: "Executive Residence",
-    desc: "luxury housing for management staff.",
-    urutanTampil: 3,
-  },
-  {
-    _id: "fallback-4",
-    _type: "service",
-    icon: "apartment",
-    title: "Staff Apartments",
-    desc: "high-density, comfortable living solutions.",
-    urutanTampil: 4,
-  },
-];
+function renderLink(button: HeroBannerCTA, className: string) {
+  const content = (
+    <>
+      {button.label}
+      {button.icon && <span className="material-symbols-outlined text-sm">{button.icon}</span>}
+    </>
+  );
+  const href = button.href || "#";
+  const isInternal =
+    button.linkType === "internal" || /^(?!https?:)./.test(href);
+
+  if (isInternal) {
+    return (
+      <Link key={button.label ?? href} href={href} className={className}>
+        {content}
+      </Link>
+    );
+  }
+  return (
+    <a key={button.label ?? href} href={href} target="_blank" rel="noopener noreferrer" className={className}>
+      {content}
+    </a>
+  );
+}
 
 const ECOSYSTEM_POINTS = [
   "Proksimitas Strategis ke Pabrik Perakitan Utama",
@@ -114,18 +105,31 @@ export default async function Home() {
 
   const featured = properties.filter((p) => p.isFeatured);
   const unggulan = (featured.length > 0 ? featured : properties).slice(0, 8);
-  const heroImage = imageUrl(company?.heroImage) ?? HERO_IMAGE_FALLBACK;
-  const serviceItems = services.length > 0 ? services : SERVICES_FALLBACK;
+  const heroBanner = company?.heroBanner;
+  const showHero =
+    heroBanner !== undefined &&
+    heroBanner !== null &&
+    (heroBanner.image !== undefined ||
+      heroBanner.heading !== undefined ||
+      heroBanner.description !== undefined ||
+      (heroBanner.links?.length ?? 0) > 0);
+  const heroImage = showHero
+    ? imageUrl(heroBanner.image) ?? HERO_IMAGE_FALLBACK
+    : null;
 
   return (
     <main className="pt-24 pb-xl">
       {/* ===== Hero ===== */}
-      <section className="max-w-container-max mx-auto px-4 lg:px-8 mb-xl">
+      {heroImage && (
+        <section className="max-w-container-max mx-auto px-4 lg:px-8 mb-xl">
         <div className="relative w-full h-[600px] rounded-xl overflow-hidden shadow-soft group">
 
           {/* Background Image — rendered via onLoad (fade-in after loaded) */}
           <div className="absolute inset-0 transition-transform duration-1000 group-hover:scale-105">
-            <HeroBannerImage src={heroImage} alt="Banner properti strategis Green Property" />
+            <HeroBannerImage
+              src={heroImage}
+              alt={heroBanner?.image?.alt ?? "Banner properti strategis Green Property"}
+            />
           </div>
 
           {/* Gradient Overlay */}
@@ -137,83 +141,48 @@ export default async function Home() {
             {/* Inner Wrapper untuk membatasi lebar teks */}
             <div className="max-w-2xl lg:max-w-3xl">
               <h1 className="font-display text-display text-surface-container-lowest mb-md drop-shadow-md leading-tight">
-                Solusi Strategis Properti Industrial &amp; Residensial di Indonesia
+                {heroBanner?.heading ??
+                  "Solusi Strategis Properti Industrial &amp; Residensial di Indonesia"}
               </h1>
               <p className="font-body-lg text-body-lg text-surface-bright mb-lg">
-                Spesialis penyedia lahan untuk Vendor Hyundai dan hunian eksklusif dengan layanan terpercaya.
+                {heroBanner?.description ??
+                  "Spesialis penyedia lahan untuk Vendor Hyundai dan hunian eksklusif dengan layanan terpercaya."}
               </p>
 
               {/* Button Group - Ditambah flex-wrap agar responsif di mobile */}
               <div className="flex flex-wrap gap-4">
-                <Link
-                  href="/properties"
-                  className="bg-primary-container text-on-primary px-8 py-3 rounded-full font-body-md text-body-md font-semibold hover:bg-primary transition-colors shadow-sm text-center"
-                >
-                  Lihat Properti
-                </Link>
-                <Link
-                  href="/contact"
-                  className="bg-transparent border-2 border-surface-container-lowest text-surface-container-lowest backdrop-blur-sm px-8 py-3 rounded-full font-body-md text-body-md font-semibold hover:bg-surface-container-lowest/20 transition-colors flex items-center justify-center gap-2"
-                >
-                  <span className="material-symbols-outlined">chat</span> Hubungi Kami via WhatsApp
-                </Link>
+                {(heroBanner?.links?.filter((l) => l.label) ?? []).map((button) =>
+                  renderLink(
+                    button,
+                    `${
+                      button.style !== "ghost"
+                        ? "bg-primary-container text-on-primary hover:bg-primary"
+                        : "bg-transparent border-2 border-surface-container-lowest text-surface-container-lowest backdrop-blur-sm hover:bg-surface-container-lowest/20"
+                    } px-8 py-3 rounded-full font-body-md text-body-md font-semibold transition-colors shadow-sm flex items-center justify-center gap-2`,
+                  ),
+                )}
               </div>
             </div>
 
           </div>
         </div>
       </section>
+    )}
 
       {/* ===== Service Portfolio ===== */}
-      <section className="max-w-container-max mx-auto px-sm lg:px-xl mb-xl">
-        <div className="mb-lg">
-          <h2 className="font-headline-lg text-headline-lg text-on-surface mb-xs">Service Portfolio</h2>
-          <p className="font-body-md text-body-md text-on-surface-variant">
-            Comprehensive solutions for industrial setup and corporate living.
-          </p>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter">
-          {serviceItems.map((service) => {
-            const cardContent = (
-              <>
-                <div className="w-14 h-14 rounded-full bg-surface-container-low flex items-center justify-center mb-md shrink-0">
-                  <span
-                    className="material-symbols-outlined text-primary text-[32px]"
-                    style={{ fontFamily: '"Material Symbols Outlined"' }}
-                  >
-                    {service.icon || "landscape"}
-                  </span>
-                </div>
-                <h3 className="font-headline-md text-headline-md text-on-surface font-bold mb-sm">
-                  {service.title}
-                </h3>
-                <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed">
-                  <span className="font-bold text-primary">Jual &amp; Sewa</span>{" "}
-                  {service.desc}
-                </p>
-              </>
-            );
-            const cardClassName =
-              "h-full bg-surface-container-lowest border border-outline-variant p-lg rounded-xl shadow-soft hover:-translate-y-1 hover:shadow-md hover:border-primary-container transition-all duration-300 flex flex-col";
-
-            return service.url ? (
-              <a
-                key={service._id}
-                href={service.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={cardClassName}
-              >
-                {cardContent}
-              </a>
-            ) : (
-              <div key={service._id} className={cardClassName}>
-                {cardContent}
-              </div>
-            );
-          })}
-        </div>
-      </section>
+      {services.length > 0 && (
+        <section className="max-w-container-max mx-auto px-sm lg:px-xl mb-xl">
+          <div className="mb-lg">
+            <h2 className="font-headline-lg text-headline-lg text-on-surface mb-xs">Service Portfolio</h2>
+            <p className="font-body-md text-body-md text-on-surface-variant">
+              Comprehensive solutions for industrial setup and corporate living.
+            </p>
+          </div>
+          <div className="px-6">
+            <ServiceCarousel services={services} />
+          </div>
+        </section>
+      )}
 
       {/* ===== Ecosystem (Land Provider Hyundai) ===== */}
       <section id="land-provider" className="max-w-container-max mx-auto px-sm lg:px-xl mb-xl">

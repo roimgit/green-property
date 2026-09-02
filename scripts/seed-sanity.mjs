@@ -344,7 +344,27 @@ async function main() {
     slug: { _type: "slug", current: "about-green-property" },
     companyName: "Green Property Indonesia",
     logo,
-    heroImage,
+    heroBanner: {
+      image: heroImage,
+      heading: "Solusi Strategis Properti Industrial & Residensial di Indonesia",
+      description:
+        "Spesialis penyedia lahan untuk Vendor Hyundai dan hunian eksklusif dengan layanan terpercaya.",
+      links: [
+        {
+          label: "Lihat Properti",
+          linkType: "internal",
+          href: "properties",
+          style: "primary",
+        },
+        {
+          label: "Hubungi Kami via WhatsApp",
+          linkType: "external",
+          href: "https://wa.me/62894934394",
+          style: "ghost",
+          icon: "chat",
+        },
+      ],
+    },
     description: portableText(
       "Green Property adalah spesialis penyedia lahan untuk ekosistem vendor Hyundai serta penyedia properti industrial dan residensial eksklusif di Indonesia dengan layanan terpercaya.",
     ),

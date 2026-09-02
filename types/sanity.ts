@@ -31,6 +31,12 @@ export interface SanityImage {
   };
 }
 
+export interface PropertySpecItem {
+  label?: string;
+  value?: string;
+  icon?: string;
+}
+
 export interface PropertySpecs {
   certificate?: string;
   landArea?: number;
@@ -42,6 +48,7 @@ export interface PropertySpecs {
   electricity?: string;
   carport?: string;
   orientation?: string;
+  specsList?: PropertySpecItem[];
 }
 
 export interface PricingEntry {
@@ -107,6 +114,21 @@ export interface TabBrowserLogo {
   image?: SanityImage;
 }
 
+export interface HeroBannerCTA {
+  label?: string;
+  linkType?: "internal" | "external";
+  href?: string;
+  style?: "primary" | "ghost";
+  icon?: string;
+}
+
+export interface HeroBanner {
+  image?: SanityImage;
+  heading?: string;
+  description?: string;
+  links?: HeroBannerCTA[];
+}
+
 export interface CompanyProfile {
   _id: string;
   _type: "companyProfile";
@@ -114,7 +136,7 @@ export interface CompanyProfile {
   companyName?: string;
   logo?: SanityImage;
   tabLogo?: TabBrowserLogo;
-  heroImage?: SanityImage;
+  heroBanner?: HeroBanner;
   description?: PortableTextBlock[];
   vision?: string;
   mission?: string[];
@@ -150,7 +172,7 @@ export interface Service {
   _type: "service";
   title?: string;
   icon?: string;
-  desc?: string;
+  desc?: PortableTextBlock[];
   url?: string;
   urutanTampil?: number;
 }

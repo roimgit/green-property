@@ -12,6 +12,7 @@ import {
   normalizeWhatsAppNumber,
   portableTextToText,
 } from "@/lib/sanity/data";
+import { normalizeSpecs } from "@/lib/sanity/specifications";
 
 export const dynamic = "force-dynamic";
 
@@ -19,11 +20,16 @@ type Props = {
   params: Promise<{ slug: string }>;
 };
 
-function SpecRow({ label, value }: { label: string; value?: string | number }) {
+function SpecRow({ label, value, icon }: { label: string; value?: string | number; icon?: string }) {
   if (value === undefined || value === null || value === "") return null;
   return (
-    <div className="flex justify-between items-center py-2 border-b border-outline-variant/50">
-      <span className="text-on-surface-variant font-body-sm text-body-sm">{label}</span>
+    <div className="flex justify-between items-center gap-2 py-2 border-b border-outline-variant/50">
+      <span className="flex items-center gap-2 text-on-surface-variant font-body-sm text-body-sm">
+        {icon && (
+          <span className="material-symbols-outlined text-[18px] text-primary">{icon}</span>
+        )}
+        {label}
+      </span>
       <span className="text-on-surface font-body-md text-body-md font-semibold">{value}</span>
     </div>
   );
@@ -115,15 +121,19 @@ export default async function PropertyDetailPage({ params }: Props) {
         }]
       : [];
   const specs = property.specs;
+  const displaySpecs = normalizeSpecs(specs);
   const description = portableTextToText(property.description);
   const category =
     typeof property.category === "string" ? property.category : "";
   const waNumber = normalizeWhatsAppNumber(property.contact?.whatsappNumber ?? property.contact?.phoneNumber ?? company?.contactPhone ?? "0894934394");
   const telNumber = property.contact?.phoneNumber ?? company?.contactPhone ?? "0894934394";
-  const furnishingText = specs?.furnishing ?? "Belum diatur";
+  const furnishingText =
+    specs?.furnishing ??
+    displaySpecs.find((s) => /interior|furnishing|furnished/i.test(s.label))?.value ??
+    "Belum diatur";
 
-  const specWrapper = (label: string, value?: string | number) => (
-    <SpecRow label={label} value={value} />
+  const specWrapper = (label: string, value?: string | number, icon?: string) => (
+    <SpecRow label={label} value={value} icon={icon} />
   );
 
   return (
@@ -174,22 +184,32 @@ export default async function PropertyDetailPage({ params }: Props) {
           <div className="bg-surface-container-lowest rounded-xl p-md border border-outline-variant shadow-soft">
             <h2 className="font-headline-sm text-headline-sm text-on-surface mb-md">Spesifikasi Properti</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-sm gap-x-lg">
-              {specWrapper("Tipe Properti", category)}
-              {specWrapper("Sertifikat", specs?.certificate)}
-              {specWrapper(
-                "Luas Tanah",
-                specs?.landArea ? specs.landArea.toLocaleString("id-ID") + " m²" : undefined,
+              {displaySpecs.length > 0 ? (
+                displaySpecs.map((s, i) => (
+                  <SpecRow key={`${s.label}-${i}`} label={s.label} value={s.value} icon={s.icon} />
+                ))
+              ) : (
+                <>
+                  {specWrapper("Tipe Properti", category, "domain")}
+                  {specWrapper("Sertifikat", specs?.certificate, "verified_user")}
+                  {specWrapper(
+                    "Luas Tanah",
+                    specs?.landArea ? specs.landArea.toLocaleString("id-ID") + " m²" : undefined,
+                    "landscape",
+                  )}
+                  {specWrapper(
+                    "Luas Bangunan",
+                    specs?.buildingArea ? specs.buildingArea.toLocaleString("id-ID") + " m²" : undefined,
+                    "foundation",
+                  )}
+                  {specWrapper("Kamar Tidur", specs?.bedrooms, "king_bed")}
+                  {specWrapper("Kamar Mandi", specs?.bathrooms, "bathtub")}
+                  {specWrapper("Jumlah Lantai", specs?.floors ? specs.floors + " Lantai" : undefined, "stairs")}
+                  {specWrapper("Daya Listrik", specs?.electricity, "bolt")}
+                  {specWrapper("Garasi / Carport", specs?.carport, "garage")}
+                  {specWrapper("Hadap", specs?.orientation, "explore")}
+                </>
               )}
-              {specWrapper(
-                "Luas Bangunan",
-                specs?.buildingArea ? specs.buildingArea.toLocaleString("id-ID") + " m²" : undefined,
-              )}
-              {specWrapper("Kamar Tidur", specs?.bedrooms)}
-              {specWrapper("Kamar Mandi", specs?.bathrooms)}
-              {specWrapper("Jumlah Lantai", specs?.floors ? specs.floors + " Lantai" : undefined)}
-              {specWrapper("Daya Listrik", specs?.electricity)}
-              {specWrapper("Garasi / Carport", specs?.carport)}
-              {specWrapper("Hadap", specs?.orientation)}
             </div>
           </div>
 
