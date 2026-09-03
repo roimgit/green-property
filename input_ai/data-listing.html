@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Data Listing Iklan Mr. Park — Input Sanity</title>
+<style>
+  :root {
+    --bg: #f4f6f5;
+    --card-bg: #ffffff;
+    --text: #1f2a24;
+    --muted: #6b7a72;
+    --accent: #2f6f4f;
+    --accent-light: #e7f3ec;
+    --border: #dfe6e2;
+    --jual: #2f6f4f;
+    --sewa: #a15c1c;
+    --both: #1f5b8a;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+  }
+  header {
+    background: linear-gradient(135deg, #1f4a37, #2f6f4f);
+    color: #fff;
+    padding: 28px 24px 22px;
+  }
+  header h1 {
+    margin: 0 0 6px;
+    font-size: 22px;
+  }
+  header p {
+    margin: 0;
+    color: #d8ede1;
+    font-size: 14px;
+  }
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 16px 24px;
+    background: #fff;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    align-items: center;
+  }
+  .toolbar .count {
+    margin-left: auto;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .filter-btn {
+    border: 1px solid var(--border);
+    background: #fff;
+    color: var(--text);
+    padding: 7px 14px;
+    border-radius: 999px;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .filter-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  main {
+    padding: 20px 24px 60px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+  }
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .03em;
+    color: #fff;
+  }
+  .status-jual { background: var(--jual); }
+  .status-sewa { background: var(--sewa); }
+  .status-both { background: var(--both); }
+  .card-index {
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .card-title {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.3;
+  }
+  .card-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 13px;
+  }
+  .field {
+    display: flex;
+    flex-direction: column;
+    border-left: 3px solid var(--border);
+    padding-left: 8px;
+  }
+  .field-harga {
+    border-left-color: var(--accent);
+    background: var(--accent-light);
+    padding: 6px 8px;
+    border-radius: 4px;
+  }
+  .field-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: var(--muted);
+  }
+  .field-value {
+    font-size: 13.5px;
+  }
+  .copy-btn {
+    margin-top: 4px;
+    align-self: flex-start;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    background: #fff;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  .copy-btn:hover {
+    background: var(--accent);
+    color: #fff;
+  }
+  .copy-btn.copied {
+    background: var(--accent);
+    color: #fff;
+  }
+  section.hidden {
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Data Listing Iklan Online — Mr. Park</h1>
+  <p>Hasil ekstraksi dari file Excel, siap dipakai sebagai referensi input konten ke admin panel Sanity. Total 41 listing.</p>
+</header>
+
+<div class="toolbar">
+  <button class="filter-btn active" data-filter="all">Semua</button>
+  <button class="filter-btn" data-filter="Properti Residensial &amp; Komersial">Properti Residensial &amp; Komersial</button><button class="filter-btn" data-filter="Tanah, Pabrik &amp; Gudang">Tanah, Pabrik &amp; Gudang</button>
+  <span class="count" id="countLabel"></span>
+</div>
+
+<main>
+  <div class="grid" id="grid">
+    
+    <div class="card" data-category="Properti Residensial &amp; Komersial">
+      <div class="card-head">
+        <span class="badge status-jual">DI JUAL</span>
+        <span class="card-index">#01</span>
+      </div>
+      <h3 class="card-title">Apt. Pondok Indah Rsdnc</h3>
+      <div class="card-fields">
+        <div class="field field-lokasi"><span class="field-label">Lokasi / Tower</span><span class="field-value">Tower Kartika,  Lantai 31</span></div><div class="field field-luas"><span class="field-label">Luas / Legal Ukuran</span><span class="field-value">Luas  : 159 Sqm</span></div><div class="field field-furnish"><span class="field-label">Kondisi Furnish</span><span class="field-value">Unfurnished</span></div><div class="field field-kamar"><span class="field-label">Kamar Tidur</span><span class="field-value">4 BR</span></div><div class="field field-harga"><span class="field-label">Harga</span><span class="field-value">Harga Rp. 9 Milyar</span></div>
+      </div>
+      <button class="copy-btn" data-copy-index="0">Salin Teks</button>
+    </div>
+    <div class="card" data-category="Properti Residensial &amp; Komersial">
+      <div class="card-head">
+        <span class="badge status-both">DI JUAL / DISEWA</span>
+        <span class="card-index">#02</span>
+      </div>
+      <h3 class="card-title">Apt. Senopati Suites</h3>
+      <div class="card-fields">
+        <div class="field field-luas"><span class="field-label">Luas / Legal Ukuran</span><span class="field-value">Luas     : 165 Sqm</span></div><div class="field field-furnish"><span class="field-label">Kondisi Furnish</span><span class="field-value">Furnished</span></div><div class="field field-kamar"><span class="field-label">Kamar Tidur</span><span class="field-value">2BR</span></div><div class="field field-harga"><span class="field-label">Harga</span><span class="field-value">Harga  Rp. 7,5 Milyar</span></div><div class="field field-info"><span class="field-label">Info Tambahan</span><span class="field-value">Sewa   $3000/month</span></div>
+      </div>
+      <button class="copy-btn" data-copy-index="1">Salin Teks</button>
+    </div>
+    <div class="card" data-category="Properti Residensial &amp; Komersial">
+      <div class="card-head">
+        <span class="badge status-jual">DI JUAL</span>
+        <span class="card-index">#03</span>
+      </div>
+      <h3 class="card-title">Apt. Fatmawati City</h3>
+      <div class="card-fields">
+        <div class="field field-lokasi"><span class="field-label">Lokasi / Tower</span><span class="field-value">Tower  : Corona,  Lantai 12</span></div><div class="field field-luas"><span class="field-label">Luas / Legal Ukuran</span><span class="field-value">Luas     : 71 Sqm</span></div><div class="field field-furnish"><span class="field-label">Kondisi Furnish</span><span class="field-value">Unfurnished</span></div><div class="field field-kamar"><span class="field-label">Kamar Tidur</span><span class="field-value">2BR</span></div><div class="field field-harga"><span class="field-label">Harga</span><span class="field-value">Harga   Rp. 2,8 Milyar</span></div>
+      </div>
+      <button class="copy-btn" data-copy-index="2">Salin Teks</button>
+    </div>
+    <div class="card" data-category="Properti Residensial &amp; Komersial">
+      <div class="card-head">
+        <span class="badge status-jual">DI  JUAL</span>
+        <span class="card-index">#04</span>
+      </div>
+      <h3 class="card-title">Apt. Hampton&#x27;s Park</h3>
+      <div class="card-fields">
+        <div class="field field-lokasi"><span class="field-label">Lokasi / Tower</span><span class="field-value">Tower : B, Lantai 8</span></div><div class="field field-luas"><span class="field-label">Luas / Legal Ukuran</span><span class="field-value">Luas  : 152 sqm, 3 BR</span></div><div class="field field-furnish"><span class="field-label">Kondisi Furnish</span><span class="field-value">Unfurnished</span></div><div class="field field-harga"><span class="field-label">Harga</span><span class="field-value">Harga  Rp. 2,5 Milyar</span></div>
+      </div>
+      <button class="copy-btn" data-copy-index="3">Salin Teks</button>
+    </div>
+    <div class="card" data-category="Properti Residensial &amp; Komersial">
+      <div class="card-head">
+        <span class="badge status-both">DI JUAL / DISEWA</span>
+        <span class="card-index">#05</span>
+      </div>
+      <h3 class="card-title">Office space di LA&#x27;VENUE</h3>
+      <div class="card-fields">
+        <div class="field field-lokasi"><span class="field-label">Lokasi / Tower</span><span class="field-value">Jl. Raya Ps.Minggu Jakarta Selatan</span></div><div class="field field-lokasi"><span class="field-label">Lokasi / Tower</span><span class="field-value">Lantai  : 12</span></div><div class="field field-luas"><span class="field-label">Luas / Legal Ukuran</span><span class="field-value">Lb. 184 sqm</span></div><div class="field field-furnish"><span class="field-label">Kondisi Furnish</span><span class="field-value">Full Furnished</span></div><div class="field field-harga"><span class="field-label">Harga</span><span class="field-value">Harga jual Rp.7,5 Milyar</span></div><div class="field field-harga"><span class="field-label">Harga</span><span class="field-value">Harga sewa  Rp. 200rb/m/bulan</span></div>
+      </div>
+      <button class="copy-btn" data-copy-index="4">Salin Teks</button>
+    </div>
+    <div class="card" data-category="Properti Residensial &amp; Komersial">
+      <div class="card-head">
+        <span class="badge status-jual">DI  JUAL</span>
+        <span class="card-index">#06</span>
+      </div>
+      <h3 class="card-title">Ruko Mega Cilegon</h3>
+      <div class="card-fields">
+        <div class="field field-luas"><span class="field-label">Luas / Legal Ukuran</span><span class="field-value">Lt. 60M2</span></div><div class="field field-luas"><span class="field-label">Luas / Legal Ukuran</span><span class="field-value">Lb. 120 M2, 2 lantai</span></div><div class="field field-legalitas"><span class="field-label">Legalitas</span><span class="field-value">SHGB</span></div><div class="field field-harga"><span class="field-label">Harga</span><span class="field-value">Harga Jual Rp. 1 Milyar</span></div>
+      </div>
+      <button class="copy-btn" data-copy-index="5">Salin Teks</button>
+    </div>
+    <div class="card" data-category="Tanah, Pabrik &amp; Gudang">
+      <div class="card-head">
+        <span class="badge status-jual">DI JUAL</span>
+        <span class="card-index">#07</span>
+      </div>
+      <h3 class="card-title">Ex Gudang</h3>
+      <div class="card-fields">
+        <div class="field field-lokasi"><span class="field-label">Lokasi / Tower</span><span class="field-value">Marga Sari Buah Batu, Bandung</span></div><div class="field field-luas"><span class="field-label">Luas / Legal Ukuran</span><span class="field-value">Lt. 6360 m3</span></div><div class="field field-luas"><span class="field-label">Luas / Legal Ukuran</span><span class="field-value">Lb. 1700 m3</span></div><div class="field field-harga"><span class="field-label">Harga</span><span class="field-value">Harga Rp. 48 Milyar</span></div>
+      </div>
+      <button class="copy-btn" data-copy-index="6">Salin Teks</button>
+    </div>
+    <div class="card" data-category="Tanah, Pabrik &amp; Gudang">
+      <div class="card-head">
+        <span class="badge status-jual">DI  JUAL</span>
+        <span class="card-index">#08</span>
+      </div>
+      <h3 class="card-title">Tanah Kosong</h3>
+      <div class="card-fields">
+        <div class="field field-info"><span class="field-label">Info Tambahan</span><span class="field-value">Di Parung Serpong</span></div><div class="field field-luas"><span class="field-label">Luas / Legal Ukuran</span><span class="field-value">Lt. 19.889 m3</span></div><div class="field field-harga"><span class="field-label">Harga</span><span class="field-value">Harga Rp. 29,83 Miliar</span></div>
+      </div>
+      <button class="copy-btn" data-copy-index="7">Salin Teks</button>
+    </div>
+    <div class="card" data-category="Tanah, Pabrik &amp; Gudang">
+      <div class="card-head">
+        <span class="badge status-jual">DIJUAL</span>
+        <span class="card-index">#09</span>
+      </div>
+      <h3 class="card-title">Ex Pabrik Garment</h3>
+      <div class="card-fields">
+        <div class="field field-lokasi"><span class="field-label">Lokasi / Tower</span><span class="field-value">Kawasan Industri Mitra, Karawang</span></div><div class="field field-luas"><span class="field-label">Luas / Legal Ukuran</span><span class="field-value">Lt. 4.050 m3</span></div><div class="field field-luas"><span class="field-label">Luas / Legal Ukuran</span><span class="field-value">Lb. 7.392 m3</span></div><div class="field field-harga"><span class="field-label">Harga</span><span class="field-value">Harga Rp. 47 Miliar</span></div>
+      </div>
+      <button class="copy-btn" data-copy-index="8">Salin Teks</button>
+    </div>
+    <div class="card" data-category="Tanah, Pabrik &amp; Gudang">
+      <div class="card-head">
+        <span class="badge status-jual">DIJUAL</span>
+        <span class="card-index">#10</span>
+      </div>
+      <h3 class="card-title">Kavling Industri siap bangun</h3>
+      <div class="card-fields">
+        <div class="field field-lokasi"><span class="field-label">Lokasi / Tower</span><span class="field-value">Kawasan industri Busan, Tangerang</span></div><div class="field field-luas"><span class="field-label">Luas / Legal Ukuran</span><span class="field-value">Lt.  5.472M2</span></div><div class="field field-harga"><span class="field-label">Harga</span><span class="field-value">Harga  Rp. 1.800.000/M2</span></div>
+      </div>
+      <button class="copy-btn" data-copy-index="9">Salin Teks</button>
+    </div>
+    <div class="card" data-category="Tanah, Pabrik &amp; Gudang">
+      <div class="card-head">
+        <span class="badge status-jual">DI JUAL</span>
+        <span class="card-index">#11</span>
+      </div>
+      <h3 class="card-title">Tanah Kosong</h3>
+      <div class="card-fields">
+        <div class="field field-lokasi"><span class="field-label">Lokasi / Tower</span><span class="field-value">Jl. Gandaria, Kby Lama Jkt Selatan</span></div><div class="field field-luas"><span class="field-label">Luas / Legal Ukuran</span><span class="field-value">Lt. 14.000 M2</span></div><div class="field field-legalitas"><span class="field-label">Legalitas</span><span class="field-value">SHGB</span></div><div class="field field-harga"><span class="field-label">Harga</span><span class="field-value">Harga Rp. 40.000.000/M2</span></div>
+      </div>
+      <button class="copy-btn" data-copy-index="10">Salin Teks</button>
+    </div>
+    <div class="card" data-category="Tanah, Pabrik &amp; Gudang">
+      <div class="card-head">
+        <span class="badge status-jual">DI  JUAL</span>
+        <span class="card-index">#12</span>
+      </div>
+      <h3 class="card-title">Tanah Kosong</h3>
+      <div class="card-fields">
+        <div class="field field-lokasi"><span class="field-label">Lokasi / Tower</span><span class="field-value">Subang  (1,5km dari exit tol Subang)</span></div><div class="field field-luas"><span class="field-label">Luas / Legal Ukuran</span><span class="field-value">Lt. 38.573 M2</span></div><div class="field field-legalitas"><span class="field-label">Legalitas</span><span class="field-value">SHGB</span></div><div class="field field-harga"><span class="field-label">Harga</span><span class="field-value">Harga Rp. 650.000/M2</span></div>
+      </div>
+      <button class="copy-btn" data-copy-index="11">Salin Teks</button>
+    </div>
+    <div class="card" data-category="Tanah, Pabrik &amp; Gudang">
+      <div class="card-head">
+        <span class="badge status-jual">DIJUAL</span>
+        <span class="card-index">#13</span>
+      </div>
+      <h3 class="card-title">Tanah Kosong</h3>
+      <div class="card-fields">
+        <div class="field field-lokasi"><span class="field-label">Lokasi / Tower</span><span class="field-value">Cilegon</span></div><div class="field field-luas"><span class="field-label">Luas / Legal Ukuran</span><span class="field-value">Lt. 6.600M2</span></div><div class="field field-legalitas"><span class="field-label">Legalitas</span><span class="field-value">SHGB</span></div><div class="field field-harga"><span class="field-label">Harga</span><span class="field-value">Harga Rp. 2.000.000/M2</span></div>
+      </div>
+      <button class="copy-btn" data-copy-index="12">Salin Teks</button>
+    </div>
+    <div class="card" data-category="Tanah, Pabrik &amp; Gudang">
+      <div class="card-head">
+        <span class="badge status-sewa">DI SEWA</span>
+        <span class="card-index">#14</span>
+      </div>
+      <h3 class="card-title">Ex Pabrik Molding</h3>
+      <div class="card-fields">
+        <div class="field field-lokasi"><span class="field-label">Lokasi / Tower</span><span class="field-value">Rangkas Bitung, Serang. Banten</span></div><div class="field field-luas"><span class="field-label">Luas / Legal Ukuran</span><span class="field-value">Lt.  6.190M2</span></div><div class="field field-luas"><span class="field-label">Luas / Legal Ukuran</span><span class="field-value">Lb.  2.786M2</span></div><div class="field field-harga"><span class="field-label">Harga</span><span class="field-value">Harga sewa Rp. 30,000/M2 Bulan</span></div>
+      </div>
+      <button class="copy-btn" data-copy-index="13">Salin Teks</button>
+    </div>
+    <div class="card" data-category="Properti Residensial &amp; Komersial">
+      <div class="card-head">
+        <span class="badge status-jual">DI JUAL</span>
+        <span class="card-index">#15</span>
+      </div>
+      <h3 class="card-title">Apt. Pakubuwono Residence</h3>
+      <div class="card-fields">
+        <div class="field field-lokasi"><span class="field-label">Lokasi / Tower</span><span class="field-value">Tower Cottonwood, Lantai 22</span></div><div class="field field-luas"><span class="field-label">Luas / Legal Ukuran</span><span class="field-value">Luas   : 153 Sqm</span></div><div class="field field-furnish"><span class="field-label">Kondisi Furnish</span><span class="field-value">Unfurnished</span></div><div class="field field-kamar"><span class="field-label">Kamar Tidur</span><span class="field-value">4 BR</span></div><div class="field field-harga"><span class="field-label">Harga</span><span class="field-value">Harga  Rp. 12 Milyar</span></div>
+      </div>
+      <button class="copy-btn" data-copy-index="14">Salin Teks</button>
+    </div>
+    <div class="card" data-category="Properti Residensial &amp; Komersial">
+      <div class="card-head">
+        <span class="badge status-jual">DI JUAL</span>
+        <span class="card-index">#16</span>
+      </div>
+      <h3 class="card-title">Apt. Essence Dharmawangsa</h3>
+      <div class="card-fields">
+        <div class="field field-lokasi"><span class="field-label">Lokasi / Tower</span><span class="field-value">Tower South, Lantai 21</span></div><div class="field field-luas"><span class="field-label">Luas / Legal Ukuran</span><span class="field-value">Luas    : 166 sqm</span></div><div class="field field-furnish"><span class="field-label">Kondisi Furnish</span><span class="field-value">Unfurnished</span></div><div class="field field-kamar"><span class="field-label">Kamar Tidur</span><span class="field-value">3BR</span></div><div class="field field-harga"><span class="field-label">Harga</span><span class="field-value">Harga Rp. 3.750 Milyar</span></div>
+      </div>
+      <button class="copy-btn" data-copy-index="15">Salin Teks</button>
+    </div>
+    <div class="card" data-category="Properti Residensial &amp; Komersial">
+      <div class="card-head">
+        <span class="badge status-jual">DI  JUAL</span>
+        <span class="card-index">#17</span>
+      </div>
+      <h3 class="card-title">Apt. Kusuma Candra</h3>
+      <div class="card-fields">
+        <div class="field field-lokasi"><span class="field-label">Lokasi / Tower</span><span class="field-value">Tower  : C, Lantai 3AM</span></div><div class="field field-luas"><span class="field-label">Luas / Legal Ukuran</span><span class="field-value">Luas   :  151sqm, 3BR</span></div><div class="field field-furnish"><span class="field-label">Kondisi Furnish</span><span class="field-value">Unfurnished</span></div><div class="field field-harga"><span class="field-label">Harga</span><span class="field-value">Harga Rp. 4,5 Milyar</span></div>
+      </div>
+      <button class="copy-btn" data-copy-index="16">Salin Teks</button>
+    </div>
+    <div class="card" data-category="Properti Residensial &amp; Komersial">
+      <div class="card-head">
+        <span class="badge status-jual">DI  JUAL</span>
+        <span class="card-index">#18</span>
+      </div>
+      <h3 class="card-title">Apt. Kemang Jaya</h3>
+      <div class="card-fields">
+        <div class="field field-lokasi"><span class="field-label">Lokasi / Tower</span><span class="field-value">Tower A, Lantai 23</span></div><div class="field field-luas"><span class="field-label">Luas / Legal Ukuran</span><span class="field-value">Luas  : 166sqm, 2 BR</span></div><div class="field field-furnish"><span class="field-label">Kondisi Furnish</span><span class="field-value">Furnished</span></div><div class="field field-harga"><span class="field-label">Harga</span><span class="field-value">Harga  Rp. 2,5 Milyar</span></div>
+      </div>
+      <button class="copy-btn" data-copy-index="17">Salin Teks</button>
+    </div>
+    <div class="card" data-category="Properti Residensial &amp; Komersial">
+      <div class="card-head">
+        <span class="badge status-jual">DI  JUAL</span>
+        <span class="card-index">#19</span>
+      </div>
+      <h3 class="card-title">Ruko 2 unit (gandeng)</h3>
+      <div class="card-fields">
+        <div class="field field-lokasi"><span class="field-label">Lokasi / Tower</span><span class="field-value">Jl. Wijaya Kebayoran Baru, Jaksel</span></div><div class="field field-luas"><span class="field-label">Luas / Legal Ukuran</span><span class="field-value">Lt.  120 sqm</span></div><div class="field field-luas"><span class="field-label">Luas / Legal Ukuran</span><span class="field-value">Lb. 240 sqm (4 lantai)</span></div><div class="field field-harga"><span class="field-label">Harga</span><span class="field-value">Harga  Rp. 9 Milyar</span></div>
+      </div>
+      <button class="copy-btn" data-copy-index="18">Salin Teks</button>
+    </div>
+    <div class="card" data-category="Properti Residensial &amp; Komersial">
+      <div class="card-head">
+        <span class="badge status-jual">DI  JUAL</span>
+        <span class="card-index">#20</span>
+      </div>
+      <h3 class="card-title">Office space di Gedung  SUDIRMAN78</h3>
+      <div class="card-fields">
+        <div class="field field-luas"><span class="field-label">Luas / Legal Ukuran</span><span class="field-value">Ls.  338,70M2</span></div><div class="field field-lokasi"><span class="field-label">Lokasi / Tower</span><span class="field-value">Lantai  8</span></div><div class="field field-harga"><span class="field-label">Harga</span><span class="field-value">Harga Rp. 23 Milyar</span></div>
+      </div>
+      <button class="copy-btn" data-copy-index="19">Salin Teks</button>
+    </div>
+    <div class="card" data-category="Tanah, Pabrik &amp; Gudang">
+      <div class="card-head">
+        <span class="badge status-jual">DI  JUAL</span>
+        <span class="card-index">#21</span>
+      </div>
+      <h3 class="card-title">Ex Gudang</h3>
+      <div class="card-fields">
+        <div class="field field-lokasi"><span class="field-label">Lokasi / Tower</span><span class="field-value">Cigombong Bogor</span></div><div class="field field-luas"><span class="field-label">Luas / Legal Ukuran</span><span class="field-value">Lt. 20.913 m2</span></div><div class="field field-luas"><span class="field-label">Luas / Legal Ukuran</span><span class="field-value">Lb. 8.217 m2</span></div><div class="field field-harga"><span class="field-label">Harga</span><span class="field-value">Harga Rp. 57,5 M</span></div>
+      </div>
+      <button class="copy-btn" data-copy-index="20">Salin Teks</button>
+    </div>
+    <div class="card" data-category="Tanah, Pabrik &amp; Gudang">
+      <div class="card-head">
+        <span class="badge status-jual">DI  JUAL</span>
+        <span class="card-index">#22</span>
+      </div>
+      <h3 class="card-title">Tanah Kosong</h3>
+      <div class="card-fields">
+        <div class="field field-info"><span class="field-label">Info Tambahan</span><span class="field-value">Di Parung Serpong</span></div><div class="field field-luas"><span class="field-label">Luas / Legal Ukuran</span><span class="field-value">Lt. 1.315 m2</span></div><div class="field field-harga"><span class="field-label">Harga</span><span class="field-value">Harga Rp.3,95 Miliar</span></div>
+      </div>
+      <button class="copy-btn" data-copy-index="21">Salin Teks</button>
+    </div>
+    <div class="card" data-category="Tanah, Pabrik &amp; Gudang">
+      <div class="card-head">
+        <span class="badge status-jual">DIJUAL</span>
+        <span class="card-index">#23</span>
+      </div>
+      <h3 class="card-title">Ex Pabrik Assembly Otomotif</h3>
+      <div class="card-fields">
+        <div class="field field-lokasi"><span class="field-label">Lokasi / Tower</span><span class="field-value">Di Karawang</span></div><div class="field field-luas"><span class="field-label">Luas / Legal Ukuran</span><span class="field-value">Lt. 36.290 m2</span></div><div class="field field-luas"><span class="field-label">Luas / Legal Ukuran</span><span class="field-value">Lb. 7.696 m2</span></div><div class="field field-harga"><span class="field-label">Harga</span><span class="field-value">Harga Rp. 55 Miliar</span></div>
+      </div>
+      <button class="copy-btn" data-copy-index="22">Salin Teks</button>
+    </div>
+    <div class="card" data-category="Tanah, Pabrik &amp; Gudang">
+      <div class="card-head">
+        <span class="badge status-jual">DIJUAL</span>
+        <span class="card-index">#24</span>
+      </div>
+      <h3 class="card-title">Pabrik karbon active</h3>
+      <div class="card-fields">
+        <div class="field field-lokasi"><span class="field-label">Lokasi / Tower</span><span class="field-value">Kawasan industri Baja Emas, Tangerang</span></div><div class="field field-luas"><span class="field-label">Luas / Legal Ukuran</span><span class="field-value">Lt.  2.941M2</span></div><div class="field field-luas"><span class="field-label">Luas / Legal Ukuran</span><span class="field-value">Lb.  1.254M2</span></div><div class="field field-harga"><span class="field-label">Harga</span><span class="field-value">Harga  $1,500.000  (total)</span></div>
+      </div>
+      <button class="copy-btn" data-copy-index="23">Salin Teks</button>
+    </div>
+    <div class="card" data-category="Tanah, Pabrik &amp; Gudang">
+      <div class="card-head">
+        <span class="badge status-jual">DI  JUAL</span>
+        <span class="card-index">#25</span>
+      </div>
+      <h3 class="card-title">Ex Pabrik</h3>
+      <div class="card-fields">
+        <div class="field field-lokasi"><span class="field-label">Lokasi / Tower</span><span class="field-value">Jl. Medan Satria, Bekasi</span></div><div class="field field-luas"><span class="field-label">Luas / Legal Ukuran</span><span class="field-value">Lt. 35.534M2      Lb. 15.654M2</span></div><div class="field field-legalitas"><span class="field-label">Legalitas</span><span class="field-value">SHGB</span></div><div class="field field-harga"><span class="field-label">Harga</span><span class="field-value">Harga Rp. 8.000.000/M2</span></div>
+      </div>
+      <button class="copy-btn" data-copy-index="24">Salin Teks</button>
+    </div>
+    <div class="card" data-category="Tanah, Pabrik &amp; Gudang">
+      <div class="card-head">
+        <span class="badge status-jual">DI  JUAL</span>
+        <span class="card-index">#26</span>
+      </div>
+      <h3 class="card-title">Tanah Kosong</h3>
+      <div class="card-fields">
+        <div class="field field-lokasi"><span class="field-label">Lokasi / Tower</span><span class="field-value">Subang  (Kota Subang)</span></div><div class="field field-luas"><span class="field-label">Luas / Legal Ukuran</span><span class="field-value">Lt.134.770 M2</span></div><div class="field field-legalitas"><span class="field-label">Legalitas</span><span class="field-value">SHGB</span></div><div class="field field-harga"><span class="field-label">Harga</span><span class="field-value">Harga  Rp. 350.000/M2</span></div>
+      </div>
+      <button class="copy-btn" data-copy-index="25">Salin Teks</button>
+    </div>
+    <div class="card" data-category="Tanah, Pabrik &amp; Gudang">
+      <div class="card-head">
+        <span class="badge status-jual">DIJUAL</span>
+        <span class="card-index">#27</span>
+      </div>
+      <h3 class="card-title">Tanah Kosong  (sawah)</h3>
+      <div class="card-fields">
+        <div class="field field-lokasi"><span class="field-label">Lokasi / Tower</span><span class="field-value">Karawang</span></div><div class="field field-luas"><span class="field-label">Luas / Legal Ukuran</span><span class="field-value">Lt. 15.492M2</span></div><div class="field field-harga"><span class="field-label">Harga</span><span class="field-value">Harga Rp. 150,000/M2</span></div>
+      </div>
+      <button class="copy-btn" data-copy-index="26">Salin Teks</button>
+    </div>
+    <div class="card" data-category="Tanah, Pabrik &amp; Gudang">
+      <div class="card-head">
+        <span class="badge status-jual">DIJUAL</span>
+        <span class="card-index">#28</span>
+      </div>
+      <h3 class="card-title">Ex Pabrik</h3>
+      <div class="card-fields">
+        <div class="field field-lokasi"><span class="field-label">Lokasi / Tower</span><span class="field-value">Karawang Timur</span></div><div class="field field-luas"><span class="field-label">Luas / Legal Ukuran</span><span class="field-value">Lt.  9.265M2</span></div><div class="field field-luas"><span class="field-label">Luas / Legal Ukuran</span><span class="field-value">Lb.  950 M2</span></div><div class="field field-harga"><span class="field-label">Harga</span><span class="field-value">Harga  Rp. 1,500,000/M2</span></div>
+      </div>
+      <button class="copy-btn" data-copy-index="27">Salin Teks</button>
+    </div>
+    <div class="card" data-category="Properti Residensial &amp; Komersial">
+      <div class="card-head">
+        <span class="badge status-jual">DI JUAL</span>
+        <span class="card-index">#29</span>
+      </div>
+      <h3 class="card-title">Apt. Patria Park</h3>
+      <div class="card-fields">
+        <div class="field field-lokasi"><span class="field-label">Lokasi / Tower</span><span class="field-value">Lantai 5</span></div><div class="field field-luas"><span class="field-label">Luas / Legal Ukuran</span><span class="field-value">Luas : 84 sqm</span></div><div class="field field-furnish"><span class="field-label">Kondisi Furnish</span><span class="field-value">Furnished</span></div><div class="field field-kamar"><span class="field-label">Kamar Tidur</span><span class="field-value">2BR</span></div><div class="field field-harga"><span class="field-label">Harga</span><span class="field-value">Harga  Rp. 1,2 Milyar</span></div>
+      </div>
+      <button class="copy-btn" data-copy-index="28">Salin Teks</button>
+    </div>
+    <div class="card" data-category="Properti Residensial &amp; Komersial">
+      <div class="card-head">
+        <span class="badge status-jual">DI JUAL</span>
+        <span class="card-index">#30</span>
+      </div>
+      <h3 class="card-title">Apt Kemang Village</h3>
+      <div class="card-fields">
+        <div class="field field-lokasi"><span class="field-label">Lokasi / Tower</span><span class="field-value">Tower Cosmo, Lantai 22</span></div><div class="field field-luas"><span class="field-label">Luas / Legal Ukuran</span><span class="field-value">Luas  : 105 sqm</span></div><div class="field field-furnish"><span class="field-label">Kondisi Furnish</span><span class="field-value">Semi furnished</span></div><div class="field field-harga"><span class="field-label">Harga</span><span class="field-value">Harga Rp. 2,3Milyar</span></div>
+      </div>
+      <button class="copy-btn" data-copy-index="29">Salin Teks</button>
+    </div>
+    <div class="card" data-category="Properti Residensial &amp; Komersial">
+      <div class="card-head">
+        <span class="badge status-jual">DI  JUAL</span>
+        <span class="card-index">#31</span>
+      </div>
+      <h3 class="card-title">Apt. Griya Pancoran / Mountain Park</h3>
+      <div class="card-fields">
+        <div class="field field-lokasi"><span class="field-label">Lokasi / Tower</span><span class="field-value">Lantai  : 7</span></div><div class="field field-luas"><span class="field-label">Luas / Legal Ukuran</span><span class="field-value">Luas  : 149sqm, 3 BR</span></div><div class="field field-furnish"><span class="field-label">Kondisi Furnish</span><span class="field-value">Furnished</span></div><div class="field field-harga"><span class="field-label">Harga</span><span class="field-value">Harga Rp. 2,5 Milyar</span></div>
+      </div>
+      <button class="copy-btn" data-copy-index="30">Salin Teks</button>
+    </div>
+    <div class="card" data-category="Properti Residensial &amp; Komersial">
+      <div class="card-head">
+        <span class="badge status-jual">DI  JUAL</span>
+        <span class="card-index">#32</span>
+      </div>
+      <h3 class="card-title">Rumah di dalam cluster exclusive</h3>
+      <div class="card-fields">
+        <div class="field field-lokasi"><span class="field-label">Lokasi / Tower</span><span class="field-value">Jati Padang, Jakarta Selatan</span></div><div class="field field-luas"><span class="field-label">Luas / Legal Ukuran</span><span class="field-value">Lt.  169sqm</span></div><div class="field field-luas"><span class="field-label">Luas / Legal Ukuran</span><span class="field-value">Lb. 192 sqm  (3 lantai)</span></div><div class="field field-kamar"><span class="field-label">Kamar Tidur</span><span class="field-value">3 BR</span></div><div class="field field-harga"><span class="field-label">Harga</span><span class="field-value">Harga  Rp. 4,4 Milyar</span></div>
+      </div>
+      <button class="copy-btn" data-copy-index="31">Salin Teks</button>
+    </div>
+    <div class="card" data-category="Properti Residensial &amp; Komersial">
+      <div class="card-head">
+        <span class="badge status-jual">DI  JUAL</span>
+        <span class="card-index">#33</span>
+      </div>
+      <h3 class="card-title">Apt. Essence Dharmawangsa</h3>
+      <div class="card-fields">
+        <div class="field field-lokasi"><span class="field-label">Lokasi / Tower</span><span class="field-value">Tower South, Lantai 31</span></div><div class="field field-luas"><span class="field-label">Luas / Legal Ukuran</span><span class="field-value">Ls. 181 sqm</span></div><div class="field field-furnish"><span class="field-label">Kondisi Furnish</span><span class="field-value">Semi furnished</span></div><div class="field field-harga"><span class="field-label">Harga</span><span class="field-value">Harga Rp. 4,5 Milyar</span></div>
+      </div>
+      <button class="copy-btn" data-copy-index="32">Salin Teks</button>
+    </div>
+    <div class="card" data-category="Tanah, Pabrik &amp; Gudang">
+      <div class="card-head">
+        <span class="badge status-jual">DI  JUAL</span>
+        <span class="card-index">#34</span>
+      </div>
+      <h3 class="card-title">Ex Pabrik</h3>
+      <div class="card-fields">
+        <div class="field field-lokasi"><span class="field-label">Lokasi / Tower</span><span class="field-value">Cireundeu, Ciputat, TangSel</span></div><div class="field field-luas"><span class="field-label">Luas / Legal Ukuran</span><span class="field-value">Lt. 11.786 m2</span></div><div class="field field-luas"><span class="field-label">Luas / Legal Ukuran</span><span class="field-value">Lb. 7.000</span></div><div class="field field-harga"><span class="field-label">Harga</span><span class="field-value">Harga Rp. 9.000.000/sqm</span></div>
+      </div>
+      <button class="copy-btn" data-copy-index="33">Salin Teks</button>
+    </div>
+    <div class="card" data-category="Tanah, Pabrik &amp; Gudang">
+      <div class="card-head">
+        <span class="badge status-jual">DI  JUAL</span>
+        <span class="card-index">#35</span>
+      </div>
+      <h3 class="card-title">Tanah Kosong</h3>
+      <div class="card-fields">
+        <div class="field field-lokasi"><span class="field-label">Lokasi / Tower</span><span class="field-value">Di Serang Banten</span></div><div class="field field-luas"><span class="field-label">Luas / Legal Ukuran</span><span class="field-value">Lt. 30.344m2</span></div><div class="field field-harga"><span class="field-label">Harga</span><span class="field-value">Harga Rp.27,309 Miliar</span></div>
+      </div>
+      <button class="copy-btn" data-copy-index="34">Salin Teks</button>
+    </div>
+    <div class="card" data-category="Tanah, Pabrik &amp; Gudang">
+      <div class="card-head">
+        <span class="badge status-jual">DIJUAL</span>
+        <span class="card-index">#36</span>
+      </div>
+      <h3 class="card-title">Ex Pabrik Bola</h3>
+      <div class="card-fields">
+        <div class="field field-lokasi"><span class="field-label">Lokasi / Tower</span><span class="field-value">Jl. Setu Tambun - Cikarang</span></div><div class="field field-luas"><span class="field-label">Luas / Legal Ukuran</span><span class="field-value">Lt. 8.995 m2</span></div><div class="field field-luas"><span class="field-label">Luas / Legal Ukuran</span><span class="field-value">Lb. 3.445 m2</span></div><div class="field field-harga"><span class="field-label">Harga</span><span class="field-value">Harga Rp. 50 Miliar</span></div>
+      </div>
+      <button class="copy-btn" data-copy-index="35">Salin Teks</button>
+    </div>
+    <div class="card" data-category="Tanah, Pabrik &amp; Gudang">
+      <div class="card-head">
+        <span class="badge status-jual">DI  JUAL</span>
+        <span class="card-index">#37</span>
+      </div>
+      <h3 class="card-title">Tanah Kosong</h3>
+      <div class="card-fields">
+        <div class="field field-lokasi"><span class="field-label">Lokasi / Tower</span><span class="field-value">Jl. Puncak 2, Jonggol</span></div><div class="field field-luas"><span class="field-label">Luas / Legal Ukuran</span><span class="field-value">Lt.  7.700M2</span></div><div class="field field-harga"><span class="field-label">Harga</span><span class="field-value">Harga  Rp. 1.500.000/M2</span></div>
+      </div>
+      <button class="copy-btn" data-copy-index="36">Salin Teks</button>
+    </div>
+    <div class="card" data-category="Tanah, Pabrik &amp; Gudang">
+      <div class="card-head">
+        <span class="badge status-jual">DI  JUAL</span>
+        <span class="card-index">#38</span>
+      </div>
+      <h3 class="card-title">Tanah Kosong</h3>
+      <div class="card-fields">
+        <div class="field field-lokasi"><span class="field-label">Lokasi / Tower</span><span class="field-value">Cilegon  (Dekat PCI)</span></div><div class="field field-luas"><span class="field-label">Luas / Legal Ukuran</span><span class="field-value">Lt. 4.400M2</span></div><div class="field field-legalitas"><span class="field-label">Legalitas</span><span class="field-value">SHGB</span></div><div class="field field-harga"><span class="field-label">Harga</span><span class="field-value">Harga  Rp.1.150.000/M2</span></div>
+      </div>
+      <button class="copy-btn" data-copy-index="37">Salin Teks</button>
+    </div>
+    <div class="card" data-category="Tanah, Pabrik &amp; Gudang">
+      <div class="card-head">
+        <span class="badge status-jual">DI  JUAL</span>
+        <span class="card-index">#39</span>
+      </div>
+      <h3 class="card-title">Ex Workshop</h3>
+      <div class="card-fields">
+        <div class="field field-lokasi"><span class="field-label">Lokasi / Tower</span><span class="field-value">Rawamangun, Jakarta Timur</span></div><div class="field field-luas"><span class="field-label">Luas / Legal Ukuran</span><span class="field-value">Lt.650M2     Lb. 688M2</span></div><div class="field field-legalitas"><span class="field-label">Legalitas</span><span class="field-value">SHGB</span></div><div class="field field-harga"><span class="field-label">Harga</span><span class="field-value">Harga  Rp. 15.000.000/M2</span></div>
+      </div>
+      <button class="copy-btn" data-copy-index="38">Salin Teks</button>
+    </div>
+    <div class="card" data-category="Tanah, Pabrik &amp; Gudang">
+      <div class="card-head">
+        <span class="badge status-jual">DIJUAL</span>
+        <span class="card-index">#40</span>
+      </div>
+      <h3 class="card-title">Tanah Kosong</h3>
+      <div class="card-fields">
+        <div class="field field-lokasi"><span class="field-label">Lokasi / Tower</span><span class="field-value">Jati Uwung, Kota Tangerang</span></div><div class="field field-luas"><span class="field-label">Luas / Legal Ukuran</span><span class="field-value">Lt. 37.355M2</span></div><div class="field field-legalitas"><span class="field-label">Legalitas</span><span class="field-value">SHGB</span></div><div class="field field-harga"><span class="field-label">Harga</span><span class="field-value">Harga Rp. 3,7Jt/M2</span></div>
+      </div>
+      <button class="copy-btn" data-copy-index="39">Salin Teks</button>
+    </div>
+    <div class="card" data-category="Tanah, Pabrik &amp; Gudang">
+      <div class="card-head">
+        <span class="badge status-jual">DIJUAL</span>
+        <span class="card-index">#41</span>
+      </div>
+      <h3 class="card-title">Ex Pabrik Garment</h3>
+      <div class="card-fields">
+        <div class="field field-lokasi"><span class="field-label">Lokasi / Tower</span><span class="field-value">Majalengka Jawa Barat</span></div><div class="field field-luas"><span class="field-label">Luas / Legal Ukuran</span><span class="field-value">Lt. 21.201M2</span></div><div class="field field-luas"><span class="field-label">Luas / Legal Ukuran</span><span class="field-value">Lb. 10.000M2</span></div><div class="field field-harga"><span class="field-label">Harga</span><span class="field-value">Harga  $4,000,000  (total)</span></div>
+      </div>
+      <button class="copy-btn" data-copy-index="40">Salin Teks</button>
+    </div>
+  </div>
+</main>
+
+<script>
+  const plainTexts = ["Judul: Apt. Pondok Indah Rsdnc\nStatus: DI JUAL\nLokasi / Tower: Tower Kartika,  Lantai 31\nLuas / Legal Ukuran: Luas  : 159 Sqm\nKondisi Furnish: Unfurnished\nKamar Tidur: 4 BR\nHarga: Harga Rp. 9 Milyar", "Judul: Apt. Senopati Suites\nStatus: DI JUAL / DISEWA\nLuas / Legal Ukuran: Luas     : 165 Sqm\nKondisi Furnish: Furnished\nKamar Tidur: 2BR\nHarga: Harga  Rp. 7,5 Milyar\nInfo Tambahan: Sewa   $3000/month", "Judul: Apt. Fatmawati City\nStatus: DI JUAL\nLokasi / Tower: Tower  : Corona,  Lantai 12\nLuas / Legal Ukuran: Luas     : 71 Sqm\nKondisi Furnish: Unfurnished\nKamar Tidur: 2BR\nHarga: Harga   Rp. 2,8 Milyar", "Judul: Apt. Hampton's Park\nStatus: DI  JUAL\nLokasi / Tower: Tower : B, Lantai 8\nLuas / Legal Ukuran: Luas  : 152 sqm, 3 BR\nKondisi Furnish: Unfurnished\nHarga: Harga  Rp. 2,5 Milyar", "Judul: Office space di LA'VENUE\nStatus: DI JUAL / DISEWA\nLokasi / Tower: Jl. Raya Ps.Minggu Jakarta Selatan\nLokasi / Tower: Lantai  : 12\nLuas / Legal Ukuran: Lb. 184 sqm\nKondisi Furnish: Full Furnished\nHarga: Harga jual Rp.7,5 Milyar\nHarga: Harga sewa  Rp. 200rb/m/bulan", "Judul: Ruko Mega Cilegon\nStatus: DI  JUAL\nLuas / Legal Ukuran: Lt. 60M2\nLuas / Legal Ukuran: Lb. 120 M2, 2 lantai\nLegalitas: SHGB\nHarga: Harga Jual Rp. 1 Milyar", "Judul: Ex Gudang\nStatus: DI JUAL\nLokasi / Tower: Marga Sari Buah Batu, Bandung\nLuas / Legal Ukuran: Lt. 6360 m3\nLuas / Legal Ukuran: Lb. 1700 m3\nHarga: Harga Rp. 48 Milyar", "Judul: Tanah Kosong\nStatus: DI  JUAL\nInfo Tambahan: Di Parung Serpong\nLuas / Legal Ukuran: Lt. 19.889 m3\nHarga: Harga Rp. 29,83 Miliar", "Judul: Ex Pabrik Garment\nStatus: DIJUAL\nLokasi / Tower: Kawasan Industri Mitra, Karawang\nLuas / Legal Ukuran: Lt. 4.050 m3\nLuas / Legal Ukuran: Lb. 7.392 m3\nHarga: Harga Rp. 47 Miliar", "Judul: Kavling Industri siap bangun\nStatus: DIJUAL\nLokasi / Tower: Kawasan industri Busan, Tangerang\nLuas / Legal Ukuran: Lt.  5.472M2\nHarga: Harga  Rp. 1.800.000/M2", "Judul: Tanah Kosong\nStatus: DI JUAL\nLokasi / Tower: Jl. Gandaria, Kby Lama Jkt Selatan\nLuas / Legal Ukuran: Lt. 14.000 M2\nLegalitas: SHGB\nHarga: Harga Rp. 40.000.000/M2", "Judul: Tanah Kosong\nStatus: DI  JUAL\nLokasi / Tower: Subang  (1,5km dari exit tol Subang)\nLuas / Legal Ukuran: Lt. 38.573 M2\nLegalitas: SHGB\nHarga: Harga Rp. 650.000/M2", "Judul: Tanah Kosong\nStatus: DIJUAL\nLokasi / Tower: Cilegon\nLuas / Legal Ukuran: Lt. 6.600M2\nLegalitas: SHGB\nHarga: Harga Rp. 2.000.000/M2", "Judul: Ex Pabrik Molding\nStatus: DI SEWA\nLokasi / Tower: Rangkas Bitung, Serang. Banten\nLuas / Legal Ukuran: Lt.  6.190M2\nLuas / Legal Ukuran: Lb.  2.786M2\nHarga: Harga sewa Rp. 30,000/M2 Bulan", "Judul: Apt. Pakubuwono Residence\nStatus: DI JUAL\nLokasi / Tower: Tower Cottonwood, Lantai 22\nLuas / Legal Ukuran: Luas   : 153 Sqm\nKondisi Furnish: Unfurnished\nKamar Tidur: 4 BR\nHarga: Harga  Rp. 12 Milyar", "Judul: Apt. Essence Dharmawangsa\nStatus: DI JUAL\nLokasi / Tower: Tower South, Lantai 21\nLuas / Legal Ukuran: Luas    : 166 sqm\nKondisi Furnish: Unfurnished\nKamar Tidur: 3BR\nHarga: Harga Rp. 3.750 Milyar", "Judul: Apt. Kusuma Candra\nStatus: DI  JUAL\nLokasi / Tower: Tower  : C, Lantai 3AM\nLuas / Legal Ukuran: Luas   :  151sqm, 3BR\nKondisi Furnish: Unfurnished\nHarga: Harga Rp. 4,5 Milyar", "Judul: Apt. Kemang Jaya\nStatus: DI  JUAL\nLokasi / Tower: Tower A, Lantai 23\nLuas / Legal Ukuran: Luas  : 166sqm, 2 BR\nKondisi Furnish: Furnished\nHarga: Harga  Rp. 2,5 Milyar", "Judul: Ruko 2 unit (gandeng)\nStatus: DI  JUAL\nLokasi / Tower: Jl. Wijaya Kebayoran Baru, Jaksel\nLuas / Legal Ukuran: Lt.  120 sqm\nLuas / Legal Ukuran: Lb. 240 sqm (4 lantai)\nHarga: Harga  Rp. 9 Milyar", "Judul: Office space di Gedung  SUDIRMAN78\nStatus: DI  JUAL\nLuas / Legal Ukuran: Ls.  338,70M2\nLokasi / Tower: Lantai  8\nHarga: Harga Rp. 23 Milyar", "Judul: Ex Gudang\nStatus: DI  JUAL\nLokasi / Tower: Cigombong Bogor\nLuas / Legal Ukuran: Lt. 20.913 m2\nLuas / Legal Ukuran: Lb. 8.217 m2\nHarga: Harga Rp. 57,5 M", "Judul: Tanah Kosong\nStatus: DI  JUAL\nInfo Tambahan: Di Parung Serpong\nLuas / Legal Ukuran: Lt. 1.315 m2\nHarga: Harga Rp.3,95 Miliar", "Judul: Ex Pabrik Assembly Otomotif\nStatus: DIJUAL\nLokasi / Tower: Di Karawang\nLuas / Legal Ukuran: Lt. 36.290 m2\nLuas / Legal Ukuran: Lb. 7.696 m2\nHarga: Harga Rp. 55 Miliar", "Judul: Pabrik karbon active\nStatus: DIJUAL\nLokasi / Tower: Kawasan industri Baja Emas, Tangerang\nLuas / Legal Ukuran: Lt.  2.941M2\nLuas / Legal Ukuran: Lb.  1.254M2\nHarga: Harga  $1,500.000  (total)", "Judul: Ex Pabrik\nStatus: DI  JUAL\nLokasi / Tower: Jl. Medan Satria, Bekasi\nLuas / Legal Ukuran: Lt. 35.534M2      Lb. 15.654M2\nLegalitas: SHGB\nHarga: Harga Rp. 8.000.000/M2", "Judul: Tanah Kosong\nStatus: DI  JUAL\nLokasi / Tower: Subang  (Kota Subang)\nLuas / Legal Ukuran: Lt.134.770 M2\nLegalitas: SHGB\nHarga: Harga  Rp. 350.000/M2", "Judul: Tanah Kosong  (sawah)\nStatus: DIJUAL\nLokasi / Tower: Karawang\nLuas / Legal Ukuran: Lt. 15.492M2\nHarga: Harga Rp. 150,000/M2", "Judul: Ex Pabrik\nStatus: DIJUAL\nLokasi / Tower: Karawang Timur\nLuas / Legal Ukuran: Lt.  9.265M2\nLuas / Legal Ukuran: Lb.  950 M2\nHarga: Harga  Rp. 1,500,000/M2", "Judul: Apt. Patria Park\nStatus: DI JUAL\nLokasi / Tower: Lantai 5\nLuas / Legal Ukuran: Luas : 84 sqm\nKondisi Furnish: Furnished\nKamar Tidur: 2BR\nHarga: Harga  Rp. 1,2 Milyar", "Judul: Apt Kemang Village\nStatus: DI JUAL\nLokasi / Tower: Tower Cosmo, Lantai 22\nLuas / Legal Ukuran: Luas  : 105 sqm\nKondisi Furnish: Semi furnished\nHarga: Harga Rp. 2,3Milyar", "Judul: Apt. Griya Pancoran / Mountain Park\nStatus: DI  JUAL\nLokasi / Tower: Lantai  : 7\nLuas / Legal Ukuran: Luas  : 149sqm, 3 BR\nKondisi Furnish: Furnished\nHarga: Harga Rp. 2,5 Milyar", "Judul: Rumah di dalam cluster exclusive\nStatus: DI  JUAL\nLokasi / Tower: Jati Padang, Jakarta Selatan\nLuas / Legal Ukuran: Lt.  169sqm\nLuas / Legal Ukuran: Lb. 192 sqm  (3 lantai)\nKamar Tidur: 3 BR\nHarga: Harga  Rp. 4,4 Milyar", "Judul: Apt. Essence Dharmawangsa\nStatus: DI  JUAL\nLokasi / Tower: Tower South, Lantai 31\nLuas / Legal Ukuran: Ls. 181 sqm\nKondisi Furnish: Semi furnished\nHarga: Harga Rp. 4,5 Milyar", "Judul: Ex Pabrik\nStatus: DI  JUAL\nLokasi / Tower: Cireundeu, Ciputat, TangSel\nLuas / Legal Ukuran: Lt. 11.786 m2\nLuas / Legal Ukuran: Lb. 7.000\nHarga: Harga Rp. 9.000.000/sqm", "Judul: Tanah Kosong\nStatus: DI  JUAL\nLokasi / Tower: Di Serang Banten\nLuas / Legal Ukuran: Lt. 30.344m2\nHarga: Harga Rp.27,309 Miliar", "Judul: Ex Pabrik Bola\nStatus: DIJUAL\nLokasi / Tower: Jl. Setu Tambun - Cikarang\nLuas / Legal Ukuran: Lt. 8.995 m2\nLuas / Legal Ukuran: Lb. 3.445 m2\nHarga: Harga Rp. 50 Miliar", "Judul: Tanah Kosong\nStatus: DI  JUAL\nLokasi / Tower: Jl. Puncak 2, Jonggol\nLuas / Legal Ukuran: Lt.  7.700M2\nHarga: Harga  Rp. 1.500.000/M2", "Judul: Tanah Kosong\nStatus: DI  JUAL\nLokasi / Tower: Cilegon  (Dekat PCI)\nLuas / Legal Ukuran: Lt. 4.400M2\nLegalitas: SHGB\nHarga: Harga  Rp.1.150.000/M2", "Judul: Ex Workshop\nStatus: DI  JUAL\nLokasi / Tower: Rawamangun, Jakarta Timur\nLuas / Legal Ukuran: Lt.650M2     Lb. 688M2\nLegalitas: SHGB\nHarga: Harga  Rp. 15.000.000/M2", "Judul: Tanah Kosong\nStatus: DIJUAL\nLokasi / Tower: Jati Uwung, Kota Tangerang\nLuas / Legal Ukuran: Lt. 37.355M2\nLegalitas: SHGB\nHarga: Harga Rp. 3,7Jt/M2", "Judul: Ex Pabrik Garment\nStatus: DIJUAL\nLokasi / Tower: Majalengka Jawa Barat\nLuas / Legal Ukuran: Lt. 21.201M2\nLuas / Legal Ukuran: Lb. 10.000M2\nHarga: Harga  $4,000,000  (total)"];
+
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const idx = btn.getAttribute('data-copy-index');
+      const text = plainTexts[idx];
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => showCopied(btn));
+      } else {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); showCopied(btn); } catch (e) {}
+        document.body.removeChild(ta);
+      }
+    });
+  });
+
+  function showCopied(btn) {
+    const original = btn.textContent;
+    btn.textContent = 'Tersalin!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = original;
+      btn.classList.remove('copied');
+    }, 1500);
+  }
+
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const cards = document.querySelectorAll('.card');
+  const countLabel = document.getElementById('countLabel');
+
+  function applyFilter(filter) {
+    let visible = 0;
+    cards.forEach(card => {
+      const match = filter === 'all' || card.getAttribute('data-category') === filter;
+      card.style.display = match ? 'flex' : 'none';
+      if (match) visible++;
+    });
+    countLabel.textContent = visible + ' listing ditampilkan';
+  }
+
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      applyFilter(btn.getAttribute('data-filter'));
+    });
+  });
+
+  applyFilter('all');
+</script>
+
+</body>
+</html>
