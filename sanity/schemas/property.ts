@@ -1,5 +1,6 @@
 import { defineField, defineType } from 'sanity'
 import { ImageInputWithUrl } from '../components/ImageInputWithUrl'
+import { GoogleMapsUrlInput } from '../components/GoogleMapsUrlInput'
 import { PricingWithRate } from '../components/PricingWithRate'
 import { PropertyPrimaryPriceInput } from '../components/PropertyPrimaryPriceInput'
 import { MaterialIconInput } from '../components/MaterialIconInput'
@@ -32,6 +33,27 @@ export default defineType({
 
         // --- STRUKTUR HARGA (GABUNGAN TRANSAKSI, HARGA, & MATA UANG) ---
         defineField({
+            name: 'defaultCurrency',
+            title: 'Mata Uang Default Properti',
+            description: 'Semua harga properti ini (Jual, Sewa, KPR) mengikuti mata uang ini, kecuali diisi khusus per harga di bawah.',
+            type: 'string',
+            options: {
+                list: [
+                    { title: 'Rupiah (IDR)', value: 'IDR' },
+                    { title: 'Dollar USD (USD)', value: 'USD' },
+                    { title: 'Dollar Singapura (SGD)', value: 'SGD' },
+                    { title: 'Ringgit Malaysia (MYR)', value: 'MYR' },
+                    { title: 'Baht Thailand (THB)', value: 'THB' },
+                    { title: 'Won Korea (KRW)', value: 'KRW' },
+                    { title: 'Yuan China (CNY)', value: 'CNY' },
+                    { title: 'Euro (EUR)', value: 'EUR' },
+                    { title: 'Pound Sterling (GBP)', value: 'GBP' },
+                    { title: 'Yen Jepang (JPY)', value: 'JPY' },
+                ],
+            },
+            initialValue: 'IDR',
+        }),
+        defineField({
             name: 'pricing',
             title: 'Struktur Harga & Transaksi',
             type: 'array',
@@ -50,27 +72,6 @@ export default defineType({
                                     { title: 'Sewa', value: 'sewa' },
                                 ],
                             },
-                            validation: (Rule) => Rule.required(),
-                        },
-                        {
-                            name: 'currency',
-                            title: 'Mata Uang',
-                            type: 'string',
-                            options: {
-                                list: [
-                                    { title: 'Rupiah (IDR)', value: 'IDR' },
-                                    { title: 'Dollar USD (USD)', value: 'USD' },
-                                    { title: 'Dollar Singapura (SGD)', value: 'SGD' },
-                                    { title: 'Ringgit Malaysia (MYR)', value: 'MYR' },
-                                    { title: 'Baht Thailand (THB)', value: 'THB' },
-                                    { title: 'Won Korea (KRW)', value: 'KRW' },
-                                    { title: 'Yuan China (CNY)', value: 'CNY' },
-                                    { title: 'Euro (EUR)', value: 'EUR' },
-                                    { title: 'Pound Sterling (GBP)', value: 'GBP' },
-                                    { title: 'Yen Jepang (JPY)', value: 'JPY' },
-                                ],
-                            },
-                            initialValue: 'IDR',
                             validation: (Rule) => Rule.required(),
                         },
                         {
@@ -104,13 +105,13 @@ export default defineType({
                         select: {
                             transactionType: 'transactionType',
                             price: 'price',
-                            currency: 'currency',
                             pricePeriod: 'pricePeriod',
                         },
                         prepare(selection) {
-                            const { transactionType, price, currency, pricePeriod } = selection
+                            const { transactionType, price, pricePeriod } = selection
+                            const priceText = price?.toLocaleString('id-ID')
                             return {
-                                title: `${transactionType?.toUpperCase()} - ${currency} ${price?.toLocaleString('id-ID')}`,
+                                title: `${transactionType?.toUpperCase()} - ${priceText}`,
                                 subtitle: pricePeriod ? `Periode: ${pricePeriod}` : 'Harga Tetap',
                             }
                         },
@@ -172,6 +173,29 @@ export default defineType({
             name: 'fullAddress',
             title: 'Alamat Lengkap',
             type: 'text',
+        }),
+
+        // --- LOKASI DI PETA (sama seperti menu Kontak) ---
+        defineField({
+            name: 'googleMapsUrl',
+            title: 'Link Google Maps',
+            type: 'string',
+            description: 'Tempel link Google Maps (termasuk short link). Latitude dan longitude terisi otomatis.',
+            components: { input: GoogleMapsUrlInput },
+        }),
+        defineField({
+            name: 'latitude',
+            title: 'Latitude (Garis Lintang)',
+            type: 'number',
+            description: 'Terisi otomatis dari link Maps. Bisa diubah manual jika perlu.',
+            validation: (Rule) => Rule.min(-90).max(90),
+        }),
+        defineField({
+            name: 'longitude',
+            title: 'Longitude (Garis Bujur)',
+            type: 'number',
+            description: 'Terisi otomatis dari link Maps. Bisa diubah manual jika perlu.',
+            validation: (Rule) => Rule.min(-180).max(180),
         }),
 
         // --- MEDIA ---
@@ -269,6 +293,50 @@ export default defineType({
             title: 'Tampilkan di Listing Unggulan?',
             type: 'boolean',
             initialValue: false,
+        }),
+
+        // --- KPR ---
+        defineField({
+            name: 'kprAvailable',
+            title: 'Bisa Menggunakan KPR?',
+            description: 'Aktifkan jika properti ini dapat dibeli dengan KPR. Kalkulasi simulasi KPR akan tampil di halaman detail properti (hanya untuk harga Jual dalam IDR).',
+            type: 'boolean',
+            initialValue: false,
+        }),
+        defineField({
+            name: 'kprDownPaymentPercent',
+            title: 'KPR: Uang Muka / DP (%)',
+            description: 'Nilai awal DP pada simulasi KPR. Pembeli tetap bisa mengubahnya di halaman detail.',
+            type: 'number',
+            initialValue: 20,
+            validation: (Rule) => Rule.min(0).max(90),
+            hidden: ({ parent }) => !(parent as { kprAvailable?: boolean } | undefined)?.kprAvailable,
+        }),
+        defineField({
+            name: 'kprInterestRate',
+            title: 'KPR: Suku Bunga per Tahun (%)',
+            description: 'Suku bunga tahunan (flat/anuitas) untuk simulasi awal. Pembeli tetap bisa mengubahnya di halaman detail.',
+            type: 'number',
+            initialValue: 8,
+            validation: (Rule) => Rule.min(0).max(30),
+            hidden: ({ parent }) => !(parent as { kprAvailable?: boolean } | undefined)?.kprAvailable,
+        }),
+        defineField({
+            name: 'kprMaxTenorYears',
+            title: 'KPR: Tenor Maksimal (Tahun)',
+            description: 'Pilihan tenor terpanjang yang ditawarkan pada simulasi KPR.',
+            type: 'number',
+            initialValue: 20,
+            validation: (Rule) => Rule.min(1).max(30),
+            hidden: ({ parent }) => !(parent as { kprAvailable?: boolean } | undefined)?.kprAvailable,
+        }),
+        defineField({
+            name: 'kprNotes',
+            title: 'KPR: Catatan (Opsional)',
+            description: 'Contoh: Bekerja sama dengan Bank X, atau syarat & ketentuan singkat.',
+            type: 'text',
+            rows: 2,
+            hidden: ({ parent }) => !(parent as { kprAvailable?: boolean } | undefined)?.kprAvailable,
         }),
     ],
 })

@@ -125,77 +125,45 @@ export const companyProfile: SchemaTypeDefinition = {
           rows: 3,
           description: "Kalimat penjelas pendek di bawah judul.",
         },
+      ],
+    },
+    {
+      name: "ctaBanner",
+      title: "CTA Banner (Beranda)",
+      description:
+        "Konfigurasi section CTA di halaman beranda. Jika heading, deskripsi, dan tombol semuanya dikosongkan, section CTA tidak akan ditampilkan sama sekali.",
+      type: "object",
+      fields: [
         {
-          name: "links",
-          title: "Tombol (LINK / CTA)",
-          type: "array",
-          description: "Tambah atau hapus tombol. Kosongkan array jika tidak ingin ada tombol.",
-          of: [
-            {
-              type: "object",
-              name: "heroLink",
-              title: "Tombol",
-              fields: [
-                {
-                  name: "label",
-                  title: "Teks Tombol",
-                  type: "string",
-                },
-                {
-                  name: "linkType",
-                  title: "Jenis Tujuan",
-                  type: "string",
-                  initialValue: "internal",
-                  options: {
-                    list: [
-                      { title: "Halaman dalam situs", value: "internal" },
-                      { title: "Link eksternal (URL)", value: "external" },
-                    ],
-                  },
-                },
-                {
-                  name: "href",
-                  title: "Path / URL",
-                  type: "string",
-                  description:
-                    "Halaman dalam: tanpa slash awal contoh `properties`, `contact`. Eksternal: alamat lengkap contoh `https://wa.me/...`.",
-                  hidden: ({ parent }) =>
-                    !parent?.linkType || (parent?.linkType !== "internal" && parent?.linkType !== "external"),
-                },
-                {
-                  name: "style",
-                  title: "Gaya Tombol",
-                  type: "string",
-                  initialValue: "primary",
-                  options: {
-                    list: [
-                      { title: "Utama (isi hijau gelap)", value: "primary" },
-                      { title: "Outline (garis terang)", value: "ghost" },
-                    ],
-                  },
-                },
-                {
-                  name: "icon",
-                  title: "Ikon (Material Symbols)",
-                  type: "string",
-                  description: "Ikon opsional di samping teks tombol, misal `chat`, `arrow_forward`, `mail`.",
-                },
-              ],
-              preview: {
-                select: {
-                  label: "label",
-                  href: "href",
-                  icon: "icon",
-                },
-                prepare(selection) {
-                  return {
-                    title: selection.label || "(Tanpa label)",
-                    subtitle: selection.icon ? `ikon: ${selection.icon}` : selection.href || "",
-                  };
-                },
-              },
-            },
-          ],
+          name: "heading",
+          title: "Judul Utama",
+          type: "string",
+          description: "Judul besar di banner CTA.",
+          initialValue: "Siap Memulai Proyek Anda?",
+        },
+        {
+          name: "description",
+          title: "Deskripsi",
+          type: "text",
+          rows: 3,
+          description: "Kalimat penjelas pendek di bawah judul.",
+          initialValue:
+            "Tim ahli kami siap membantu Anda menemukan solusi lahan dan properti terbaik di Indonesia.",
+        },
+        {
+          name: "buttonLabel",
+          title: "Teks Tombol",
+          type: "string",
+          description: "Kosongkan jika tidak ingin menampilkan tombol.",
+          initialValue: "Lihat Semua Kontak",
+        },
+        {
+          name: "buttonHref",
+          title: "Tujuan Tombol",
+          type: "string",
+          description:
+            "Halaman dalam: tanpa slash awal contoh `contact`, `properties`. Eksternal: alamat lengkap contoh `https://wa.me/...`.",
+          initialValue: "contact",
         },
       ],
     },

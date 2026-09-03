@@ -222,7 +222,7 @@ export default async function AboutPage() {
             </div>
 
             <div className="relative overflow-hidden">
-              <div className="flex animate-[marquee_80s_linear_infinite] gap-xl px-xl">
+              <div className="flex animate-[marquee_25s_linear_infinite] gap-xl px-xl">
                 {[...partnerItems, ...partnerItems].map((item, index) => (
                   <div
                     key={`${item.name}-${index}`}

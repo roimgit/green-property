@@ -1,9 +1,10 @@
 import Link from "next/link";
-import type { PartnerLogo } from "@/types/sanity";
+import type { PartnerLogo, KerjasamaButton } from "@/types/sanity";
 import {
   getCompanyProfile,
   getEffectiveTestimonials,
   getPartnerLogos,
+  getKerjasamaSettings,
   imageUrl,
   portableTextToText,
 } from "@/lib/sanity/data";
@@ -14,23 +15,29 @@ export const metadata = {
   title: "Kerjasama - Green Property",
 };
 
-const PARTNERSHIP_POINTS = [
-  {
-    icon: "factory",
-    title: "Mitra Industri",
-    desc: "Terhubung langsung dengan ekosistem vendor & tenant kawasan industri strategis.",
-  },
-  {
-    icon: "handshake",
-    title: "Kolaborasi Terpercaya",
-    desc: "Kemitraan jangka panjang dengan integritas, transparansi, dan layanan prima.",
-  },
-  {
-    icon: "hub",
-    title: "Jaringan Luas",
-    desc: "Jaringan pemasok, kontraktor, dan investor yang saling mendukung.",
-  },
-];
+function renderButton(button: KerjasamaButton, className: string) {
+  const content = (
+    <>
+      {button.icon && <span className="material-symbols-outlined text-lg">{button.icon}</span>}
+      {button.label}
+    </>
+  );
+  const href = button.href || "#";
+  const isInternal = button.linkType === "internal" || /^(?!https?:)./.test(href);
+
+  if (isInternal) {
+    return (
+      <Link key={button.label ?? href} href={href} className={className}>
+        {content}
+      </Link>
+    );
+  }
+  return (
+    <a key={button.label ?? href} href={href} target="_blank" rel="noopener noreferrer" className={className}>
+      {content}
+    </a>
+  );
+}
 
 async function PartnerLogoMarquee({ partners }: { partners: PartnerLogo[] }) {
   const items = partners.map((p) => ({
@@ -55,7 +62,7 @@ async function PartnerLogoMarquee({ partners }: { partners: PartnerLogo[] }) {
         <div className="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-surface-container-lowest to-transparent z-10" />
 
         <div className="flex overflow-hidden group">
-          <div className="flex animate-[marquee_80s_linear_infinite] group-hover:[animation-play-state:paused] gap-xl px-xl">
+          <div className="flex animate-[marquee_25s_linear_infinite] group-hover:[animation-play-state:paused] gap-xl px-xl">
             {doubled.map((item, i) => (
               <div
                 key={`${item.name}-${i}`}
@@ -124,10 +131,11 @@ function PartnerCard({ partner }: { partner: PartnerLogo }) {
 }
 
 export default async function KerjasamaPage() {
-  const [partners, testimonials, company] = await Promise.all([
+  const [partners, testimonials, company, settings] = await Promise.all([
     getPartnerLogos(),
     getEffectiveTestimonials(),
     getCompanyProfile(),
+    getKerjasamaSettings(),
   ]);
 
   const documentation = partners.flatMap(
@@ -141,10 +149,18 @@ export default async function KerjasamaPage() {
 
   const companyName = company?.companyName ?? "Green Property";
 
+  const heroHeading = portableTextToText(settings?.heroHeading)
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean);
+  const points = settings?.points?.filter((p) => p?.title || p?.desc) ?? [];
+  const heroButtons = (settings?.heroButtons ?? []).filter((b) => b?.label);
+  const ctaHref = settings?.ctaButtonHref?.trim() || "contact";
+
   return (
     <main className="bg-[#fafbf9] text-on-surface flex-grow">
       {/* ===== Hero ===== */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-primary via-primary to-[#114227] py-xl lg:py-24">
+      <section className="relative overflow-hidden bg-primary py-xl lg:py-24">
         {/* Decorative blur circles */}
         <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-white/10 blur-3xl" />
         <div className="absolute bottom-0 -left-32 w-96 h-96 rounded-full bg-secondary/30 blur-3xl" />
@@ -154,35 +170,43 @@ export default async function KerjasamaPage() {
             <div className="space-y-md">
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur border border-white/20 w-fit">
                 <span className="material-symbols-outlined text-amber-300 text-base">handshake</span>
-                <span className="font-label-caps text-label-caps text-white">Kerjasama &amp; Kemitraan</span>
+                <span className="font-label-caps text-label-caps text-white">
+                  {settings?.heroBadge?.trim() || "Kerjasama & Kemitraan"}
+                </span>
               </div>
 
               <h1 className="font-display text-display text-white leading-tight">
-                Mitra Strategis untuk
-                <br className="hidden md:block" /> Setiap Langkah Bisnis
+                {heroHeading.length > 0 ? (
+                  heroHeading.map((line, i) => (
+                    <span key={i}>
+                      {line}
+                      {i < heroHeading.length - 1 && <br className="hidden md:block" />}
+                    </span>
+                  ))
+                ) : (
+                  <>
+                    Mitra Strategis untuk
+                    <br className="hidden md:block" /> Setiap Langkah Bisnis
+                  </>
+                )}
               </h1>
               <p className="font-body-lg text-body-lg text-white/90 leading-relaxed max-w-2xl">
-                Kami membangun kepercayaan melalui kolaborasi nyata — bersama hingga{" "}
-                {partners.length} mitra perusahaan yang telah mempercayakan solusi lahan dan propertinya
-                kepada {companyName}.
+                {settings?.heroDescription?.trim() ||
+                  `Kami membangun kepercayaan melalui kolaborasi nyata — bersama hingga ${partners.length} mitra perusahaan yang telah mempercayakan solusi lahan dan propertinya kepada ${companyName}.`}
               </p>
 
-              <div className="flex flex-wrap gap-4 pt-2">
-                <Link
-                  href="/contact"
-                  className="inline-flex items-center gap-2 bg-white text-primary px-8 py-3 rounded-full font-semibold hover:bg-amber-300 hover:text-slate-900 transition-all shadow-md active:scale-95"
-                >
-                  <span className="material-symbols-outlined text-lg">groups</span>
-                  Jadi Mitra Kami
-                </Link>
-                <Link
-                  href="/properties"
-                  className="inline-flex items-center gap-2 border-2 border-white/40 text-white px-8 py-3 rounded-full font-semibold hover:bg-white/10 transition-all"
-                >
-                  <span className="material-symbols-outlined text-lg">apartment</span>
-                  Lihat Properti
-                </Link>
-              </div>
+              {heroButtons.length > 0 && (
+                <div className="flex flex-wrap gap-4 pt-2">
+                  {heroButtons.map((button) => (
+                    <div key={button.label ?? button.href} className="contents">
+                      {renderButton(
+                        button,
+                        "inline-flex items-center gap-2 bg-white text-primary px-8 py-3 rounded-full font-semibold hover:bg-amber-300 hover:text-slate-900 transition-all shadow-md active:scale-95",
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Stats Stack */}
@@ -207,28 +231,30 @@ export default async function KerjasamaPage() {
       </section>
 
       {/* ===== Partnership Points ===== */}
-      <section className="max-w-container-max mx-auto px-sm lg:px-xl -mt-10 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-gutter">
-          {PARTNERSHIP_POINTS.map((point) => (
-            <div
-              key={point.title}
-              className="bg-surface-container-lowest border border-outline-variant/60 rounded-2xl p-md shadow-soft flex items-start gap-sm"
-            >
-              <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
-                <span className="material-symbols-outlined text-2xl">{point.icon}</span>
+      {points.length > 0 && (
+        <section className="max-w-container-max mx-auto px-sm lg:px-xl -mt-10 relative z-10">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+            {points.map((point, idx) => (
+              <div
+                key={`${point.title ?? "point"}-${idx}`}
+                className="bg-surface-container-lowest border border-outline-variant/60 rounded-2xl p-md shadow-soft flex items-start gap-sm"
+              >
+                <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                  <span className="material-symbols-outlined text-2xl">{point.icon || "handshake"}</span>
+                </div>
+                <div>
+                  <h3 className="font-headline-sm text-headline-sm font-bold text-on-surface mb-xs">
+                    {point.title}
+                  </h3>
+                  <p className="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+                    {point.desc}
+                  </p>
+                </div>
               </div>
-              <div>
-                <h3 className="font-headline-sm text-headline-sm font-bold text-on-surface mb-xs">
-                  {point.title}
-                </h3>
-                <p className="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
-                  {point.desc}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* ===== Partner Cards ===== */}
       {partners.length > 0 && (
@@ -270,6 +296,12 @@ export default async function KerjasamaPage() {
               <p className="font-body-md text-body-md text-on-surface-variant max-w-2xl mx-auto">
                 Pengalaman langsung dari klien dan mitra yang telah membangun bersama kami.
               </p>
+              <Link
+                href="/testimoni"
+                className="mt-md inline-flex items-center gap-1 text-primary font-semibold hover:underline"
+              >
+                Lihat Semua Testimoni <span className="material-symbols-outlined text-sm">arrow_forward</span>
+              </Link>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
@@ -286,7 +318,7 @@ export default async function KerjasamaPage() {
                       <span key={i} className="material-symbols-outlined text-sm">star</span>
                     ))}
                   </div>
-                  <p className="font-body-md text-body-md text-on-surface-variant flex-grow leading-relaxed">
+                  <p className="font-body-md text-body-md text-on-surface-variant flex-grow leading-relaxed line-clamp-3" title={t.kutipan}>
                     &ldquo;{t.kutipan}&rdquo;
                   </p>
                   <div className="flex items-center gap-sm pt-sm border-t border-outline-variant/40">
@@ -309,7 +341,7 @@ export default async function KerjasamaPage() {
 
       {/* ===== Documentation ===== */}
       {documentation.length > 0 && (
-        <section className="py-xl bg-surface-container-low border-y border-outline-variant/40">
+        <section id="momen-mitra" className="py-xl bg-surface-container-low border-y border-outline-variant/40 scroll-mt-24">
           <div className="max-w-container-max mx-auto px-sm lg:px-xl">
             <div className="text-center mb-lg">
               <div className="inline-block px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container font-label-caps text-label-caps mb-md">
@@ -351,26 +383,38 @@ export default async function KerjasamaPage() {
       )}
 
       {/* ===== CTA ===== */}
-      <section className="max-w-container-max mx-auto px-sm lg:px-xl py-xl">
-        <div className="rounded-3xl p-xl text-center shadow-lg flex flex-col items-center gap-lg bg-gradient-to-br from-primary via-primary to-[#114227] relative overflow-hidden">
-          <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-white/10 blur-3xl" />
-          <div className="relative space-y-sm">
-            <h2 className="font-display text-display text-white">Mari Bekerja Sama</h2>
-            <p className="font-body-lg text-body-lg text-white/80 max-w-2xl mx-auto">
-              Punya proyek lahan, industri, atau properti? Jadilah bagian dari jaringan kemitraan
-              kami dan wujudkan bersama-sama.
-            </p>
+      {(settings?.ctaHeading?.trim() ||
+        settings?.ctaDescription?.trim() ||
+        settings?.ctaButtonLabel?.trim()) && (
+        <section className="max-w-container-max mx-auto px-sm lg:px-xl py-xl">
+          <div className="rounded-3xl p-xl text-center shadow-lg flex flex-col items-center gap-lg bg-primary relative overflow-hidden">
+            <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-white/10 blur-3xl" />
+            <div className="relative space-y-sm">
+              {settings?.ctaHeading?.trim() && (
+                <h2 className="font-display text-display text-white">{settings.ctaHeading}</h2>
+              )}
+              {settings?.ctaDescription?.trim() && (
+                <p className="font-body-lg text-body-lg text-white/80 max-w-2xl mx-auto">
+                  {settings.ctaDescription}
+                </p>
+              )}
+            </div>
+            {settings?.ctaButtonLabel?.trim() && (
+              <div className="relative">
+                {renderButton(
+                  {
+                    label: settings.ctaButtonLabel,
+                    href: ctaHref,
+                    linkType: /^https?:/.test(ctaHref) ? "external" : "internal",
+                    icon: "mail",
+                  },
+                  "inline-flex items-center gap-2 bg-white text-primary px-8 py-4 rounded-full font-bold hover:bg-amber-300 hover:text-slate-900 transition-all shadow-md active:scale-95",
+                )}
+              </div>
+            )}
           </div>
-          <div className="relative">
-            <Link
-              href="/contact"
-              className="inline-flex items-center gap-2 bg-white text-primary px-8 py-4 rounded-full font-bold hover:bg-amber-300 hover:text-slate-900 transition-all shadow-md active:scale-95"
-            >
-              <span className="material-symbols-outlined text-lg">mail</span> Hubungi Kami
-            </Link>
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
     </main>
   );
 }

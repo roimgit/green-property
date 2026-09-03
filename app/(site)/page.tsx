@@ -2,7 +2,6 @@ import Link from "next/link";
 import PropertyCard from "@/components/PropertyCard";
 import HeroBannerImage from "@/components/HeroBannerImage";
 import ServiceCarousel from "./ServiceCarousel";
-import type { HeroBannerCTA } from "@/types/sanity";
 import {
   getPropertyList,
   getCompanyProfile,
@@ -15,31 +14,6 @@ import {
 export const dynamic = "force-dynamic";
 
 const HERO_IMAGE_FALLBACK = "/hero.svg";
-
-function renderLink(button: HeroBannerCTA, className: string) {
-  const content = (
-    <>
-      {button.label}
-      {button.icon && <span className="material-symbols-outlined text-sm">{button.icon}</span>}
-    </>
-  );
-  const href = button.href || "#";
-  const isInternal =
-    button.linkType === "internal" || /^(?!https?:)./.test(href);
-
-  if (isInternal) {
-    return (
-      <Link key={button.label ?? href} href={href} className={className}>
-        {content}
-      </Link>
-    );
-  }
-  return (
-    <a key={button.label ?? href} href={href} target="_blank" rel="noopener noreferrer" className={className}>
-      {content}
-    </a>
-  );
-}
 
 const ALBUM_SECTION_LABEL = "ALBUM KERJASAMA";
 
@@ -68,7 +42,7 @@ async function PartnerLogoMarquee() {
 
         <div className="flex flex-col gap-lg">
           <div className="group flex overflow-hidden">
-            <div className="flex animate-[marquee_80s_linear_infinite] gap-xl px-xl">
+            <div className="flex animate-[marquee_25s_linear_infinite] gap-xl px-xl">
               {doubled.map((item, i) => (
                 <div
                   key={i}
@@ -109,18 +83,23 @@ export default async function Home() {
   );
 
   const featured = properties.filter((p) => p.isFeatured);
-  const unggulan = (featured.length > 0 ? featured : properties).slice(0, 8);
+  const unggulan = (featured.length > 0 ? featured : properties).slice(0, 9);
   const heroBanner = company?.heroBanner;
   const showHero =
     heroBanner !== undefined &&
     heroBanner !== null &&
     (heroBanner.image !== undefined ||
       heroBanner.heading !== undefined ||
-      heroBanner.description !== undefined ||
-      (heroBanner.links?.length ?? 0) > 0);
+      heroBanner.description !== undefined);
   const heroImage = showHero
     ? imageUrl(heroBanner.image) ?? HERO_IMAGE_FALLBACK
     : null;
+  const ctaBanner = company?.ctaBanner;
+  const showCta = Boolean(
+    ctaBanner?.heading?.trim() ||
+      ctaBanner?.description?.trim() ||
+      ctaBanner?.buttonLabel?.trim(),
+  );
 
   return (
     <main className="pt-24 pb-xl">
@@ -153,19 +132,6 @@ export default async function Home() {
                   {heroBanner?.description ??
                     "Spesialis penyedia lahan untuk Vendor Hyundai dan hunian eksklusif dengan layanan terpercaya."}
                 </p>
-
-                {/* Button Group - Ditambah flex-wrap agar responsif di mobile */}
-                <div className="flex flex-wrap gap-4">
-                  {(heroBanner?.links?.filter((l) => l.label) ?? []).map((button) =>
-                    renderLink(
-                      button,
-                      `${button.style !== "ghost"
-                        ? "bg-primary-container text-on-primary hover:bg-primary"
-                        : "bg-transparent border-2 border-surface-container-lowest text-surface-container-lowest backdrop-blur-sm hover:bg-surface-container-lowest/20"
-                      } px-8 py-3 rounded-full font-body-md text-body-md font-semibold transition-colors shadow-sm flex items-center justify-center gap-2`,
-                    ),
-                  )}
-                </div>
               </div>
 
             </div>
@@ -177,9 +143,9 @@ export default async function Home() {
       {services.length > 0 && (
         <section className="max-w-container-max mx-auto px-sm lg:px-xl mb-xl">
           <div className="mb-lg">
-            <h2 className="font-headline-lg text-headline-lg text-on-surface mb-xs">Service Portfolio</h2>
+            <h2 className="font-headline-lg text-headline-lg text-on-surface mb-xs">Layanan</h2>
             <p className="font-body-md text-body-md text-on-surface-variant">
-              Comprehensive solutions for industrial setup and corporate living.
+              Solusi lengkap untuk kebutuhan industri dan hunian perusahaan.
             </p>
           </div>
           <div className="px-6">
@@ -189,6 +155,7 @@ export default async function Home() {
       )}
 
       {/* ===== Album Kerjasama ===== */}
+      {documentation.length > 0 && (
       <section className="max-w-container-max mx-auto px-sm lg:px-xl mb-xl">
         <div className="flex flex-col md:flex-row justify-between items-end gap-md mb-lg">
           <div>
@@ -203,7 +170,7 @@ export default async function Home() {
             </p>
           </div>
           <Link
-            href="/kerjasama"
+            href="/kerjasama#momen-mitra"
             className="hidden md:inline-flex items-center gap-1 text-primary font-semibold hover:underline"
           >
             Lihat Detail Kerjasama <span className="material-symbols-outlined text-sm">arrow_forward</span>
@@ -212,7 +179,7 @@ export default async function Home() {
 
         {documentation.length > 0 ? (
           <Link
-            href="/kerjasama"
+            href="/kerjasama#momen-mitra"
             aria-label="Lihat album kerjasama di halaman Kerjasama"
             className="group relative grid grid-cols-2 md:grid-cols-4 gap-3 auto-rows-[140px] md:auto-rows-[180px]"
           >
@@ -246,7 +213,7 @@ export default async function Home() {
           </Link>
         ) : (
           <Link
-            href="/kerjasama"
+            href="/kerjasama#momen-mitra"
             className="group flex flex-col items-center justify-center gap-sm rounded-xl bg-surface-container-low border border-outline-variant/40 shadow-soft p-xl text-center hover:bg-surface-container-lowest transition-colors"
           >
             <span className="material-symbols-outlined text-4xl text-primary/60">photo_library</span>
@@ -263,12 +230,13 @@ export default async function Home() {
         )}
 
         <Link
-          href="/kerjasama"
+          href="/kerjasama#momen-mitra"
           className="md:hidden flex items-center justify-center gap-1 text-primary font-semibold mt-md"
         >
           Lihat Detail Kerjasama <span className="material-symbols-outlined text-sm">arrow_forward</span>
         </Link>
       </section>
+      )}
 
       {/* ===== Listing Unggulan ===== */}
       <section className="max-w-container-max mx-auto px-sm lg:px-xl mb-xl">
@@ -288,7 +256,7 @@ export default async function Home() {
         </div>
 
         {unggulan.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter mb-lg">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-gutter mb-lg">
             {unggulan.map((property) => (
               <PropertyCard key={property._id} property={property} />
             ))}
@@ -314,11 +282,19 @@ export default async function Home() {
       {/* ===== Testimonials ===== */}
       {testimonials.length > 0 && (
         <section id="about" className="max-w-container-max mx-auto px-sm lg:px-xl mb-xl">
-          <div className="mb-lg">
-            <h2 className="font-headline-lg text-headline-lg text-on-surface mb-xs">Apa Kata Klien Kami</h2>
-            <p className="font-body-md text-body-md text-on-surface-variant">
-              Testimoni dari mitra dan klien yang telah bekerja sama dengan kami.
-            </p>
+          <div className="mb-lg flex flex-col md:flex-row md:items-end md:justify-between gap-sm">
+            <div>
+              <h2 className="font-headline-lg text-headline-lg text-on-surface mb-xs">Apa Kata Klien Kami</h2>
+              <p className="font-body-md text-body-md text-on-surface-variant">
+                Testimoni dari mitra dan klien yang telah bekerja sama dengan kami.
+              </p>
+            </div>
+            <Link
+              href="/testimoni"
+              className="inline-flex items-center gap-1 text-primary font-semibold hover:underline"
+            >
+              Lihat Semua Testimoni <span className="material-symbols-outlined text-sm">arrow_forward</span>
+            </Link>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-gutter">
             {testimonials.map((t) => (
@@ -333,7 +309,7 @@ export default async function Home() {
                     </span>
                   ))}
                 </div>
-                <p className="font-body-md text-body-md text-on-surface-variant flex-grow">
+                <p className="font-body-md text-body-md text-on-surface-variant flex-grow line-clamp-3" title={t.kutipan}>
                   “{t.kutipan}”
                 </p>
                 <div className="flex items-center gap-sm">
@@ -354,30 +330,43 @@ export default async function Home() {
       )}
 
       {/* ===== CTA Banner ===== */}
-      <section className="max-w-container-max mx-auto px-sm lg:px-xl mb-xl">
-        <div className="rounded-xl p-xl text-center shadow-lg flex flex-col items-center gap-lg bg-[#155C2E]">
-          <div className="space-y-sm">
-            <h2 className="font-display text-display text-white">Siap Memulai Proyek Anda?</h2>
-            <p className="font-body-lg text-body-lg text-white/80 max-w-2xl mx-auto">
-              Tim ahli kami siap membantu Anda menemukan solusi lahan dan properti terbaik di Indonesia.
-            </p>
+      {showCta && (
+        <section className="max-w-container-max mx-auto px-sm lg:px-xl mb-xl">
+          <div className="rounded-xl p-xl text-center shadow-lg flex flex-col items-center gap-lg bg-primary">
+            <div className="space-y-sm">
+              {ctaBanner?.heading?.trim() && (
+                <h2 className="font-display text-display text-white">{ctaBanner.heading}</h2>
+              )}
+              {ctaBanner?.description?.trim() && (
+                <p className="font-body-lg text-body-lg text-white/80 max-w-2xl mx-auto">
+                  {ctaBanner.description}
+                </p>
+              )}
+            </div>
+            {ctaBanner?.buttonLabel?.trim() && (
+              <div className="flex flex-col md:flex-row gap-md">
+                {(() => {
+                  const href = ctaBanner.buttonHref?.trim() || "contact";
+                  const className =
+                    "border-2 border-white/30 text-white px-8 py-4 rounded-full font-bold hover:bg-white/10 transition-colors";
+                  if (/^https?:/.test(href)) {
+                    return (
+                      <a href={href} target="_blank" rel="noopener noreferrer" className={className}>
+                        {ctaBanner.buttonLabel}
+                      </a>
+                    );
+                  }
+                  return (
+                    <Link href={href.startsWith("/") ? href : `/${href}`} className={className}>
+                      {ctaBanner.buttonLabel}
+                    </Link>
+                  );
+                })()}
+              </div>
+            )}
           </div>
-          <div className="flex flex-col md:flex-row gap-md">
-            <Link
-              href="/contact"
-              className="bg-[#25D366] text-white px-8 py-4 rounded-full font-bold flex items-center gap-2 hover:scale-105 transition-transform shadow-md"
-            >
-              <span className="material-symbols-outlined">chat</span> Chat via WhatsApp
-            </Link>
-            <Link
-              href="/contact"
-              className="border-2 border-white/30 text-white px-8 py-4 rounded-full font-bold hover:bg-white/10 transition-colors"
-            >
-              Lihat Semua Kontak
-            </Link>
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       <PartnerLogoMarquee />
     </main>

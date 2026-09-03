@@ -42,6 +42,18 @@ export const testimonial: SchemaTypeDefinition = {
       description: "Contoh: Direktur PT Maju Bersama, atau 'Pembeli Rumah'",
     },
     {
+      name: "videoLabel",
+      title: "Label Video / Platform",
+      type: "string",
+      description: "Contoh: YouTube, Instagram, TikTok. Dijadikan teks tombol di halaman Testimoni.",
+    },
+    {
+      name: "videoUrl",
+      title: "Link Video / Sosmed",
+      type: "url",
+      description: "Tempel link YouTube / Instagram / TikTok / sosmed untuk melihat testimoni lewat video.",
+    },
+    {
       name: "photo",
       title: "Foto / Avatar",
       type: "image",

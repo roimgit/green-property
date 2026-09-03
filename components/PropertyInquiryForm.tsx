@@ -74,9 +74,12 @@ export default function PropertyInquiryForm({
 
       <button
         type="submit"
-        className="w-full px-4 py-2 bg-primary text-on-primary font-body-sm text-body-sm font-semibold rounded-lg hover:bg-surface-tint transition-colors mt-2"
+        className="w-full flex justify-center items-center gap-2 px-4 py-3 bg-[#25D366] text-white font-body-sm text-body-sm font-semibold rounded-full hover:bg-[#20b75a] transition-all shadow-sm hover:shadow-md mt-2"
       >
-        Kirim Pesan
+        <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>
+          chat
+        </span>
+        Chat Whatsapp
       </button>
     </form>
   );

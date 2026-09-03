@@ -1,11 +1,12 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import PropertyCard from "@/components/PropertyCard";
 import type { Property } from "@/types/sanity";
 import { getPrimaryPriceAmount } from "@/lib/sanity/data";
 
 const DEFAULT_CATEGORIES = ["Land", "Factory", "Residence", "Apartment"];
+const PAGE_SIZE = 12;
 
 export default function PropertyFilters({
   properties,
@@ -20,8 +21,19 @@ export default function PropertyFilters({
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const [location, setLocation] = useState("");
+  const [kprOnly, setKprOnly] = useState(false);
   const [sort, setSort] = useState("Terbaru");
-  const [applied, setApplied] = useState(false);
+  // Snapshot filter sidebar yang aktif — hanya berubah saat klik "Terapkan Filter".
+  const [appliedFilters, setAppliedFilters] = useState({
+    categories: [] as string[],
+    transactionType: "Semua",
+    minPrice: "",
+    maxPrice: "",
+    location: "",
+    kprOnly: false,
+  });
+  const [page, setPage] = useState(1);
+  const resultsRef = useRef<HTMLElement | null>(null);
 
   const availableCategories = useMemo(() => {
     const set = new Set<string>();
@@ -52,7 +64,15 @@ export default function PropertyFilters({
   };
 
   const applyFilters = () => {
-    setApplied(true);
+    setPage(1);
+    setAppliedFilters({
+      categories: selectedCategories,
+      transactionType,
+      minPrice,
+      maxPrice,
+      location,
+      kprOnly,
+    });
   };
 
   const resetFilters = () => {
@@ -62,49 +82,59 @@ export default function PropertyFilters({
     setMinPrice("");
     setMaxPrice("");
     setLocation("");
+    setKprOnly(false);
     setSort("Terbaru");
-    setApplied(false);
+    setPage(1);
+    setAppliedFilters({
+      categories: [],
+      transactionType: "Semua",
+      minPrice: "",
+      maxPrice: "",
+      location: "",
+      kprOnly: false,
+    });
   };
 
   const filtered = useMemo(() => {
     let list = [...properties];
 
-    if (applied) {
-      if (selectedCategories.length > 0) {
-        list = list.filter(
-          (p) => typeof p.category === "string" && selectedCategories.includes(p.category),
-        );
-      }
-      if (transactionType && transactionType !== "Semua") {
-        const target = transactionType.toLowerCase();
-        list = list.filter((p) => {
-          if (Array.isArray(p.pricing) && p.pricing.length > 0) {
-            return p.pricing.some(
-              (entry) => entry.transactionType?.toLowerCase() === target,
-            );
-          }
-          return p.transactionType?.toLowerCase() === target;
-        });
-      }
-      if (minPrice && !Number.isNaN(Number(minPrice))) {
-        list = list.filter(
-          (p) => getPrimaryPriceAmount(p) >= Number(minPrice),
-        );
-      }
-      if (maxPrice && !Number.isNaN(Number(maxPrice))) {
-        list = list.filter(
-          (p) => getPrimaryPriceAmount(p) <= Number(maxPrice),
-        );
-      }
-      if (location) {
-        const loc = location.toLowerCase();
-        list = list.filter(
-          (p) =>
-            p.locationShort?.toLowerCase() === loc ||
-            p.locationShort?.toLowerCase().includes(loc) ||
-            p.fullAddress?.toLowerCase().includes(loc),
-        );
-      }
+    if (appliedFilters.categories.length > 0) {
+      list = list.filter(
+        (p) => typeof p.category === "string" && appliedFilters.categories.includes(p.category),
+      );
+    }
+    if (appliedFilters.transactionType && appliedFilters.transactionType !== "Semua") {
+      const target = appliedFilters.transactionType.toLowerCase();
+      list = list.filter((p) => {
+        if (Array.isArray(p.pricing) && p.pricing.length > 0) {
+          return p.pricing.some(
+            (entry) => entry.transactionType?.toLowerCase() === target,
+          );
+        }
+        return p.transactionType?.toLowerCase() === target;
+      });
+    }
+    if (appliedFilters.minPrice && !Number.isNaN(Number(appliedFilters.minPrice))) {
+      list = list.filter(
+        (p) => getPrimaryPriceAmount(p) >= Number(appliedFilters.minPrice),
+      );
+    }
+    if (appliedFilters.maxPrice && !Number.isNaN(Number(appliedFilters.maxPrice))) {
+      list = list.filter(
+        (p) => getPrimaryPriceAmount(p) <= Number(appliedFilters.maxPrice),
+      );
+    }
+    if (appliedFilters.location) {
+      const loc = appliedFilters.location.toLowerCase();
+      list = list.filter(
+        (p) =>
+          p.locationShort?.toLowerCase() === loc ||
+          p.locationShort?.toLowerCase().includes(loc) ||
+          p.fullAddress?.toLowerCase().includes(loc),
+      );
+    }
+    if (appliedFilters.kprOnly) {
+      list = list.filter((p) => p.kprAvailable);
     }
 
     if (query.trim()) {
@@ -124,7 +154,32 @@ export default function PropertyFilters({
     }
 
     return list;
-  }, [properties, query, selectedCategories, transactionType, minPrice, maxPrice, location, sort, applied]);
+  }, [properties, query, appliedFilters, sort]);
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const safePage = Math.min(page, totalPages);
+  const paged = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
+
+  const pageNumbers = useMemo(() => {
+    const pages: Array<number | "ellipsis"> = [];
+    if (totalPages <= 7) {
+      for (let i = 1; i <= totalPages; i++) pages.push(i);
+      return pages;
+    }
+    pages.push(1);
+    if (safePage > 3) pages.push("ellipsis");
+    for (let i = Math.max(2, safePage - 1); i <= Math.min(totalPages - 1, safePage + 1); i++) {
+      pages.push(i);
+    }
+    if (safePage < totalPages - 2) pages.push("ellipsis");
+    pages.push(totalPages);
+    return pages;
+  }, [totalPages, safePage]);
+
+  const goToPage = (target: number) => {
+    setPage(Math.min(totalPages, Math.max(1, target)));
+    resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   const locations = useMemo(() => {
     const set = new Set<string>();
@@ -223,6 +278,22 @@ export default function PropertyFilters({
             </select>
           </div>
 
+          {/* Pembayaran */}
+          <div className="flex flex-col gap-sm">
+            <h3 className="font-headline-sm text-headline-sm text-on-surface">Pembayaran</h3>
+            <label className="flex items-center gap-sm cursor-pointer group">
+              <input
+                type="checkbox"
+                checked={kprOnly}
+                onChange={(e) => setKprOnly(e.target.checked)}
+                className="rounded border-outline-variant text-primary focus:ring-primary h-5 w-5"
+              />
+              <span className="font-body-md text-on-surface-variant group-hover:text-on-surface transition-colors">
+                Hanya yang bisa KPR
+              </span>
+            </label>
+          </div>
+
           <button
             onClick={applyFilters}
             className="w-full py-3 bg-primary text-on-primary rounded-full font-headline-sm font-semibold hover:opacity-90 transition-opacity"
@@ -233,7 +304,7 @@ export default function PropertyFilters({
       </aside>
 
       {/* Right Column */}
-      <section className="lg:col-span-4 flex flex-col gap-lg">
+      <section ref={resultsRef} className="lg:col-span-4 flex flex-col gap-lg scroll-mt-28">
         {/* Controls */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-sm">
           <div className="relative w-full md:w-96">
@@ -242,7 +313,10 @@ export default function PropertyFilters({
             </span>
             <input
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
+              onChange={(e) => {
+                setQuery(e.target.value);
+                setPage(1);
+              }}
               placeholder="Cari properti..."
               className="w-full pl-10 pr-sm py-3 border border-outline-variant rounded-xl font-body-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none bg-surface-container-lowest"
             />
@@ -251,7 +325,10 @@ export default function PropertyFilters({
             <span className="font-body-sm text-on-surface-variant whitespace-nowrap">Urutkan:</span>
             <select
               value={sort}
-              onChange={(e) => setSort(e.target.value)}
+              onChange={(e) => {
+                setSort(e.target.value);
+                setPage(1);
+              }}
               className="px-sm py-2 border border-outline-variant rounded-lg font-body-sm text-on-surface focus:border-primary outline-none bg-surface-container-lowest"
             >
               <option>Terbaru</option>
@@ -263,11 +340,71 @@ export default function PropertyFilters({
 
         {/* Grid */}
         {filtered.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-gutter">
-            {filtered.map((property) => (
-              <PropertyCard key={property._id} property={property} />
-            ))}
-          </div>
+          <>
+            <p className="font-body-sm text-body-sm text-on-surface-variant">
+              Menampilkan {(safePage - 1) * PAGE_SIZE + 1}–
+              {Math.min(safePage * PAGE_SIZE, filtered.length)} dari {filtered.length}{" "}
+              properti
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-gutter">
+              {paged.map((property) => (
+                <PropertyCard key={property._id} property={property} />
+              ))}
+            </div>
+
+            {totalPages > 1 && (
+              <nav
+                aria-label="Navigasi halaman properti"
+                className="flex items-center justify-center gap-2 mt-md"
+              >
+                <button
+                  type="button"
+                  onClick={() => goToPage(safePage - 1)}
+                  disabled={safePage === 1}
+                  className="inline-flex items-center gap-1 px-4 py-2 rounded-full border border-outline-variant font-body-sm text-body-sm font-semibold text-on-surface transition-colors hover:border-primary hover:text-primary disabled:opacity-40 disabled:pointer-events-none"
+                >
+                  <span className="material-symbols-outlined text-[18px]">chevron_left</span>
+                  Sebelumnya
+                </button>
+
+                {pageNumbers.map((item, i) =>
+                  item === "ellipsis" ? (
+                    <span
+                      key={`ellipsis-${i}`}
+                      className="px-2 font-body-sm text-on-surface-variant"
+                    >
+                      …
+                    </span>
+                  ) : (
+                    <button
+                      key={item}
+                      type="button"
+                      onClick={() => goToPage(item)}
+                      aria-current={item === safePage ? "page" : undefined}
+                      className={
+                        "min-w-10 h-10 px-3 rounded-full font-body-sm text-body-sm font-semibold transition-colors " +
+                        (item === safePage
+                          ? "bg-primary text-on-primary"
+                          : "border border-outline-variant text-on-surface hover:border-primary hover:text-primary")
+                      }
+                    >
+                      {item}
+                    </button>
+                  ),
+                )}
+
+                <button
+                  type="button"
+                  onClick={() => goToPage(safePage + 1)}
+                  disabled={safePage === totalPages}
+                  className="inline-flex items-center gap-1 px-4 py-2 rounded-full border border-outline-variant font-body-sm text-body-sm font-semibold text-on-surface transition-colors hover:border-primary hover:text-primary disabled:opacity-40 disabled:pointer-events-none"
+                >
+                  Berikutnya
+                  <span className="material-symbols-outlined text-[18px]">chevron_right</span>
+                </button>
+              </nav>
+            )}
+          </>
         ) : (
           <div className="flex flex-col items-center justify-center py-20 text-center gap-md bg-surface-container-lowest rounded-xl border border-outline-variant/30">
             <div className="flex flex-col gap-xs">

@@ -81,9 +81,17 @@ function EmailIcon() {
 function getChannelUrl(contact: Contact, channel: Channel, message: string) {
   if (channel === "whatsapp") {
     const normalizedNumber = normalizeWhatsAppNumber(contact.whatsappNumber);
-    if (!normalizedNumber) return "";
+    if (normalizedNumber) {
+      return `https://wa.me/${normalizedNumber}?text=${encodeURIComponent(message)}`;
+    }
 
-    return `https://wa.me/${normalizedNumber}?text=${encodeURIComponent(message)}`;
+    const link = contact.whatsappLink?.trim();
+    if (link) {
+      const separator = link.includes("?") ? "&" : "?";
+      return `${link}${separator}text=${encodeURIComponent(message)}`;
+    }
+
+    return "";
   }
 
   if (channel === "kakaoTalk") {
@@ -99,11 +107,26 @@ function getChannelUrl(contact: Contact, channel: Channel, message: string) {
   }
 
   if (channel === "email") {
-    if (!contact.email) return "";
-    return `mailto:${contact.email}?subject=${encodeURIComponent("Informasi Properti")}&body=${encodeURIComponent(message)}`;
+    if (!contact.email?.trim()) return "";
+    return `mailto:${contact.email.trim()}?subject=${encodeURIComponent("Informasi Properti")}&body=${encodeURIComponent(message)}`;
   }
 
   return "";
+}
+
+function hasWhatsApp(contact: Contact): boolean {
+  return (
+    Boolean(normalizeWhatsAppNumber(contact.whatsappNumber)) ||
+    Boolean(contact.whatsappLink?.trim())
+  );
+}
+
+function hasKakaoTalk(contact: Contact): boolean {
+  return Boolean(contact.kakaoTalkLink?.trim() || contact.kakaoTalkNumber?.trim());
+}
+
+function hasEmail(contact: Contact): boolean {
+  return Boolean(contact.email?.trim());
 }
 
 export function ContactActionCards({ contacts }: { contacts: Contact[] }) {
@@ -155,7 +178,23 @@ export function ContactActionCards({ contacts }: { contacts: Contact[] }) {
           </div>
 
           <div className="grid grid-cols-1 gap-lg md:grid-cols-2 lg:grid-cols-3">
-            {contacts.map((contact) => (
+            {contacts.map((contact) => {
+              const showEmail = hasEmail(contact);
+              const showPhone = Boolean(contact.phoneNumber?.trim());
+              const showWhatsApp = hasWhatsApp(contact);
+              const showKakao = hasKakaoTalk(contact);
+              const whatsappDisplay =
+                normalizeWhatsAppNumber(contact.whatsappNumber) ||
+                contact.whatsappLink?.trim() ||
+                "";
+              const kakaoDisplay =
+                contact.kakaoTalkNumber?.trim() || contact.kakaoTalkLink?.trim() || "";
+              const availableChannels: Channel[] = [
+                ...(showWhatsApp ? ["whatsapp" as Channel] : []),
+                ...(showKakao ? ["kakaoTalk" as Channel] : []),
+                ...(showEmail ? ["email" as Channel] : []),
+              ];
+              return (
               <div
                 key={contact._id}
                 className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-primary/15 bg-white p-6 shadow-sm transition-all duration-300 hover:border-primary/40 hover:shadow-xl"
@@ -184,52 +223,62 @@ export function ContactActionCards({ contacts }: { contacts: Contact[] }) {
                 </div>
 
                 <div className="mb-6 flex flex-1 flex-col gap-3">
-                  {contact.email && (
+                  {showEmail && (
                     <div className="flex items-start gap-3">
                       <span className="material-symbols-outlined mt-0.5 flex-shrink-0 text-lg text-primary">mail</span>
                       <div className="min-w-0 flex-1">
                         <p className="text-xs font-medium uppercase tracking-wider text-on-surface-variant">Email</p>
-                        <a href={`mailto:${contact.email}`} className="break-all font-body-sm font-semibold text-primary transition-colors hover:underline">
-                          {contact.email}
+                        <a href={`mailto:${contact.email?.trim()}`} className="break-all font-body-sm font-semibold text-primary transition-colors hover:underline">
+                          {contact.email?.trim()}
                         </a>
                       </div>
                     </div>
                   )}
 
-                  {contact.phoneNumber && (
+                  {showPhone && (
                     <div className="flex items-start gap-3">
                       <span className="material-symbols-outlined mt-0.5 flex-shrink-0 text-lg text-primary">phone</span>
                       <div className="min-w-0 flex-1">
                         <p className="text-xs font-medium uppercase tracking-wider text-on-surface-variant">Telepon</p>
-                        <a href={`tel:${contact.phoneNumber}`} className="font-body-sm font-semibold text-primary transition-colors hover:underline">
-                          {contact.phoneNumber}
+                        <a href={`tel:${contact.phoneNumber?.trim()}`} className="font-body-sm font-semibold text-primary transition-colors hover:underline">
+                          {contact.phoneNumber?.trim()}
                         </a>
                       </div>
                     </div>
                   )}
 
-                  {contact.whatsappNumber && (
+                  {showWhatsApp && (
                     <div className="flex items-start gap-3">
                       <span className="material-symbols-outlined mt-0.5 flex-shrink-0 text-lg text-primary">chat</span>
                       <div className="min-w-0 flex-1">
                         <p className="text-xs font-medium uppercase tracking-wider text-on-surface-variant">WhatsApp</p>
-                        <p className="font-body-sm font-medium text-on-surface">{normalizeWhatsAppNumber(contact.whatsappNumber)}</p>
+                        <p className="font-body-sm font-medium text-on-surface">{whatsappDisplay}</p>
                       </div>
                     </div>
                   )}
 
-                  {contact.kakaoTalkNumber && (
+                  {showKakao && (
                     <div className="flex items-start gap-3">
                       <span className="material-symbols-outlined mt-0.5 flex-shrink-0 text-lg text-primary">forum</span>
                       <div className="min-w-0 flex-1">
                         <p className="text-xs font-medium uppercase tracking-wider text-on-surface-variant">KakaoTalk</p>
-                        <p className="font-body-sm font-medium text-on-surface">{contact.kakaoTalkNumber}</p>
+                        <p className="font-body-sm font-medium text-on-surface">{kakaoDisplay}</p>
                       </div>
                     </div>
                   )}
                 </div>
 
-                <div className="mt-auto grid grid-cols-3 gap-2 border-t border-primary/10 pt-4">
+                {availableChannels.length > 0 && (
+                <div
+                  className={`mt-auto grid gap-2 border-t border-primary/10 pt-4 ${
+                    availableChannels.length === 1
+                      ? "grid-cols-1"
+                      : availableChannels.length === 2
+                        ? "grid-cols-2"
+                        : "grid-cols-3"
+                  }`}
+                >
+                  {showWhatsApp && (
                   <button
                     type="button"
                     onClick={() => handleOpenComposer(contact, "whatsapp")}
@@ -239,7 +288,9 @@ export function ContactActionCards({ contacts }: { contacts: Contact[] }) {
                     <WhatsAppIcon />
                     <span>WhatsApp</span>
                   </button>
+                  )}
 
+                  {showKakao && (
                   <button
                     type="button"
                     onClick={() => handleOpenComposer(contact, "kakaoTalk")}
@@ -249,7 +300,9 @@ export function ContactActionCards({ contacts }: { contacts: Contact[] }) {
                     <KakaoTalkIcon />
                     <span>KakaoTalk</span>
                   </button>
+                  )}
 
+                  {showEmail && (
                   <button
                     type="button"
                     onClick={() => handleOpenComposer(contact, "email")}
@@ -259,9 +312,12 @@ export function ContactActionCards({ contacts }: { contacts: Contact[] }) {
                     <EmailIcon />
                     <span>Email</span>
                   </button>
+                  )}
                 </div>
+                )}
               </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       ) : (

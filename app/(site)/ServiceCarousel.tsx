@@ -75,36 +75,41 @@ export default function ServiceCarousel({ services }: ServiceCarouselProps) {
         {services.map((service) => {
           const cardContent = (
             <>
-              <div className="w-14 h-14 rounded-full bg-surface-container-low flex items-center justify-center mb-md shrink-0">
-                <span
-                  className="material-symbols-outlined text-primary text-[32px]"
-                  style={{ fontFamily: '"Material Symbols Outlined"' }}
-                >
-                  {service.icon || "landscape"}
-                </span>
-              </div>
-              <h3 className="font-headline-md text-headline-md text-on-surface font-bold mb-sm">
-                {service.title}
-              </h3>
-              <div className="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+              {/* Top accent bar */}
+              <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-primary via-primary/60 to-primary/30 rounded-t-xl" />
+
+              <div className="relative">
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-primary/70 text-on-primary flex items-center justify-center mb-md shadow-md shadow-primary/20">
+                  <span
+                    className="material-symbols-outlined text-on-primary text-[34px]"
+                    style={{ fontFamily: '"Material Symbols Outlined"' }}
+                  >
+                    {service.icon || "landscape"}
+                  </span>
+                </div>
                 {service.subtitle && (
-                  <>
-                    <span className="font-bold text-primary">{service.subtitle}</span>{" "}
-                  </>
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full bg-secondary-container text-on-secondary-container text-xs font-semibold uppercase tracking-wide mb-2">
+                    {service.subtitle}
+                  </span>
                 )}
-                {typeof service.desc === "string" ? (
-                  service.desc
-                ) : service.desc && service.desc.length > 0 ? (
-                  <PortableText value={service.desc} />
-                ) : (
-                  ""
-                )}
+                <h3 className="font-headline-md text-headline-md text-on-surface font-bold mb-sm">
+                  {service.title}
+                </h3>
+                <div className="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+                  {typeof service.desc === "string" ? (
+                    service.desc
+                  ) : service.desc && service.desc.length > 0 ? (
+                    <PortableText value={service.desc} />
+                  ) : (
+                    ""
+                  )}
+                </div>
               </div>
             </>
           );
 
           const cardClassName =
-            "flex-shrink-0 w-80 bg-surface-container-lowest border border-outline-variant p-lg rounded-xl shadow-soft hover:-translate-y-1 hover:shadow-md hover:border-primary-container transition-all duration-300 flex flex-col";
+            "relative flex-shrink-0 w-80 bg-surface-container-lowest border border-outline-variant p-lg rounded-2xl shadow-soft overflow-hidden hover:-translate-y-1.5 hover:shadow-xl hover:border-primary transition-all duration-300 flex flex-col";
 
           return service.url ? (
             <a

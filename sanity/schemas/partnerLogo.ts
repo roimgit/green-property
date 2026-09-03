@@ -4,7 +4,7 @@ import { ImageInputWithUrl } from "../components/ImageInputWithUrl";
 /** Dokumen "Logo Kerjasama" (partnerLogo). */
 export const partnerLogo: SchemaTypeDefinition = {
   name: "partnerLogo",
-  title: "Logo Kerjasama",
+  title: "Kerjasama",
   type: "document",
   fields: [
     {

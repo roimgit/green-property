@@ -53,6 +53,7 @@ export interface PropertySpecs {
 
 export interface PricingEntry {
   transactionType?: "jual" | "sewa";
+  /** Legacy: currency per harga (input sudah dihapus dari Studio). Tampilan memakai Mata Uang Default properti. */
   currency?: string;
   price?: number;
   pricePeriod?: string;
@@ -80,11 +81,15 @@ export interface Property {
   category?: Category;
   transactionType?: TransactionType;
   price?: number;
+  defaultCurrency?: string;
   pricing?: PricingEntry[];
   primaryPriceIndex?: number | string;
   status?: PropertyStatus;
   locationShort?: string;
   fullAddress?: string;
+  googleMapsUrl?: string;
+  latitude?: number;
+  longitude?: number;
   mainImage?: SanityImage;
   gallery?: SanityImage[];
   specs?: PropertySpecs;
@@ -103,6 +108,11 @@ export interface Property {
   description?: PortableTextBlock[];
   facilities?: string[];
   isFeatured?: boolean;
+  kprAvailable?: boolean;
+  kprDownPaymentPercent?: number;
+  kprInterestRate?: number;
+  kprMaxTenorYears?: number;
+  kprNotes?: string;
 }
 
 export interface OperationalHours {
@@ -123,19 +133,17 @@ export interface TabBrowserLogo {
   image?: SanityImage;
 }
 
-export interface HeroBannerCTA {
-  label?: string;
-  linkType?: "internal" | "external";
-  href?: string;
-  style?: "primary" | "ghost";
-  icon?: string;
-}
-
 export interface HeroBanner {
   image?: SanityImage;
   heading?: string;
   description?: string;
-  links?: HeroBannerCTA[];
+}
+
+export interface CtaBanner {
+  heading?: string;
+  description?: string;
+  buttonLabel?: string;
+  buttonHref?: string;
 }
 
 export interface CompanyProfile {
@@ -147,6 +155,7 @@ export interface CompanyProfile {
   logo?: SanityImage;
   tabLogo?: TabBrowserLogo;
   heroBanner?: HeroBanner;
+  ctaBanner?: CtaBanner;
   description?: PortableTextBlock[];
   vision?: string;
   mission?: string[];
@@ -179,6 +188,8 @@ export interface Testimonial {
   jabatan?: string;
   photo?: SanityImage;
   urutanTampil?: number;
+  videoLabel?: string;
+  videoUrl?: string;
 }
 
 export interface TestimonialSettings {
@@ -193,6 +204,8 @@ export interface TestimonialSettings {
     kutipan?: string;
     jabatan?: string;
     photo?: SanityImage;
+    videoLabel?: string;
+    videoUrl?: string;
   }>;
 }
 
@@ -206,6 +219,34 @@ export interface Service {
   desc?: string | PortableTextBlock[];
   url?: string;
   urutanTampil?: number;
+}
+
+export interface KerjasamaButton {
+  label?: string;
+  linkType?: "internal" | "external";
+  href?: string;
+  icon?: string;
+}
+
+export interface KerjasamaPoint {
+  icon?: string;
+  title?: string;
+  desc?: string;
+}
+
+export interface KerjasamaSettings {
+  _id: string;
+  _type: "kerjasamaSettings";
+  title?: string;
+  heroBadge?: string;
+  heroHeading?: PortableTextBlock[];
+  heroDescription?: string;
+  heroButtons?: KerjasamaButton[];
+  points?: KerjasamaPoint[];
+  ctaHeading?: string;
+  ctaDescription?: string;
+  ctaButtonLabel?: string;
+  ctaButtonHref?: string;
 }
 
 export interface Contact {

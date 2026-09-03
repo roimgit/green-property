@@ -377,6 +377,13 @@ async function main() {
     contactEmail: "info@greenproperty.co.id",
     contactPhone: "+62 21-XXXX-XXXX",
     address: "Kawasan Industri Jababeka II, Cikarang Baru, Bekasi, Jawa Barat 17530",
+    ctaBanner: {
+      heading: "Siap Memulai Proyek Anda?",
+      description:
+        "Tim ahli kami siap membantu Anda menemukan solusi lahan dan properti terbaik di Indonesia.",
+      buttonLabel: "Lihat Semua Kontak",
+      buttonHref: "contact",
+    },
   });
   console.log("  created companyProfile");
 

@@ -35,6 +35,18 @@ export const testimonialSettings: SchemaTypeDefinition = {
             { name: "kutipan", title: "Kutipan", type: "text", rows: 3, validation: (Rule) => Rule.required() },
             { name: "jabatan", title: "Jabatan / Keterangan", type: "string" },
             {
+              name: "videoLabel",
+              title: "Label Video / Platform",
+              type: "string",
+              description: "Contoh: YouTube, Instagram, TikTok. Dijadikan teks tombol di halaman Testimoni.",
+            },
+            {
+              name: "videoUrl",
+              title: "Link Video / Sosmed",
+              type: "url",
+              description: "Tempel link YouTube / Instagram / TikTok / sosmed untuk melihat testimoni lewat video.",
+            },
+            {
               name: "photo",
               title: "Foto / Avatar",
               type: "image",

@@ -11,6 +11,7 @@ const NAV_LINKS = [
   { label: "Properti", href: "/properties" },
   { label: "Kerjasama", href: "/kerjasama" },
   { label: "Tentang Kami", href: "/about" },
+  { label: "Testimoni", href: "/testimoni" },
   { label: "Kontak", href: "/contact" },
 ];
 

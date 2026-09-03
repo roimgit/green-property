@@ -25,13 +25,14 @@ const formatPricePeriod = (value?: string) => {
 export function PropertyPrimaryPriceInput(props: StringInputProps) {
   const { value, onChange, readOnly } = props
   const pricing = useFormValue(['pricing']) as PricingEntry[] | undefined
+  const defaultCurrency = useFormValue(['defaultCurrency']) as string | undefined
 
   const options = useMemo(() => {
     const items = Array.isArray(pricing) ? pricing : []
 
     return items.map((item, index) => {
       const transaction = item.transactionType ? item.transactionType.toUpperCase() : 'TRANSAKSI'
-      const currency = item.currency ?? 'IDR'
+      const currency = (item.currency ?? defaultCurrency ?? 'IDR').toUpperCase()
       const price = typeof item.price === 'number' ? item.price.toLocaleString('id-ID') : '0'
       const unit = item.priceUnit ? ` / ${item.priceUnit}` : ''
       const period = item.pricePeriod ? ` (${formatPricePeriod(item.pricePeriod)})` : ''
@@ -41,7 +42,7 @@ export function PropertyPrimaryPriceInput(props: StringInputProps) {
         value: String(index),
       }
     })
-  }, [pricing])
+  }, [pricing, defaultCurrency])
 
   const selected = options.some((option) => option.value === value) ? value : options[0]?.value ?? ''
 

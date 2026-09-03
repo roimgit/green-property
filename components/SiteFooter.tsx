@@ -25,6 +25,7 @@ const NAV_LINKS = [
   { label: "Properti", href: "/properties" },
   { label: "Kerjasama", href: "/kerjasama" },
   { label: "Tentang Kami", href: "/about" },
+  { label: "Testimoni", href: "/testimoni" },
   { label: "Kontak", href: "/contact" },
 ];
 
@@ -40,7 +41,7 @@ export default async function SiteFooter() {
   const hoursList = getFormattedOperationalHours(profile?.operationalHours);
 
   return (
-    <footer className="w-full border-t border-primary/20 bg-gradient-to-r from-primary via-primary to-[#114227] text-white py-10">
+    <footer className="w-full border-t border-primary/20 bg-primary text-white py-10">
       <div className="mx-auto max-w-container-max px-sm lg:px-xl space-y-8">
         {/* Spacious 4-Column Layout */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 items-start">

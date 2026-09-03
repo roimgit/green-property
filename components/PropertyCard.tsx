@@ -5,7 +5,7 @@ import {
   getPrimaryPriceDisplay,
   getTransactionTypes,
 } from "@/lib/sanity/data";
-import { normalizePropertySpecs, landAreaLabel, electricityValue } from "@/lib/sanity/specifications";
+import { normalizePropertySpecs } from "@/lib/sanity/specifications";
 
 export default function PropertyCard({ property }: { property: Property }) {
   const img = imageUrl(property.mainImage);
@@ -59,6 +59,12 @@ export default function PropertyCard({ property }: { property: Property }) {
               {property.status}
             </span>
           )}
+          {property.kprAvailable && (
+            <span className="inline-flex items-center gap-1 bg-primary text-on-primary px-3 py-1 rounded-full font-label-caps text-label-caps uppercase shadow-sm">
+              <span className="material-symbols-outlined text-[14px]">account_balance</span>
+              KPR
+            </span>
+          )}
         </div>
       </div>
 
@@ -93,22 +99,10 @@ export default function PropertyCard({ property }: { property: Property }) {
             )}
           </div>
         )}
-        <div className="flex justify-between items-center text-on-surface-variant font-body-sm border-t border-outline-variant/30 pt-sm mt-auto">
-          <div className="flex items-center gap-1" title="Luas Tanah">
-            <span className="material-symbols-outlined text-[18px]">aspect_ratio</span>
-            <span>{landAreaLabel(property) ?? "-"}</span>
-          </div>
-          {(electricityValue(property)) && (
-            <div className="flex items-center gap-1" title="Daya Listrik">
-              <span className="material-symbols-outlined text-[18px]">bolt</span>
-              <span>{electricityValue(property)}</span>
-            </div>
-          )}
-        </div>
 
         <div className="pt-xs mt-auto">
-          <div className="font-price-display text-headline-sm font-bold text-primary tracking-tight line-clamp-1">
-            {priceDisplay ?? "Harga Belum Diatur"}
+          <div className="font-price-display text-headline-sm font-bold text-primary tracking-tight line-clamp-1 notranslate">
+            {priceDisplay ?? "Harga Belum Tersedia"}
           </div>
         </div>
       </div>

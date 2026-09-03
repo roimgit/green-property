@@ -10,6 +10,7 @@ import type {
   Contact,
   Service,
   SanityImage,
+  KerjasamaSettings,
 } from "@/types/sanity";
 
 const PROPERTY_LIST_QUERY = groq`*[_type == "property"]{
@@ -19,28 +20,7 @@ const PROPERTY_LIST_QUERY = groq`*[_type == "property"]{
   "category": coalesce(category->title, category),
   transactionType,
   price,
-  pricing,
-  primaryPriceIndex,
-  status,
-  locationShort,
-  fullAddress,
-  isFeatured,
-  mainImage{asset->{url},url,alt},
-  gallery[]{asset->{url},url,alt},
-  specs,
-  specsList,
-  specsList[]{icon,label,value},
-  contact->{_id,name,jabatan,phoneNumber,whatsappNumber,whatsappLink,kakaoTalkNumber,kakaoTalkLink,email},
-  facilities
-} | order(_createdAt desc)`;
-
-const PROPERTY_BY_SLUG_QUERY = groq`*[_type == "property" && slug.current == $slug][0]{
-  _id,
-  title,
-  slug,
-  "category": coalesce(category->title, category),
-  transactionType,
-  price,
+  defaultCurrency,
   pricing,
   primaryPriceIndex,
   status,
@@ -54,7 +34,39 @@ const PROPERTY_BY_SLUG_QUERY = groq`*[_type == "property" && slug.current == $sl
   specsList[]{icon,label,value},
   contact->{_id,name,jabatan,phoneNumber,whatsappNumber,whatsappLink,kakaoTalkNumber,kakaoTalkLink,email},
   facilities,
-  description
+  kprAvailable
+} | order(_createdAt desc)`;
+
+const PROPERTY_BY_SLUG_QUERY = groq`*[_type == "property" && slug.current == $slug][0]{
+  _id,
+  title,
+  slug,
+  "category": coalesce(category->title, category),
+  transactionType,
+  price,
+  defaultCurrency,
+  pricing,
+  primaryPriceIndex,
+  status,
+  locationShort,
+  fullAddress,
+  isFeatured,
+  mainImage{asset->{url},url,alt},
+  gallery[]{asset->{url},url,alt},
+  specs,
+  specsList,
+  specsList[]{icon,label,value},
+  contact->{_id,name,jabatan,phoneNumber,whatsappNumber,whatsappLink,kakaoTalkNumber,kakaoTalkLink,email},
+  facilities,
+  description,
+  kprAvailable,
+  kprDownPaymentPercent,
+  kprInterestRate,
+  kprMaxTenorYears,
+  kprNotes,
+  googleMapsUrl,
+  latitude,
+  longitude
 }`;
 
 const SIMILAR_PROPERTIES_QUERY = groq`*[_type == "property" && slug.current != $slug][0...3]{
@@ -64,6 +76,7 @@ const SIMILAR_PROPERTIES_QUERY = groq`*[_type == "property" && slug.current != $
   "category": coalesce(category->title, category),
   transactionType,
   price,
+  defaultCurrency,
   pricing,
   primaryPriceIndex,
   status,
@@ -73,7 +86,8 @@ const SIMILAR_PROPERTIES_QUERY = groq`*[_type == "property" && slug.current != $
   specs,
   specsList,
   specsList[]{icon,label,value},
-  contact->{_id,name,jabatan,phoneNumber,whatsappNumber,whatsappLink,kakaoTalkNumber,kakaoTalkLink,email}
+  contact->{_id,name,jabatan,phoneNumber,whatsappNumber,whatsappLink,kakaoTalkNumber,kakaoTalkLink,email},
+  kprAvailable
 }`;
 
 const COMPANY_QUERY = groq`*[_type == "companyProfile"][0]{
@@ -86,8 +100,13 @@ const COMPANY_QUERY = groq`*[_type == "companyProfile"][0]{
   heroBanner{
     image{asset->{url},url,crop,hotspot,alt},
     heading,
+    description
+  },
+  ctaBanner{
+    heading,
     description,
-    links
+    buttonLabel,
+    buttonHref
   },
   description,
   vision,
@@ -120,7 +139,9 @@ const TESTIMONIALS_QUERY = groq`*[_type == "testimonial"]{
   kutipan,
   jabatan,
   photo{asset->{url},url,alt},
-  urutanTampil
+  urutanTampil,
+  videoLabel,
+  videoUrl
 } | order(urutanTampil asc)`;
 
 const CONTACTS_QUERY = groq`*[_type == "contact"]{
@@ -155,13 +176,27 @@ const TESTIMONIAL_SETTINGS_QUERY = groq`*[_type == "testimonialSettings"][0]{
   _id,
   title,
   hideIfEmpty,
-  manualTestimonials[]{_key,nama,rating,kutipan,jabatan,photo{asset->{url},url,alt}}
+  manualTestimonials[]{_key,nama,rating,kutipan,jabatan,photo{asset->{url},url,alt},videoLabel,videoUrl}
 }`;
 
 const SITE_SETTINGS_QUERY = groq`*[_type == "siteSettings"][0]{
   _id,
   title,
   primaryColor
+}`;
+
+const KERJASAMA_SETTINGS_QUERY = groq`*[_type == "kerjasamaSettings"][0]{
+  _id,
+  title,
+  heroBadge,
+  heroHeading,
+  heroDescription,
+  heroButtons,
+  points,
+  ctaHeading,
+  ctaDescription,
+  ctaButtonLabel,
+  ctaButtonHref
 }`;
 
 /** Extract a usable image URL from a Sanity image field. */
@@ -247,7 +282,7 @@ export function getPrimaryPricingEntry(property: Property): PricingEntry | null 
   if (property.price && property.price > 0) {
     return {
       price: property.price,
-      currency: "IDR",
+      currency: (property.defaultCurrency ?? "IDR").toUpperCase(),
       transactionType: (property.transactionType ?? "jual").toLowerCase() as "jual" | "sewa",
     };
   }
@@ -265,30 +300,67 @@ export function getPrimaryPriceAmount(property: Property): number {
 }
 
 /**
- * Format primary price with currency, period (e.g. / thn, / bln), and unit for display.
+ * Mata uang yang dipakai sebuah properti: currency per harga,
+ * fallback ke Mata Uang Default properti, lalu IDR.
+ */
+export function resolvePropertyCurrency(
+  property: Pick<Property, "defaultCurrency">,
+  entry?: Pick<PricingEntry, "currency"> | null,
+): string {
+  return (entry?.currency ?? property.defaultCurrency ?? "IDR").toUpperCase();
+}
+
+/**
+ * Label periode harga dalam Bahasa Indonesia untuk badge/pojok kartu.
+ * Contoh: "Per Bulan", "Per Tahun". Mengembalikan null jika tidak ada periode.
+ */
+export function pricePeriodLabel(period?: string | null): string | null {
+  switch ((period ?? "").toLowerCase()) {
+    case "year":
+      return "Per Tahun";
+    case "month":
+      return "Per Bulan";
+    case "day":
+      return "Per Hari";
+    case "once":
+      return "Sekali Bayar";
+    default:
+      return null;
+  }
+}
+
+/**
+ * Suffix periode untuk digabung ke tampilan harga. Contoh: "/bulan", "/tahun".
+ */
+export function pricePeriodSuffix(period?: string | null): string {
+  switch ((period ?? "").toLowerCase()) {
+    case "year":
+      return "/tahun";
+    case "month":
+      return "/bulan";
+    case "day":
+      return "/hari";
+    default:
+      return "";
+  }
+}
+
+/**
+ * Format primary price with currency, period (e.g. /tahun, /bulan), and unit for display.
  */
 export function getPrimaryPriceDisplay(property: Property): string | null {
   const entry = getPrimaryPricingEntry(property);
   if (!entry || !entry.price || entry.price <= 0) {
     if (property.price && property.price > 0) {
-      return formatPriceWithCurrency(property.price, "IDR");
+      return formatPriceWithCurrency(property.price, resolvePropertyCurrency(property));
     }
     return null;
   }
 
-  const basePrice = formatPriceWithCurrency(entry.price, entry.currency ?? "IDR");
+  const basePrice = formatPriceWithCurrency(entry.price, resolvePropertyCurrency(property, entry));
   if (!basePrice) return null;
 
-  let suffix = "";
-  if (entry.pricePeriod) {
-    const periodMap: Record<string, string> = {
-      year: " / thn",
-      month: " / bln",
-      day: " / hr",
-      once: "",
-    };
-    suffix += periodMap[entry.pricePeriod] ?? ` / ${entry.pricePeriod}`;
-  }
+  let suffix = pricePeriodSuffix(entry.pricePeriod);
 
   if (entry.priceUnit) {
     suffix += ` (${entry.priceUnit})`;
@@ -301,7 +373,7 @@ export function getPrimaryPriceDisplay(property: Property): string | null {
  * Format a single PricingEntry object from property.ts pricing array into a human readable string.
  * Example output:
  * - "Jual: Rp 1.500.000.000"
- * - "Sewa: Rp 50.000.000 / thn (Per Hektar)"
+ * - "Sewa: Rp 50.000.000/tahun (Per Hektar)"
  */
 export function formatPricingEntry(entry: PricingEntry): string {
   const txLabel = entry.transactionType?.toLowerCase() === "sewa" ? "Sewa" : "Jual";
@@ -311,16 +383,7 @@ export function formatPricingEntry(entry: PricingEntry): string {
 
   if (!formattedPrice) return `${txLabel}: Harga belum diatur`;
 
-  let periodStr = "";
-  if (entry.pricePeriod) {
-    const periodMap: Record<string, string> = {
-      year: " / thn",
-      month: " / bln",
-      day: " / hr",
-      once: "",
-    };
-    periodStr = periodMap[entry.pricePeriod] ?? ` / ${entry.pricePeriod}`;
-  }
+  const periodStr = pricePeriodSuffix(entry.pricePeriod);
 
   let unitStr = "";
   if (entry.priceUnit && entry.priceUnit.trim()) {
@@ -328,6 +391,69 @@ export function formatPricingEntry(entry: PricingEntry): string {
   }
 
   return `${txLabel}: ${formattedPrice}${periodStr}${unitStr}`;
+}
+
+/**
+ * Hasil simulasi KPR dengan metode anuitas (bunga efektif per bulan).
+ */
+export interface KprSimulation {
+  price: number;
+  downPaymentPercent: number;
+  downPaymentAmount: number;
+  loanAmount: number;
+  annualInterestRate: number;
+  tenorYears: number;
+  tenorMonths: number;
+  monthlyInstallment: number;
+  totalPayment: number;
+  totalInterest: number;
+}
+
+/**
+ * Hitung simulasi KPR (anuitas):
+ * - r = suku bunga tahunan / 12 / 100
+ * - n = tenor tahun * 12
+ * - angsuran = P * r / (1 - (1 + r)^-n), atau P / n jika bunga 0.
+ */
+export function calculateKpr(
+  price: number,
+  downPaymentPercent: number,
+  annualInterestRate: number,
+  tenorYears: number,
+): KprSimulation {
+  const safePrice = Math.max(0, price || 0);
+  const safeDp = Math.min(90, Math.max(0, downPaymentPercent || 0));
+  const safeRate = Math.max(0, annualInterestRate || 0);
+  const safeTenorYears = Math.max(1, Math.floor(tenorYears || 1));
+
+  const downPaymentAmount = Math.round((safePrice * safeDp) / 100);
+  const loanAmount = safePrice - downPaymentAmount;
+  const tenorMonths = safeTenorYears * 12;
+  const monthlyRate = safeRate / 12 / 100;
+
+  const monthlyInstallment =
+    loanAmount <= 0
+      ? 0
+      : monthlyRate <= 0
+        ? Math.round(loanAmount / tenorMonths)
+        : Math.round(
+            (loanAmount * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -tenorMonths)),
+          );
+
+  const totalPayment = downPaymentAmount + monthlyInstallment * tenorMonths;
+
+  return {
+    price: safePrice,
+    downPaymentPercent: safeDp,
+    downPaymentAmount,
+    loanAmount,
+    annualInterestRate: safeRate,
+    tenorYears: safeTenorYears,
+    tenorMonths,
+    monthlyInstallment,
+    totalPayment,
+    totalInterest: totalPayment - safePrice,
+  };
 }
 
 /** Normalize a contact number to WhatsApp-ready Indonesia format (e.g. 0812... -> 62812...). */
@@ -340,6 +466,29 @@ export function normalizeWhatsAppNumber(number?: string | null): string {
   if (digits.startsWith("8")) return `62${digits}`;
 
   return digits;
+}
+
+/** Cek apakah URL adalah link YouTube. */
+export function isYouTubeUrl(url?: string | null): boolean {
+  return /(youtube\.com|youtu\.be)/.test(url ?? "");
+}
+
+/** Ambil ID video YouTube dari berbagai format URL (watch, youtu.be, embed, shorts). */
+export function getYouTubeVideoId(url?: string | null): string | null {
+  if (!url) return null;
+  const trimmed = url.trim();
+  if (!trimmed) return null;
+
+  const short = trimmed.match(/youtu\.be\/([A-Za-z0-9_-]{6,})/);
+  if (short) return short[1];
+
+  const watch = trimmed.match(/[?&]v=([A-Za-z0-9_-]{6,})/);
+  if (watch) return watch[1];
+
+  const embed = trimmed.match(/(?:youtube\.com\/(?:embed|shorts)\/)([A-Za-z0-9_-]{6,})/);
+  if (embed) return embed[1];
+
+  return null;
 }
 
 /** Convert Sanity portable text blocks or string into a plain text string. */
@@ -482,10 +631,13 @@ export async function getTestimonialSettings(): Promise<TestimonialSettings | nu
   }
 }
 
-/** Testimoni manual dari pengaturan Sanity. */
+/** Testimoni dengan satu dokumen per orang (sumber utama). */
 export async function getEffectiveTestimonials(): Promise<Testimonial[]> {
-  const settings = await getTestimonialSettings();
+  const list = await getTestimonials();
+  if (list.length > 0) return list;
 
+  // Fallback ke array manual (data lama) bila belum dimigrasi
+  const settings = await getTestimonialSettings();
   const inline = settings?.manualTestimonials;
   if (Array.isArray(inline) && inline.length > 0) {
     return inline.map((t, idx) => ({
@@ -496,12 +648,10 @@ export async function getEffectiveTestimonials(): Promise<Testimonial[]> {
       jabatan: t.jabatan,
       photo: t.photo,
       urutanTampil: idx,
+      videoLabel: t.videoLabel,
+      videoUrl: t.videoUrl,
     }));
   }
-
-  // Fallback ke koleksi legacy Item Testimoni agar data lama tetap tampil
-  const legacy = await getTestimonials();
-  if (legacy.length > 0) return legacy;
 
   return [];
 }
@@ -536,6 +686,14 @@ export async function getCategories(): Promise<string[]> {
     return list.map((c) => c.title).filter((t): t is string => Boolean(t));
   } catch {
     return [];
+  }
+}
+
+export async function getKerjasamaSettings(): Promise<KerjasamaSettings | null> {
+  try {
+    return (await sanityFetch<KerjasamaSettings | null>(KERJASAMA_SETTINGS_QUERY)) ?? null;
+  } catch {
+    return null;
   }
 }
 

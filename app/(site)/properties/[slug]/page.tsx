@@ -4,6 +4,9 @@ import PropertyGallery from "@/components/PropertyGallery";
 import PropertyCard from "@/components/PropertyCard";
 import PropertyInquiryForm from "@/components/PropertyInquiryForm";
 import CopyLinkButton from "@/components/CopyLinkButton";
+import KprCalculator from "@/components/KprCalculator";
+import PriceConversion from "@/components/PriceConversion";
+import { MapDisplay } from "@/app/contact/MapDisplay";
 import {
   getPropertyBySlug,
   getSimilarProperties,
@@ -11,6 +14,9 @@ import {
   formatPriceWithCurrency,
   normalizeWhatsAppNumber,
   portableTextToText,
+  resolvePropertyCurrency,
+  pricePeriodLabel,
+  pricePeriodSuffix,
 } from "@/lib/sanity/data";
 import { normalizePropertySpecs } from "@/lib/sanity/specifications";
 
@@ -31,16 +37,6 @@ function SpecRow({ label, value, icon }: { label: string; value?: string | numbe
         {label}
       </span>
       <span className="text-on-surface font-body-md text-body-md font-semibold">{value}</span>
-    </div>
-  );
-}
-
-function PriceMetaBadge({ label, value }: { label: string; value?: string | number }) {
-  if (value === undefined || value === null || value === "") return null;
-  return (
-    <div className="rounded-xl border border-outline-variant bg-surface px-3 py-2">
-      <p className="text-[11px] uppercase tracking-[0.14em] text-on-surface-variant">{label}</p>
-      <p className="mt-1 text-sm font-semibold text-on-surface">{value}</p>
     </div>
   );
 }
@@ -122,32 +118,45 @@ export default async function PropertyDetailPage({ params }: Props) {
           ? selectedPricingIndex
           : 0]
       : undefined;
-  const displayPrice = selectedPricing?.price ? formatPriceWithCurrency(selectedPricing.price, selectedPricing.currency ?? "IDR") : formatPriceWithCurrency(property.price, "IDR");
-  const transactionLabel = selectedPricing?.transactionType
-    ? selectedPricing.transactionType === "jual"
-      ? "Jual"
-      : "Sewa"
-    : property.transactionType ?? "";
+  const propertyCurrency = (property.defaultCurrency ?? "IDR").toUpperCase();
+  const displayPrice = selectedPricing?.price
+    ? ((formatPriceWithCurrency(selectedPricing.price, resolvePropertyCurrency(property, selectedPricing)) ?? "") +
+      pricePeriodSuffix(selectedPricing.pricePeriod))
+    : formatPriceWithCurrency(property.price, propertyCurrency);
   const pricingEntries = pricingItems.length > 0
-    ? pricingItems.map((entry, index) => ({
-        ...entry,
-        id: `${entry.transactionType ?? "entry"}-${index}`,
-        displayTransaction: entry.transactionType === "sewa" ? "Sewa" : entry.transactionType === "jual" ? "Jual" : "Jual",
-        displayCurrency: entry.currency ?? "IDR",
-        displayPrice: entry.price ? formatPriceWithCurrency(entry.price, entry.currency ?? "IDR") : formatPriceWithCurrency(property.price, "IDR"),
-      }))
+    ? pricingItems.map((entry, index) => {
+        const currency = resolvePropertyCurrency(property, entry);
+        const price = entry.price ?? property.price;
+        return {
+          ...entry,
+          id: `${entry.transactionType ?? "entry"}-${index}`,
+          displayTransaction: entry.transactionType === "sewa" ? "Sewa" : entry.transactionType === "jual" ? "Jual" : "Jual",
+          displayCurrency: currency,
+          displayPrice: price
+            ? ((formatPriceWithCurrency(price, currency) ?? "") + pricePeriodSuffix(entry.pricePeriod))
+            : formatPriceWithCurrency(property.price, propertyCurrency),
+          periodLabel: pricePeriodLabel(entry.pricePeriod),
+        };
+      })
     : property.price
       ? [{
           id: "fallback",
           transactionType: (property.transactionType ?? "jual").toLowerCase(),
           displayTransaction: property.transactionType === "Sewa" ? "Sewa" : "Jual",
-          displayCurrency: "IDR",
-          displayPrice: formatPriceWithCurrency(property.price, "IDR"),
-          currency: "IDR",
+          displayCurrency: propertyCurrency,
+          displayPrice: formatPriceWithCurrency(property.price, propertyCurrency),
+          currency: propertyCurrency,
           price: property.price,
           pricePeriod: undefined as string | undefined,
           priceUnit: undefined as string | undefined,
+          periodLabel: null as string | null,
         }]
+      : [];
+  // Tipe transaksi dinamis: Jual saja, Sewa saja, atau keduanya sesuai data
+  const transactionBadges = pricingEntries.length > 0
+    ? Array.from(new Set(pricingEntries.map((entry) => entry.displayTransaction)))
+    : property.transactionType
+      ? [property.transactionType]
       : [];
   const specs = property.specs;
   const displaySpecs = normalizePropertySpecs(property);
@@ -156,10 +165,14 @@ export default async function PropertyDetailPage({ params }: Props) {
     typeof property.category === "string" ? property.category : "";
   const waNumber = normalizeWhatsAppNumber(property.contact?.whatsappNumber ?? property.contact?.phoneNumber ?? company?.contactPhone ?? "0894934394");
   const telNumber = property.contact?.phoneNumber ?? company?.contactPhone ?? "0894934394";
-  const furnishingText =
-    specs?.furnishing ??
-    displaySpecs.find((s) => /interior|furnishing|furnished/i.test(s.label))?.value ??
-    "Belum diatur";
+
+  // KPR mengikuti mata uang properti
+  const kprPriceEntry = pricingEntries.find(
+    (entry) => entry.transactionType === "jual" && (entry.price ?? 0) > 0,
+  );
+  const showKpr = Boolean(
+    property.kprAvailable && kprPriceEntry && (kprPriceEntry.price ?? 0) > 0,
+  );
 
   const specWrapper = (label: string, value?: string | number, icon?: string) => (
     <SpecRow label={label} value={value} icon={icon} />
@@ -191,21 +204,7 @@ export default async function PropertyDetailPage({ params }: Props) {
             </div>
           </div>
 
-          <div className="relative">
-            {property.status && (
-              <div className="absolute top-4 left-4 z-10 flex gap-2">
-                <span className="bg-secondary text-on-secondary font-label-caps text-label-caps px-3 py-1 rounded-full shadow-sm">
-                  {transactionLabel.toUpperCase()}
-                </span>
-                {category && (
-                  <span className="bg-surface/90 backdrop-blur text-primary font-label-caps text-label-caps px-3 py-1 rounded-full shadow-sm border border-outline-variant/30">
-                    {category.toUpperCase()}
-                  </span>
-                )}
-              </div>
-            )}
-            <PropertyGallery images={galleryImages} />
-          </div>
+          <PropertyGallery images={galleryImages} />
 
           {/* Struktur Harga & Transaksi (dari property.ts) */}
           {pricingEntries.length > 0 && (
@@ -219,7 +218,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                   {pricingEntries.length} Opsi Transaksi
                 </span>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-md">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-md pt-2">
                 {pricingEntries.map((entry, idx) => {
                   const isPrimary =
                     Number(property.primaryPriceIndex ?? 0) === idx ||
@@ -227,39 +226,40 @@ export default async function PropertyDetailPage({ params }: Props) {
                   return (
                     <div
                       key={entry.id}
-                      className={`p-md rounded-xl border transition-all ${
+                      className={`relative p-md rounded-xl border transition-all ${
                         isPrimary
                           ? "bg-primary/5 border-primary shadow-sm"
                           : "bg-surface-container-low border-outline-variant/50"
                       }`}
                     >
-                      <div className="flex justify-between items-center mb-xs">
-                        <span className="font-label-caps text-label-caps uppercase px-2.5 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-semibold">
-                          {entry.displayTransaction}
+                      {entry.periodLabel && (
+                        <span className="absolute -top-3 left-4 px-3 py-0.5 rounded-full bg-primary text-on-primary text-xs font-semibold shadow-sm">
+                          {entry.periodLabel}
                         </span>
+                      )}
+                      <div className="flex justify-between items-center mb-xs">
                         {isPrimary && (
-                          <span className="text-xs bg-primary text-on-primary px-2.5 py-0.5 rounded-full font-semibold">
+                          <span className="text-xs bg-primary text-on-primary px-2.5 py-0.5 rounded-full font-semibold ml-auto">
                             Harga Utama
                           </span>
                         )}
                       </div>
-                      <div className="font-price-display text-xl font-bold text-primary mt-sm">
-                        {entry.displayPrice}
+                      <div className="font-price-display text-xl font-bold text-primary mt-sm notranslate">
+                        {entry.displayPrice ?? "Harga Belum Tersedia"}
                       </div>
+                      <PriceConversion
+                        amount={entry.price ?? undefined}
+                        currency={entry.displayCurrency}
+                      />
                       <div className="mt-xs text-xs text-on-surface-variant flex flex-wrap gap-x-3 gap-y-1 pt-1">
-                        {entry.pricePeriod && (
-                          <span>
-                            Periode: <strong className="text-on-surface">{entry.pricePeriod}</strong>
-                          </span>
-                        )}
                         {entry.priceUnit && (
                           <span>
                             Unit: <strong className="text-on-surface">{entry.priceUnit}</strong>
                           </span>
                         )}
-                        {entry.currency && (
+                        {entry.displayCurrency && (
                           <span>
-                            Mata Uang: <strong className="text-on-surface">{entry.currency}</strong>
+                            Mata Uang: <strong className="text-on-surface">{entry.displayCurrency}</strong>
                           </span>
                         )}
                       </div>
@@ -269,6 +269,18 @@ export default async function PropertyDetailPage({ params }: Props) {
               </div>
             </div>
           )}
+
+          {/* Simulasi Pembayaran (Tunai / KPR) */}
+          {showKpr && kprPriceEntry?.price ? (
+            <KprCalculator
+              price={kprPriceEntry.price}
+              currency={kprPriceEntry.displayCurrency}
+              defaultDownPaymentPercent={property.kprDownPaymentPercent ?? 20}
+              defaultInterestRate={property.kprInterestRate ?? 8}
+              maxTenorYears={property.kprMaxTenorYears ?? 20}
+              notes={property.kprNotes}
+            />
+          ) : null}
 
           {/* Specification Table */}
           <div className="bg-surface-container-lowest rounded-xl p-md border border-outline-variant shadow-soft">
@@ -336,14 +348,6 @@ export default async function PropertyDetailPage({ params }: Props) {
               </div>
             )}
 
-            <div className="mt-xl rounded-2xl border border-primary/15 bg-primary/5 p-md">
-              <h3 className="font-headline-sm text-headline-sm text-on-surface mb-sm">
-                Kelengkapan Unit
-              </h3>
-              <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed">
-                Kondisi properti ini adalah <span className="font-semibold text-primary">{furnishingText}</span>. Unit tersedia dengan kebutuhan tinggal yang sesuai dengan pilihan Anda, baik untuk hunian pribadi maupun kebutuhan investasi.
-              </p>
-            </div>
           </div>
 
           {/* Location / Full Address */}
@@ -353,6 +357,48 @@ export default async function PropertyDetailPage({ params }: Props) {
               {property.fullAddress ?? property.locationShort ?? "Alamat lengkap belum tersedia."}
             </p>
           </div>
+
+          {/* Lokasi di Peta */}
+          {typeof property.latitude === "number" &&
+            typeof property.longitude === "number" && (
+              <div className="bg-surface-container-lowest rounded-xl p-md border border-outline-variant shadow-soft">
+                <h2 className="font-headline-sm text-headline-sm text-on-surface mb-sm flex items-center gap-2">
+                  <span className="material-symbols-outlined text-primary">location_on</span>
+                  Lokasi di Peta
+                </h2>
+                <div className="rounded-xl overflow-hidden border border-outline-variant/50">
+                  <MapDisplay
+                    latitude={property.latitude}
+                    longitude={property.longitude}
+                    address={property.fullAddress ?? property.title}
+                  />
+                </div>
+                <div className="flex flex-col sm:flex-row gap-3 mt-md">
+                  {property.googleMapsUrl && (
+                    <a
+                      href={property.googleMapsUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 inline-flex justify-center items-center gap-2 px-6 py-3 bg-primary text-on-primary font-body-md text-body-md font-semibold rounded-full hover:opacity-90 transition-opacity"
+                    >
+                      <span className="material-symbols-outlined">location_on</span>
+                      Buka di Google Maps
+                    </a>
+                  )}
+                  <a
+                    href={`https://www.google.com/maps/search/${encodeURIComponent(
+                      property.fullAddress ?? property.locationShort ?? property.title ?? "",
+                    )}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 inline-flex justify-center items-center gap-2 px-6 py-3 border-2 border-primary text-primary font-body-md text-body-md font-semibold rounded-full hover:bg-surface-container-low transition-colors"
+                  >
+                    <span className="material-symbols-outlined">directions</span>
+                    Lihat Rute
+                  </a>
+                </div>
+              </div>
+            )}
         </div>
 
         {/* Right Column: Sticky Widgets */}
@@ -362,12 +408,19 @@ export default async function PropertyDetailPage({ params }: Props) {
             <div className="bg-surface-container-lowest rounded-xl p-md border-t-4 border-t-primary border-x border-b border-outline-variant shadow-soft">
               <div className="mb-sm">
                 <p className="text-on-surface-variant font-body-sm text-body-sm">Harga Penawaran</p>
-                <h2 className="font-price-display text-price-display text-primary mt-1">
-                  {displayPrice ?? "Hubungi Kami"}
+                <h2 className="font-price-display text-price-display text-primary mt-1 notranslate">
+                  {displayPrice ?? "Harga Belum Tersedia"}
                 </h2>
-                {transactionLabel && (
-                  <p className="mt-2 inline-flex items-center rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-primary">
-                    {transactionLabel}
+                {transactionBadges.length > 0 && (
+                  <p className="mt-2 flex flex-wrap gap-2">
+                    {transactionBadges.map((badge) => (
+                      <span
+                        key={badge}
+                        className="inline-flex items-center rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-primary"
+                      >
+                        {badge}
+                      </span>
+                    ))}
                   </p>
                 )}
                 <p className="text-on-surface-variant font-body-sm text-body-sm mt-1">
@@ -376,25 +429,8 @@ export default async function PropertyDetailPage({ params }: Props) {
                     <span className="w-2 h-2 rounded-full bg-primary" /> {property.status ?? "Tersedia"}
                   </span>
                 </p>
-                {selectedPricing && (
-                  <div className="mt-3 space-y-2 border-t border-outline-variant/50 pt-3">
-                    <PriceMetaBadge label="Tipe Transaksi" value={transactionLabel || (selectedPricing.transactionType === "sewa" ? "Sewa" : "Jual")} />
-                    <PriceMetaBadge label="Mata Uang" value={selectedPricing.currency ?? "IDR"} />
-                    <PriceMetaBadge label="Periode Harga" value={selectedPricing.pricePeriod || "-"} />
-                    <PriceMetaBadge label="Unit Harga" value={selectedPricing.priceUnit || "-"} />
-                  </div>
-                )}
               </div>
               <div className="flex flex-col gap-3 mt-lg">
-                <a
-                  href="#property-inquiry-form"
-                  className="w-full flex justify-center items-center gap-2 px-6 py-3 bg-[#25D366] text-white font-body-md text-body-md font-semibold rounded-full hover:bg-[#20b75a] transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5"
-                >
-                  <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>
-                    chat
-                  </span>
-                  Chat WhatsApp
-                </a>
                 <a
                   href={telNumber ? `tel:${telNumber}` : "#"}
                   className="w-full flex justify-center items-center gap-2 px-6 py-3 border-2 border-primary text-primary font-body-md text-body-md font-semibold rounded-full hover:bg-surface-container-low transition-colors"
