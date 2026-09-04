@@ -17,6 +17,8 @@ import {
   resolvePropertyCurrency,
   pricePeriodLabel,
   pricePeriodSuffix,
+  getDualPriceDisplay,
+  resolvePriceForCurrency,
 } from "@/lib/sanity/data";
 import { normalizePropertySpecs } from "@/lib/sanity/specifications";
 
@@ -119,23 +121,48 @@ export default async function PropertyDetailPage({ params }: Props) {
           : 0]
       : undefined;
   const propertyCurrency = (property.defaultCurrency ?? "IDR").toUpperCase();
-  const displayPrice = selectedPricing?.price
-    ? ((formatPriceWithCurrency(selectedPricing.price, resolvePropertyCurrency(property, selectedPricing)) ?? "") +
-      pricePeriodSuffix(selectedPricing.pricePeriod))
-    : formatPriceWithCurrency(property.price, propertyCurrency);
+  const primaryDual = selectedPricing
+    ? getDualPriceDisplay(selectedPricing, property.defaultCurrency)
+    : null;
+  const displayPrice = primaryDual && (primaryDual.idr || primaryDual.usd)
+    ? [primaryDual.idr, primaryDual.usd].filter(Boolean).join(" | ")
+    : (selectedPricing?.price
+        ? ((formatPriceWithCurrency(selectedPricing.price, resolvePropertyCurrency(property, selectedPricing)) ?? "") +
+          pricePeriodSuffix(selectedPricing.pricePeriod))
+        : formatPriceWithCurrency(property.price, propertyCurrency));
   const pricingEntries = pricingItems.length > 0
     ? pricingItems.map((entry, index) => {
         const currency = resolvePropertyCurrency(property, entry);
+        const dual = getDualPriceDisplay(entry, property.defaultCurrency);
         const price = entry.price ?? property.price;
+        // PriceConversion needs a price + currency to convert from.
+        // Prefer the entry's own currency (entry.price), fallback to property.price.
+        const conversionPrice = entry.price ?? entry.priceIDR ?? entry.priceUSD ?? property.price;
+        const conversionCurrency = entry.price
+          ? currency
+          : entry.priceIDR
+            ? "IDR"
+            : entry.priceUSD
+              ? "USD"
+              : propertyCurrency;
+        const hasDual = dual.idr || dual.usd;
         return {
           ...entry,
           id: `${entry.transactionType ?? "entry"}-${index}`,
           displayTransaction: entry.transactionType === "sewa" ? "Sewa" : entry.transactionType === "jual" ? "Jual" : "Jual",
           displayCurrency: currency,
-          displayPrice: price
-            ? ((formatPriceWithCurrency(price, currency) ?? "") + pricePeriodSuffix(entry.pricePeriod))
-            : formatPriceWithCurrency(property.price, propertyCurrency),
+          dualIdr: dual.idr,
+          dualUsd: dual.usd,
+          displayPrice: hasDual
+            ? [dual.idr, dual.usd].filter(Boolean).join(" | ")
+            : (price
+                ? ((formatPriceWithCurrency(price, currency) ?? "") + pricePeriodSuffix(entry.pricePeriod))
+                : formatPriceWithCurrency(property.price, propertyCurrency)),
           periodLabel: pricePeriodLabel(entry.pricePeriod),
+          conversionPrice,
+          conversionCurrency,
+          // For KPR: prefer IDR price
+          priceIdrForKpr: resolvePriceForCurrency(entry, "IDR") ?? (entry.price && currency === "IDR" ? entry.price : null),
         };
       })
     : property.price
@@ -144,12 +171,17 @@ export default async function PropertyDetailPage({ params }: Props) {
           transactionType: (property.transactionType ?? "jual").toLowerCase(),
           displayTransaction: property.transactionType === "Sewa" ? "Sewa" : "Jual",
           displayCurrency: propertyCurrency,
+          dualIdr: propertyCurrency === "IDR" ? formatPriceWithCurrency(property.price, "IDR") : null,
+          dualUsd: propertyCurrency === "USD" ? formatPriceWithCurrency(property.price, "USD") : null,
           displayPrice: formatPriceWithCurrency(property.price, propertyCurrency),
           currency: propertyCurrency,
           price: property.price,
+          conversionPrice: property.price,
+          conversionCurrency: propertyCurrency,
           pricePeriod: undefined as string | undefined,
           priceUnit: undefined as string | undefined,
           periodLabel: null as string | null,
+          priceIdrForKpr: propertyCurrency === "IDR" ? property.price : null,
         }]
       : [];
   // Tipe transaksi dinamis: Jual saja, Sewa saja, atau keduanya sesuai data
@@ -166,12 +198,13 @@ export default async function PropertyDetailPage({ params }: Props) {
   const waNumber = normalizeWhatsAppNumber(property.contact?.whatsappNumber ?? property.contact?.phoneNumber ?? company?.contactPhone ?? "0894934394");
   const telNumber = property.contact?.phoneNumber ?? company?.contactPhone ?? "0894934394";
 
-  // KPR mengikuti mata uang properti
+  // KPR mengikuti mata uang Rupiah
   const kprPriceEntry = pricingEntries.find(
-    (entry) => entry.transactionType === "jual" && (entry.price ?? 0) > 0,
+    (entry) => entry.transactionType === "jual" && ((entry.priceIdrForKpr ?? 0) > 0 || (entry.price ?? 0) > 0),
   );
+  const kprPrice = kprPriceEntry?.priceIdrForKpr ?? kprPriceEntry?.price ?? 0;
   const showKpr = Boolean(
-    property.kprAvailable && kprPriceEntry && (kprPriceEntry.price ?? 0) > 0,
+    property.kprAvailable && kprPriceEntry && kprPrice > 0,
   );
 
   const specWrapper = (label: string, value?: string | number, icon?: string) => (
@@ -244,19 +277,30 @@ export default async function PropertyDetailPage({ params }: Props) {
                           </span>
                         )}
                       </div>
-                      <div className="font-price-display text-xl font-bold text-primary mt-sm notranslate">
-                        {entry.displayPrice ?? "Harga Belum Tersedia"}
+                      {/* Dual Price Display */}
+                      <div className="mt-sm notranslate">
+                        {entry.dualIdr && (
+                          <div className="font-price-display text-xl font-bold text-primary">
+                            {entry.dualIdr}{pricePeriodSuffix(entry.pricePeriod)}{entry.priceUnit ? ` (${entry.priceUnit})` : ""}
+                          </div>
+                        )}
+                        {entry.dualUsd && (
+                          <div className="font-price-display text-lg font-bold text-on-surface-variant mt-1">
+                            {entry.dualUsd}{pricePeriodSuffix(entry.pricePeriod)}{entry.priceUnit ? ` (${entry.priceUnit})` : ""}
+                          </div>
+                        )}
+                        {!entry.dualIdr && !entry.dualUsd && (
+                          <div className="font-price-display text-xl font-bold text-primary">
+                            {entry.displayPrice ?? "Harga Belum Tersedia"}
+                          </div>
+                        )}
                       </div>
+                      {/* Konversi otomatis — selalu tampil di bawah harga */}
                       <PriceConversion
-                        amount={entry.price ?? undefined}
-                        currency={entry.displayCurrency}
+                        amount={entry.conversionPrice ?? undefined}
+                        currency={entry.conversionCurrency}
                       />
                       <div className="mt-xs text-xs text-on-surface-variant flex flex-wrap gap-x-3 gap-y-1 pt-1">
-                        {entry.priceUnit && (
-                          <span>
-                            Unit: <strong className="text-on-surface">{entry.priceUnit}</strong>
-                          </span>
-                        )}
                         {entry.displayCurrency && (
                           <span>
                             Mata Uang: <strong className="text-on-surface">{entry.displayCurrency}</strong>
@@ -271,10 +315,10 @@ export default async function PropertyDetailPage({ params }: Props) {
           )}
 
           {/* Simulasi Pembayaran (Tunai / KPR) */}
-          {showKpr && kprPriceEntry?.price ? (
+          {showKpr && kprPrice > 0 ? (
             <KprCalculator
-              price={kprPriceEntry.price}
-              currency={kprPriceEntry.displayCurrency}
+              price={kprPrice}
+              currency="IDR"
               defaultDownPaymentPercent={property.kprDownPaymentPercent ?? 20}
               defaultInterestRate={property.kprInterestRate ?? 8}
               maxTenorYears={property.kprMaxTenorYears ?? 20}
@@ -411,6 +455,10 @@ export default async function PropertyDetailPage({ params }: Props) {
                 <h2 className="font-price-display text-price-display text-primary mt-1 notranslate">
                   {displayPrice ?? "Harga Belum Tersedia"}
                 </h2>
+                <PriceConversion
+                  amount={selectedPricing?.price ?? undefined}
+                  currency={selectedPricing?.currency ?? property.defaultCurrency ?? "IDR"}
+                />
                 {transactionBadges.length > 0 && (
                   <p className="mt-2 flex flex-wrap gap-2">
                     {transactionBadges.map((badge) => (

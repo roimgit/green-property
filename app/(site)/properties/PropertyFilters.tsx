@@ -240,7 +240,7 @@ export default function PropertyFilters({
 
           {/* Harga */}
           <div className="flex flex-col gap-sm">
-            <h3 className="font-headline-sm text-headline-sm text-on-surface">Harga (Rp)</h3>
+            <h3 className="font-headline-sm text-headline-sm text-on-surface">Harga (IDR)</h3>
             <div className="flex gap-sm">
               <input
                 type="text"

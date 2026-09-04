@@ -386,35 +386,35 @@ export default async function KerjasamaPage() {
       {(settings?.ctaHeading?.trim() ||
         settings?.ctaDescription?.trim() ||
         settings?.ctaButtonLabel?.trim()) && (
-        <section className="max-w-container-max mx-auto px-sm lg:px-xl py-xl">
-          <div className="rounded-3xl p-xl text-center shadow-lg flex flex-col items-center gap-lg bg-primary relative overflow-hidden">
-            <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-white/10 blur-3xl" />
-            <div className="relative space-y-sm">
-              {settings?.ctaHeading?.trim() && (
-                <h2 className="font-display text-display text-white">{settings.ctaHeading}</h2>
-              )}
-              {settings?.ctaDescription?.trim() && (
-                <p className="font-body-lg text-body-lg text-white/80 max-w-2xl mx-auto">
-                  {settings.ctaDescription}
-                </p>
-              )}
-            </div>
-            {settings?.ctaButtonLabel?.trim() && (
-              <div className="relative">
-                {renderButton(
-                  {
-                    label: settings.ctaButtonLabel,
-                    href: ctaHref,
-                    linkType: /^https?:/.test(ctaHref) ? "external" : "internal",
-                    icon: "mail",
-                  },
-                  "inline-flex items-center gap-2 bg-white text-primary px-8 py-4 rounded-full font-bold hover:bg-amber-300 hover:text-slate-900 transition-all shadow-md active:scale-95",
+          <section className="max-w-container-max mx-auto px-sm lg:px-xl py-xl">
+            <div className="rounded-3xl p-xl text-center shadow-lg flex flex-col items-center gap-lg bg-primary relative overflow-hidden">
+              <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-white/10 blur-3xl" />
+              <div className="relative space-y-sm">
+                {settings?.ctaHeading?.trim() && (
+                  <h2 className="font-display text-display text-white">{settings.ctaHeading}</h2>
+                )}
+                {settings?.ctaDescription?.trim() && (
+                  <p className="font-body-lg text-body-lg text-white/80 max-w-2xl mx-auto">
+                    {settings.ctaDescription}
+                  </p>
                 )}
               </div>
-            )}
-          </div>
-        </section>
-      )}
+              {settings?.ctaButtonLabel?.trim() && (
+                <div className="relative">
+                  {renderButton(
+                    {
+                      label: settings.ctaButtonLabel,
+                      href: ctaHref,
+                      linkType: /^https?:/.test(ctaHref) ? "external" : "internal",
+                      icon: "mail",
+                    },
+                    "inline-flex items-center gap-2 bg-white text-primary px-8 py-4 rounded-full font-bold hover:bg-amber-300 hover:text-slate-900 transition-all shadow-md active:scale-95",
+                  )}
+                </div>
+              )}
+            </div>
+          </section>
+        )}
     </main>
   );
 }

@@ -101,7 +101,7 @@ export default function PropertyCard({ property }: { property: Property }) {
         )}
 
         <div className="pt-xs mt-auto">
-          <div className="font-price-display text-headline-sm font-bold text-primary tracking-tight line-clamp-1 notranslate">
+          <div className="font-price-display text-body-lg font-bold text-primary tracking-tight line-clamp-2 notranslate">
             {priceDisplay ?? "Harga Belum Tersedia"}
           </div>
         </div>

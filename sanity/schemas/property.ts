@@ -56,6 +56,7 @@ export default defineType({
         defineField({
             name: 'pricing',
             title: 'Struktur Harga & Transaksi',
+            description: 'Setiap entri bisa punya mata uang sendiri. Isi harga di salah satu atau kedua kolom (Rupiah & Dollar) sesuai kebutuhan.',
             type: 'array',
             components: { field: PricingWithRate },
             of: [
@@ -75,10 +76,46 @@ export default defineType({
                             validation: (Rule) => Rule.required(),
                         },
                         {
-                            name: 'price',
-                            title: 'Nominal Harga',
+                            name: 'currency',
+                            title: 'Mata Uang Harga Ini',
+                            type: 'string',
+                            description: 'Pilih mata uang untuk entri ini. Jika kosong, mengikuti Mata Uang Default properti.',
+                            options: {
+                                list: [
+                                    { title: 'Rupiah (IDR)', value: 'IDR' },
+                                    { title: 'Dollar USD (USD)', value: 'USD' },
+                                    { title: 'Dollar Singapura (SGD)', value: 'SGD' },
+                                    { title: 'Ringgit Malaysia (MYR)', value: 'MYR' },
+                                    { title: 'Baht Thailand (THB)', value: 'THB' },
+                                    { title: 'Won Korea (KRW)', value: 'KRW' },
+                                    { title: 'Yuan China (CNY)', value: 'CNY' },
+                                    { title: 'Euro (EUR)', value: 'EUR' },
+                                    { title: 'Pound Sterling (GBP)', value: 'GBP' },
+                                    { title: 'Yen Jepang (JPY)', value: 'JPY' },
+                                ],
+                            },
+                            initialValue: 'IDR',
+                        },
+                        {
+                            name: 'priceIDR',
+                            title: 'Harga (Rupiah / IDR)',
                             type: 'number',
-                            validation: (Rule) => Rule.required(),
+                            description: 'Nominal harga dalam Rupiah. Kosongkan jika tidak perlu.',
+                            validation: (Rule) => Rule.min(0),
+                        },
+                        {
+                            name: 'priceUSD',
+                            title: 'Harga (Dollar / USD)',
+                            type: 'number',
+                            description: 'Nominal harga dalam Dollar USD. Kosongkan jika tidak perlu.',
+                            validation: (Rule) => Rule.min(0),
+                        },
+                        {
+                            name: 'price',
+                            title: 'Harga Utama (Fallback)',
+                            type: 'number',
+                            description: 'Digunakan jika harga Rupiah & Dollar tidak diisi. Mengikuti mata uang di atas atau Mata Uang Default properti.',
+                            validation: (Rule) => Rule.min(0),
                         },
                         {
                             name: 'pricePeriod',
@@ -104,15 +141,28 @@ export default defineType({
                     preview: {
                         select: {
                             transactionType: 'transactionType',
+                            currency: 'currency',
+                            priceIDR: 'priceIDR',
+                            priceUSD: 'priceUSD',
                             price: 'price',
                             pricePeriod: 'pricePeriod',
                         },
                         prepare(selection) {
-                            const { transactionType, price, pricePeriod } = selection
-                            const priceText = price?.toLocaleString('id-ID')
+                            const { transactionType, currency, priceIDR, priceUSD, price, pricePeriod } = selection
+                            const parts: string[] = []
+                            if (priceIDR) parts.push(`Rp ${priceIDR.toLocaleString('id-ID')}`)
+                            if (priceUSD) parts.push(`$${priceUSD.toLocaleString('en-US')}`)
+                            if (!priceIDR && !priceUSD && price) {
+                                const curr = (currency || 'IDR').toUpperCase()
+                                if (curr === 'USD') parts.push(`$${price.toLocaleString('en-US')}`)
+                                else parts.push(`Rp ${price.toLocaleString('id-ID')}`)
+                            }
+                            const priceText = parts.length > 0 ? parts.join(' | ') : 'Harga belum diisi'
+                            const sub = pricePeriod ? `Periode: ${pricePeriod}` : 'Harga Tetap'
+                            const currLabel = currency ? ` [${currency}]` : ''
                             return {
-                                title: `${transactionType?.toUpperCase()} - ${priceText}`,
-                                subtitle: pricePeriod ? `Periode: ${pricePeriod}` : 'Harga Tetap',
+                                title: `${transactionType?.toUpperCase()}${currLabel} - ${priceText}`,
+                                subtitle: sub,
                             }
                         },
                     },

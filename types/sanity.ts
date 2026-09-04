@@ -53,8 +53,13 @@ export interface PropertySpecs {
 
 export interface PricingEntry {
   transactionType?: "jual" | "sewa";
-  /** Legacy: currency per harga (input sudah dihapus dari Studio). Tampilan memakai Mata Uang Default properti. */
+  /** Mata uang khusus untuk entri ini. Jika kosong, mengikuti defaultCurrency properti. */
   currency?: string;
+  /** Harga dalam Rupiah (IDR). */
+  priceIDR?: number;
+  /** Harga dalam Dollar USD. */
+  priceUSD?: number;
+  /** Harga utama/fallback dalam mata uang `currency` atau defaultCurrency properti. */
   price?: number;
   pricePeriod?: string;
   priceUnit?: string;

@@ -21,7 +21,15 @@ const PROPERTY_LIST_QUERY = groq`*[_type == "property"]{
   transactionType,
   price,
   defaultCurrency,
-  pricing,
+  pricing[]{
+    transactionType,
+    currency,
+    priceIDR,
+    priceUSD,
+    price,
+    pricePeriod,
+    priceUnit
+  },
   primaryPriceIndex,
   status,
   locationShort,
@@ -45,7 +53,15 @@ const PROPERTY_BY_SLUG_QUERY = groq`*[_type == "property" && slug.current == $sl
   transactionType,
   price,
   defaultCurrency,
-  pricing,
+  pricing[]{
+    transactionType,
+    currency,
+    priceIDR,
+    priceUSD,
+    price,
+    pricePeriod,
+    priceUnit
+  },
   primaryPriceIndex,
   status,
   locationShort,
@@ -77,7 +93,15 @@ const SIMILAR_PROPERTIES_QUERY = groq`*[_type == "property" && slug.current != $
   transactionType,
   price,
   defaultCurrency,
-  pricing,
+  pricing[]{
+    transactionType,
+    currency,
+    priceIDR,
+    priceUSD,
+    price,
+    pricePeriod,
+    priceUnit
+  },
   primaryPriceIndex,
   status,
   locationShort,
@@ -258,6 +282,27 @@ export function formatPriceWithCurrency(price?: number, currency?: string): stri
   if (curr === "EUR" || curr === "€") {
     return "€" + price.toLocaleString("de-DE", { maximumFractionDigits: 0 });
   }
+  if (curr === "SGD" || curr === "S$") {
+    return "S$" + price.toLocaleString("en-US", { maximumFractionDigits: 0 });
+  }
+  if (curr === "MYR" || curr === "RM") {
+    return "RM " + price.toLocaleString("en-US", { maximumFractionDigits: 0 });
+  }
+  if (curr === "THB" || curr === "฿") {
+    return "฿" + price.toLocaleString("en-US", { maximumFractionDigits: 0 });
+  }
+  if (curr === "KRW" || curr === "₩") {
+    return "₩" + price.toLocaleString("ko-KR", { maximumFractionDigits: 0 });
+  }
+  if (curr === "CNY" || curr === "¥") {
+    return "¥" + price.toLocaleString("zh-CN", { maximumFractionDigits: 0 });
+  }
+  if (curr === "GBP" || curr === "£") {
+    return "£" + price.toLocaleString("en-GB", { maximumFractionDigits: 0 });
+  }
+  if (curr === "JPY" || curr === "¥") {
+    return "¥" + price.toLocaleString("ja-JP", { maximumFractionDigits: 0 });
+  }
   return `${curr} ${price.toLocaleString("id-ID")}`;
 }
 
@@ -290,11 +335,101 @@ export function getPrimaryPricingEntry(property: Property): PricingEntry | null 
 }
 
 /**
+ * Resolve the effective price for a given currency from a pricing entry.
+ * Priority: priceIDR/priceUSD (if currency matches) → price → fallback.
+ */
+export function resolvePriceForCurrency(
+  entry: PricingEntry | null,
+  targetCurrency: string,
+): number | null {
+  if (!entry) return null;
+  const curr = targetCurrency.toUpperCase();
+
+  if (curr === "IDR" && entry.priceIDR && entry.priceIDR > 0) return entry.priceIDR;
+  if (curr === "USD" && entry.priceUSD && entry.priceUSD > 0) return entry.priceUSD;
+
+  // Fallback: use `price` if entry's currency matches
+  const entryCurrency = (entry.currency ?? "IDR").toUpperCase();
+  if (entryCurrency === curr && entry.price && entry.price > 0) return entry.price;
+
+  return null;
+}
+
+/**
+ * Build dual-price display for a pricing entry.
+ * Returns { idr, usd } where each can be a formatted string or null.
+ */
+export function getDualPriceDisplay(
+  entry: PricingEntry | null,
+  defaultCurrency?: string,
+): { idr: string | null; usd: string | null } {
+  if (!entry) return { idr: null, usd: null };
+
+  // IDR: prefer priceIDR, then price if currency is IDR, then null
+  const idrAmount =
+    (entry.priceIDR && entry.priceIDR > 0)
+      ? entry.priceIDR
+      : ((entry.currency ?? defaultCurrency ?? "IDR").toUpperCase() === "IDR" && entry.price && entry.price > 0)
+        ? entry.price
+        : null;
+
+  // USD: prefer priceUSD, then price if currency is USD, then null
+  const usdAmount =
+    (entry.priceUSD && entry.priceUSD > 0)
+      ? entry.priceUSD
+      : ((entry.currency ?? defaultCurrency ?? "IDR").toUpperCase() === "USD" && entry.price && entry.price > 0)
+        ? entry.price
+        : null;
+
+  return {
+    idr: idrAmount ? formatPriceWithCurrency(idrAmount, "IDR") : null,
+    usd: usdAmount ? formatPriceWithCurrency(usdAmount, "USD") : null,
+  };
+}
+
+/**
+ * Format dual-price display string for a pricing entry.
+ * Shows both IDR and USD side by side, or whichever is available.
+ * Fallback: uses the entry's own currency via `price` field.
+ */
+export function getDualPriceDisplayString(
+  entry: PricingEntry | null,
+  defaultCurrency?: string,
+): string | null {
+  if (!entry) return null;
+  const { idr, usd } = getDualPriceDisplay(entry, defaultCurrency);
+  const parts: string[] = [];
+  if (idr) parts.push(idr);
+  if (usd) parts.push(usd);
+
+  if (parts.length > 0) return parts.join(" | ");
+
+  // Final fallback: use `price` with resolved currency
+  if (entry.price && entry.price > 0) {
+    const curr = (entry.currency ?? defaultCurrency ?? "IDR").toUpperCase();
+    return formatPriceWithCurrency(entry.price, curr);
+  }
+
+  return null;
+}
+
+/**
  * Get numerical price amount of the primary price for sorting and range filtering.
+ * Uses IDR amount when available (for consistent sorting across currencies).
  */
 export function getPrimaryPriceAmount(property: Property): number {
   const entry = getPrimaryPricingEntry(property);
-  if (entry?.price && entry.price > 0) return entry.price;
+  if (entry) {
+    // Prefer IDR for consistent sorting
+    if (entry.priceIDR && entry.priceIDR > 0) return entry.priceIDR;
+    if (entry.price && entry.price > 0) {
+      const curr = (entry.currency ?? property.defaultCurrency ?? "IDR").toUpperCase();
+      // If price is already IDR, use it directly
+      if (curr === "IDR") return entry.price;
+      // For other currencies, still return the raw number for basic sorting
+      return entry.price;
+    }
+  }
   if (property.price && property.price > 0) return property.price;
   return 0;
 }
@@ -346,18 +481,19 @@ export function pricePeriodSuffix(period?: string | null): string {
 }
 
 /**
- * Format primary price with currency, period (e.g. /tahun, /bulan), and unit for display.
+ * Format primary price with dual-currency display, period, and unit for display.
+ * Shows both IDR and USD when available, or whichever is present.
  */
 export function getPrimaryPriceDisplay(property: Property): string | null {
   const entry = getPrimaryPricingEntry(property);
-  if (!entry || !entry.price || entry.price <= 0) {
+  if (!entry) {
     if (property.price && property.price > 0) {
       return formatPriceWithCurrency(property.price, resolvePropertyCurrency(property));
     }
     return null;
   }
 
-  const basePrice = formatPriceWithCurrency(entry.price, resolvePropertyCurrency(property, entry));
+  const basePrice = getDualPriceDisplayString(entry, property.defaultCurrency);
   if (!basePrice) return null;
 
   let suffix = pricePeriodSuffix(entry.pricePeriod);
@@ -370,16 +506,19 @@ export function getPrimaryPriceDisplay(property: Property): string | null {
 }
 
 /**
- * Format a single PricingEntry object from property.ts pricing array into a human readable string.
+ * Format a single PricingEntry object into a human readable string.
+ * Shows both IDR and USD prices when available.
  * Example output:
- * - "Jual: Rp 1.500.000.000"
+ * - "Jual: Rp 1.500.000.000 | $95,000"
  * - "Sewa: Rp 50.000.000/tahun (Per Hektar)"
+ * - "Jual [USD]: $32,000"
  */
 export function formatPricingEntry(entry: PricingEntry): string {
   const txLabel = entry.transactionType?.toLowerCase() === "sewa" ? "Sewa" : "Jual";
-  const formattedPrice = entry.price
+  const dualStr = getDualPriceDisplayString(entry);
+  const formattedPrice = dualStr ?? (entry.price
     ? formatPriceWithCurrency(entry.price, entry.currency ?? "IDR")
-    : null;
+    : null);
 
   if (!formattedPrice) return `${txLabel}: Harga belum diatur`;
 

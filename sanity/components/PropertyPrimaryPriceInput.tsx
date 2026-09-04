@@ -6,6 +6,8 @@ import { set, unset, type StringInputProps, useFormValue } from 'sanity'
 type PricingEntry = {
   transactionType?: string
   currency?: string
+  priceIDR?: number
+  priceUSD?: number
   price?: number
   pricePeriod?: string
   priceUnit?: string
@@ -32,13 +34,20 @@ export function PropertyPrimaryPriceInput(props: StringInputProps) {
 
     return items.map((item, index) => {
       const transaction = item.transactionType ? item.transactionType.toUpperCase() : 'TRANSAKSI'
-      const currency = (item.currency ?? defaultCurrency ?? 'IDR').toUpperCase()
-      const price = typeof item.price === 'number' ? item.price.toLocaleString('id-ID') : '0'
+      const parts: string[] = []
+      if (item.priceIDR) parts.push(`Rp ${item.priceIDR.toLocaleString('id-ID')}`)
+      if (item.priceUSD) parts.push(`$${item.priceUSD.toLocaleString('en-US')}`)
+      if (!item.priceIDR && !item.priceUSD && item.price) {
+        const curr = (item.currency ?? defaultCurrency ?? 'IDR').toUpperCase()
+        if (curr === 'USD') parts.push(`$${item.price.toLocaleString('en-US')}`)
+        else parts.push(`Rp ${item.price.toLocaleString('id-ID')}`)
+      }
+      const priceStr = parts.length > 0 ? parts.join(' | ') : 'Belum diisi'
       const unit = item.priceUnit ? ` / ${item.priceUnit}` : ''
       const period = item.pricePeriod ? ` (${formatPricePeriod(item.pricePeriod)})` : ''
 
       return {
-        label: `${transaction} • ${currency} ${price}${unit}${period}`,
+        label: `${transaction} • ${priceStr}${unit}${period}`,
         value: String(index),
       }
     })
