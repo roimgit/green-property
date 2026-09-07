@@ -1,13 +1,9 @@
 import Link from "next/link";
 import PropertyCard from "@/components/PropertyCard";
 import HeroBannerImage from "@/components/HeroBannerImage";
-import ServiceCarousel from "./ServiceCarousel";
 import {
   getPropertyList,
   getCompanyProfile,
-  getPartnerLogos,
-  getEffectiveTestimonials,
-  getServices,
   imageUrl,
 } from "@/lib/sanity/data";
 
@@ -15,72 +11,11 @@ export const dynamic = "force-dynamic";
 
 const HERO_IMAGE_FALLBACK = "/hero.svg";
 
-const ALBUM_SECTION_LABEL = "ALBUM KERJASAMA";
-
-async function PartnerLogoMarquee() {
-  const logos = await getPartnerLogos();
-  if (logos.length === 0) return null;
-
-  const items = logos.map((l) => ({
-    name: l.namaPerusahaan ?? "Partner",
-    url: imageUrl(l.logo),
-  }));
-
-  const doubled = [...items, ...items];
-
-  return (
-    <section className="bg-surface-container-lowest py-xl overflow-hidden">
-      <div className="max-w-container-max mx-auto px-sm lg:px-xl mb-lg text-center">
-        <h2 className="font-headline-md text-headline-md text-on-surface">
-          Dipercaya oleh Mitra & Klien Kami
-        </h2>
-      </div>
-
-      <div className="relative">
-        <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-surface-container-lowest to-transparent z-10" />
-        <div className="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-surface-container-lowest to-transparent z-10" />
-
-        <div className="flex flex-col gap-lg">
-          <div className="group flex overflow-hidden">
-            <div className="flex animate-[marquee_25s_linear_infinite] gap-xl px-xl">
-              {doubled.map((item, i) => (
-                <div
-                  key={i}
-                  className="flex items-center justify-center w-40 h-20 grayscale hover:grayscale-0 transition-all duration-300 opacity-60 hover:opacity-100 font-bold text-outline"
-                >
-                  {item.url ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={item.url} alt={item.name} className="max-h-16 max-w-32 object-contain" />
-                  ) : (
-                    item.name
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
 export default async function Home() {
-  const [properties, testimonials, company, services, partners] = await Promise.all([
+  const [properties, company] = await Promise.all([
     getPropertyList(),
-    getEffectiveTestimonials(),
     getCompanyProfile(),
-    getServices(),
-    getPartnerLogos(),
   ]);
-
-  const documentation = partners.flatMap(
-    (p) =>
-      p.dokumentasi?.map((img, i) => ({
-        company: p.namaPerusahaan ?? "Partner",
-        url: imageUrl(img) ?? "",
-        alt: img?.alt ?? `Dokumentasi ${p.namaPerusahaan ?? "partner"} ${i + 1}`,
-      })) ?? [],
-  );
 
   const featured = properties.filter((p) => p.isFeatured);
   const unggulan = (featured.length > 0 ? featured : properties).slice(0, 9);
@@ -139,105 +74,6 @@ export default async function Home() {
         </section>
       )}
 
-      {/* ===== Service Portfolio ===== */}
-      {services.length > 0 && (
-        <section className="max-w-container-max mx-auto px-sm lg:px-xl mb-xl">
-          <div className="mb-lg">
-            <h2 className="font-headline-lg text-headline-lg text-on-surface mb-xs">Layanan</h2>
-            <p className="font-body-md text-body-md text-on-surface-variant">
-              Solusi lengkap untuk kebutuhan industri dan hunian perusahaan.
-            </p>
-          </div>
-          <div className="px-6">
-            <ServiceCarousel services={services} />
-          </div>
-        </section>
-      )}
-
-      {/* ===== Album Kerjasama ===== */}
-      {documentation.length > 0 && (
-      <section className="max-w-container-max mx-auto px-sm lg:px-xl mb-xl">
-        <div className="flex flex-col md:flex-row justify-between items-end gap-md mb-lg">
-          <div>
-            <div className="inline-block px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container font-label-caps text-label-caps mb-md">
-              {ALBUM_SECTION_LABEL}
-            </div>
-            <h2 className="font-headline-lg text-headline-lg text-on-surface mb-xs">
-              Momen Kerjasama Bersama Mitra
-            </h2>
-            <p className="font-body-md text-body-md text-on-surface-variant">
-              Dokumentasi kolaborasi nyata kami bersama para partner. Klik album untuk melihat detail kerjasama.
-            </p>
-          </div>
-          <Link
-            href="/kerjasama#momen-mitra"
-            className="hidden md:inline-flex items-center gap-1 text-primary font-semibold hover:underline"
-          >
-            Lihat Detail Kerjasama <span className="material-symbols-outlined text-sm">arrow_forward</span>
-          </Link>
-        </div>
-
-        {documentation.length > 0 ? (
-          <Link
-            href="/kerjasama#momen-mitra"
-            aria-label="Lihat album kerjasama di halaman Kerjasama"
-            className="group relative grid grid-cols-2 md:grid-cols-4 gap-3 auto-rows-[140px] md:auto-rows-[180px]"
-          >
-            {documentation.slice(0, 8).map((doc, i) => (
-              <div
-                key={`${doc.company}-${i}`}
-                className={`relative rounded-xl overflow-hidden border border-outline-variant/40 shadow-soft ${
-                  i === 0 ? "row-span-2" : ""
-                }`}
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={doc.url}
-                  alt={doc.alt}
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
-                <div className="absolute bottom-0 left-0 right-0 p-sm flex items-center gap-2">
-                  <span className="material-symbols-outlined text-white/90 text-base">business</span>
-                  <span className="font-body-sm text-body-sm font-semibold text-white">
-                    {doc.company}
-                  </span>
-                </div>
-              </div>
-            ))}
-            <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/20 transition-colors duration-300 rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-100">
-              <span className="bg-white/90 text-primary px-6 py-2 rounded-full font-semibold text-body-sm shadow-md flex items-center gap-2">
-                Lihat Album <span className="material-symbols-outlined text-sm">arrow_forward</span>
-              </span>
-            </div>
-          </Link>
-        ) : (
-          <Link
-            href="/kerjasama#momen-mitra"
-            className="group flex flex-col items-center justify-center gap-sm rounded-xl bg-surface-container-low border border-outline-variant/40 shadow-soft p-xl text-center hover:bg-surface-container-lowest transition-colors"
-          >
-            <span className="material-symbols-outlined text-4xl text-primary/60">photo_library</span>
-            <h3 className="font-headline-md text-headline-md font-bold text-on-surface">
-              Album Kerjasama
-            </h3>
-            <p className="font-body-md text-body-md text-on-surface-variant max-w-lg">
-              Lihat dokumentasi momen kerjasama kami bersama para mitra di halaman Kerjasama.
-            </p>
-            <span className="inline-flex items-center gap-2 bg-primary text-on-primary px-6 py-2.5 rounded-full font-semibold text-body-sm mt-sm group-hover:bg-surface-tint transition-colors">
-              Lihat Detail Kerjasama <span className="material-symbols-outlined text-sm">arrow_forward</span>
-            </span>
-          </Link>
-        )}
-
-        <Link
-          href="/kerjasama#momen-mitra"
-          className="md:hidden flex items-center justify-center gap-1 text-primary font-semibold mt-md"
-        >
-          Lihat Detail Kerjasama <span className="material-symbols-outlined text-sm">arrow_forward</span>
-        </Link>
-      </section>
-      )}
-
       {/* ===== Listing Unggulan ===== */}
       <section className="max-w-container-max mx-auto px-sm lg:px-xl mb-xl">
         <div className="flex justify-between items-end mb-lg">
@@ -279,56 +115,6 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ===== Testimonials ===== */}
-      {testimonials.length > 0 && (
-        <section id="about" className="max-w-container-max mx-auto px-sm lg:px-xl mb-xl">
-          <div className="mb-lg flex flex-col md:flex-row md:items-end md:justify-between gap-sm">
-            <div>
-              <h2 className="font-headline-lg text-headline-lg text-on-surface mb-xs">Apa Kata Klien Kami</h2>
-              <p className="font-body-md text-body-md text-on-surface-variant">
-                Testimoni dari mitra dan klien yang telah bekerja sama dengan kami.
-              </p>
-            </div>
-            <Link
-              href="/testimoni"
-              className="inline-flex items-center gap-1 text-primary font-semibold hover:underline"
-            >
-              Lihat Semua Testimoni <span className="material-symbols-outlined text-sm">arrow_forward</span>
-            </Link>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-gutter">
-            {testimonials.map((t) => (
-              <div
-                key={t._id}
-                className="bg-surface-container-lowest border border-outline-variant rounded-xl p-md shadow-soft flex flex-col gap-sm"
-              >
-                <div className="flex gap-1 text-secondary">
-                  {Array.from({ length: t.rating ?? 0 }).map((_, i) => (
-                    <span key={i} className="material-symbols-outlined text-sm">
-                      star
-                    </span>
-                  ))}
-                </div>
-                <p className="font-body-md text-body-md text-on-surface-variant flex-grow line-clamp-3" title={t.kutipan}>
-                  “{t.kutipan}”
-                </p>
-                <div className="flex items-center gap-sm">
-                  <div className="w-10 h-10 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-bold">
-                    {(t.nama ?? "?").charAt(0)}
-                  </div>
-                  <div>
-                    <div className="font-body-md text-body-md font-semibold text-on-surface">{t.nama}</div>
-                    {t.jabatan && (
-                      <div className="font-body-sm text-body-sm text-on-surface-variant">{t.jabatan}</div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
-
       {/* ===== CTA Banner ===== */}
       {showCta && (
         <section className="max-w-container-max mx-auto px-sm lg:px-xl mb-xl">
@@ -367,8 +153,6 @@ export default async function Home() {
           </div>
         </section>
       )}
-
-      <PartnerLogoMarquee />
     </main>
   );
 }

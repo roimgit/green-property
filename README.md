@@ -5,7 +5,7 @@ Fullstack property listing web app. Next.js (App Router, TypeScript) + Sanity (C
 ## Stack
 
 - **Frontend & Backend**: Next.js 16 (App Router, TypeScript, Tailwind CSS, ESLint)
-- **CMS**: Sanity Studio embedded at `/studio` (company profile, testimonials, partner logos, properties)
+- **CMS**: Sanity Studio embedded at `/studio` (company profile, properties)
 - **Deployment**: Vercel (with Sanity as the content backend)
 
 ## Getting started
@@ -80,7 +80,7 @@ sanity/
   sanity.config.ts            # Studio config (basePath /studio)
   sanity.cli.ts               # CLI config for `sanity:dev`
   schema.ts                   # schema registry
-  schemas/                    # companyProfile, testimonial, partnerLogo, property, ...
+  schemas/                    # companyProfile, property, category, contact
 types/                        # shared TS types
 ```
 
@@ -88,5 +88,5 @@ types/                        # shared TS types
 
 1. Fill in `.env` from the Sanity dashboard.
 2. Run `npm run dev` and open `/`.
-3. Open `/studio` to add content (company profile, testimonials, partner logos, properties).
+3. Open `/studio` to add content (company profile, properties).
 4. Proceed to the UI design phase.

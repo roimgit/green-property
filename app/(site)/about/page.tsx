@@ -1,8 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { getCompanyProfile, getPartnerLogos, getFormattedOperationalHours, imageUrl } from "@/lib/sanity/data";
+import { getCompanyProfile, getFormattedOperationalHours, imageUrl } from "@/lib/sanity/data";
 import { MapDisplay } from "@/app/contact/MapDisplay";
-import { CompanyProfile } from "@/types/sanity";
 
 export const dynamic = "force-dynamic";
 
@@ -11,10 +10,7 @@ export const metadata = {
 };
 
 export default async function AboutPage() {
-  const [profile, partnerLogos] = await Promise.all([
-    getCompanyProfile(),
-    getPartnerLogos(),
-  ]);
+  const profile = await getCompanyProfile();
 
   const companyName = profile?.companyName ?? "Green Property";
   const heroImage = imageUrl(profile?.heroBanner?.image) ?? "/hero.svg";
@@ -36,13 +32,6 @@ export default async function AboutPage() {
         "Membantu pelanggan menemukan kebutuhan hunian dan investasi yang tepat.",
         "Menyediakan layanan profesional, cepat, dan transparan.",
       ];
-
-  const partnerItems = partnerLogos.length > 0
-    ? partnerLogos.map((logo) => ({
-      name: logo.namaPerusahaan ?? "Partner",
-      url: imageUrl(logo.logo),
-    }))
-    : [];
 
   const mapsUrl = profile?.googleMapsUrl ?? null;
 
@@ -207,40 +196,6 @@ export default async function AboutPage() {
           </div>
         </div>
       </section>
-
-      {/* Partners Marquee Section */}
-      {partnerItems.length > 0 && (
-        <section className="bg-surface-container-lowest py-xl border-y border-outline-variant/40">
-          <div className="max-w-container-max mx-auto px-sm lg:px-xl">
-            <div className="text-center mb-lg">
-              <h2 className="font-headline-lg text-headline-lg font-bold text-on-surface mb-xs">
-                Dipercaya oleh Mitra &amp; Klien Kami
-              </h2>
-              <p className="font-body-md text-body-md text-on-surface-variant max-w-2xl mx-auto">
-                Bergabung dengan mitra yang telah mempercayai kami sebagai solusi properti terbaik.
-              </p>
-            </div>
-
-            <div className="relative overflow-hidden">
-              <div className="flex animate-[marquee_25s_linear_infinite] gap-xl px-xl">
-                {[...partnerItems, ...partnerItems].map((item, index) => (
-                  <div
-                    key={`${item.name}-${index}`}
-                    className="flex items-center justify-center w-40 h-20 shrink-0 grayscale hover:grayscale-0 transition-all duration-300 opacity-60 hover:opacity-100"
-                  >
-                    {item.url ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={item.url} alt={item.name} className="max-h-16 max-w-32 object-contain" />
-                    ) : (
-                      <span className="text-sm font-semibold text-on-surface-variant">{item.name}</span>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* Map Section */}
       {profile?.latitude && profile?.longitude ? (

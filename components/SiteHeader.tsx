@@ -9,9 +9,7 @@ import LangSwitcher from "@/components/LangSwitcher";
 const NAV_LINKS = [
   { label: "Beranda", href: "/" },
   { label: "Properti", href: "/properties" },
-  { label: "Kerjasama", href: "/kerjasama" },
   { label: "Tentang Kami", href: "/about" },
-  { label: "Testimoni", href: "/testimoni" },
   { label: "Kontak", href: "/contact" },
 ];
 

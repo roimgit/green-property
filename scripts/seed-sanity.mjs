@@ -2,8 +2,8 @@
  * Seed demo content into Sanity.
  *
  * Uploads the design's placeholder images as Sanity assets, then creates
- * property / companyProfile / partnerLogo / testimonial documents so the
- * pages can render real data from Sanity.
+ * property / companyProfile documents so the pages can render real data from
+ * Sanity.
  *
  * Run:  node scripts/seed-sanity.mjs
  * Requires SANITY project id/dataset/token in .env (loaded by dotenv below).
@@ -86,9 +86,9 @@ function portableText(text) {
 }
 
 async function deleteExisting() {
-  const docs = await client.fetch('*[_type in ["property","companyProfile","partnerLogo","testimonial"]]._id');
+  const docs = await client.fetch('*[_type in ["property","companyProfile"]]._id');
   if (docs.length) {
-    await client.delete({ query: '*[_type in ["property","companyProfile","partnerLogo","testimonial"]]' });
+    await client.delete({ query: '*[_type in ["property","companyProfile"]]' });
   }
   return docs;
 }
@@ -386,63 +386,6 @@ async function main() {
     },
   });
   console.log("  created companyProfile");
-
-  console.log("Seeding partner logos...");
-  const partners = [
-    { namaPerusahaan: "PT Mitra Industri", urutanTampil: 1 },
-    { namaPerusahaan: "Karya Bangun Sejahtera", urutanTampil: 2 },
-    { namaPerusahaan: "Sinar Logistik Nusantara", urutanTampil: 3 },
-    { namaPerusahaan: "Cahaya Properti Group", urutanTampil: 4 },
-    { namaPerusahaan: "Jaya Steel Indonesia", urutanTampil: 5 },
-  ];
-  for (const partner of partners) {
-    const logoRef = await image(IMG.emptyState, partner.namaPerusahaan);
-    await client.create({
-      _type: "partnerLogo",
-      namaPerusahaan: partner.namaPerusahaan,
-      logo: logoRef,
-      urutanTampil: partner.urutanTampil,
-    });
-    console.log(`  created partnerLogo: ${partner.namaPerusahaan}`);
-  }
-
-  console.log("Seeding testimonials...");
-  const testimonials = [
-    {
-      nama: "Budi Santoso",
-      rating: 5,
-      kutipan: "Tim Green Property sangat profesional dan membantu kami menemukan lahan industri terbaik di Cikarang.",
-      jabatan: "Direktur PT Mitra Industri",
-      urutanTampil: 1,
-    },
-    {
-      nama: "Siti Rahmawati",
-      rating: 5,
-      kutipan: "Proses pembelian villa berjalan lancar. Layanan konsultasi mereka luar biasa.",
-      jabatan: "Pembeli Villa di Bali",
-      urutanTampil: 2,
-    },
-    {
-      nama: "Andi Wijaya",
-      rating: 4,
-      kutipan: "Solusi lahan yang strategis untuk ekosistem vendor Hyundai. Sangat direkomendasikan.",
-      jabatan: "Manajer Supply Chain",
-      urutanTampil: 3,
-    },
-  ];
-  for (const t of testimonials) {
-    const photo = await image(IMG.emptyState, t.nama);
-    await client.create({
-      _type: "testimonial",
-      nama: t.nama,
-      rating: t.rating,
-      kutipan: t.kutipan,
-      jabatan: t.jabatan,
-      photo,
-      urutanTampil: t.urutanTampil,
-    });
-    console.log(`  created testimonial: ${t.nama}`);
-  }
 
   console.log("Seed complete!");
 }

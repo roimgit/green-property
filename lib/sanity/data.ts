@@ -4,13 +4,8 @@ import type {
   PricingEntry,
   CompanyProfile,
   OperationalHours,
-  PartnerLogo,
-  Testimonial,
-  TestimonialSettings,
   Contact,
-  Service,
   SanityImage,
-  KerjasamaSettings,
 } from "@/types/sanity";
 
 const PROPERTY_LIST_QUERY = groq`*[_type == "property"]{
@@ -144,30 +139,6 @@ const COMPANY_QUERY = groq`*[_type == "companyProfile"][0]{
   longitude
 }`;
 
-const LOGOS_QUERY = groq`*[_type == "partnerLogo"]{
-  _id,
-  namaPerusahaan,
-  logo{asset->{url},url,alt},
-  urutanTampil,
-  url,
-  keteranganKerjasama,
-  testimoni,
-  testimoniPenulis,
-  dokumentasi[]{asset->{url},url,alt}
-} | order(urutanTampil asc)`;
-
-const TESTIMONIALS_QUERY = groq`*[_type == "testimonial"]{
-  _id,
-  nama,
-  rating,
-  kutipan,
-  jabatan,
-  photo{asset->{url},url,alt},
-  urutanTampil,
-  videoLabel,
-  videoUrl
-} | order(urutanTampil asc)`;
-
 const CONTACTS_QUERY = groq`*[_type == "contact"]{
   _id,
   name,
@@ -180,47 +151,16 @@ const CONTACTS_QUERY = groq`*[_type == "contact"]{
   email
 }`;
 
-const SERVICES_QUERY = groq`*[_type == "service"]{
-  _id,
-  title,
-  icon,
-  subtitle,
-  desc,
-  url,
-  urutanTampil
-} | order(urutanTampil asc)`;
-
 const CATEGORIES_QUERY = groq`*[_type == "category"]{
   _id,
   title,
   slug
 } | order(title asc)`;
 
-const TESTIMONIAL_SETTINGS_QUERY = groq`*[_type == "testimonialSettings"][0]{
-  _id,
-  title,
-  hideIfEmpty,
-  manualTestimonials[]{_key,nama,rating,kutipan,jabatan,photo{asset->{url},url,alt},videoLabel,videoUrl}
-}`;
-
 const SITE_SETTINGS_QUERY = groq`*[_type == "siteSettings"][0]{
   _id,
   title,
   primaryColor
-}`;
-
-const KERJASAMA_SETTINGS_QUERY = groq`*[_type == "kerjasamaSettings"][0]{
-  _id,
-  title,
-  heroBadge,
-  heroHeading,
-  heroDescription,
-  heroButtons,
-  points,
-  ctaHeading,
-  ctaDescription,
-  ctaButtonLabel,
-  ctaButtonHref
 }`;
 
 /** Extract a usable image URL from a Sanity image field. */
@@ -607,29 +547,6 @@ export function normalizeWhatsAppNumber(number?: string | null): string {
   return digits;
 }
 
-/** Cek apakah URL adalah link YouTube. */
-export function isYouTubeUrl(url?: string | null): boolean {
-  return /(youtube\.com|youtu\.be)/.test(url ?? "");
-}
-
-/** Ambil ID video YouTube dari berbagai format URL (watch, youtu.be, embed, shorts). */
-export function getYouTubeVideoId(url?: string | null): string | null {
-  if (!url) return null;
-  const trimmed = url.trim();
-  if (!trimmed) return null;
-
-  const short = trimmed.match(/youtu\.be\/([A-Za-z0-9_-]{6,})/);
-  if (short) return short[1];
-
-  const watch = trimmed.match(/[?&]v=([A-Za-z0-9_-]{6,})/);
-  if (watch) return watch[1];
-
-  const embed = trimmed.match(/(?:youtube\.com\/(?:embed|shorts)\/)([A-Za-z0-9_-]{6,})/);
-  if (embed) return embed[1];
-
-  return null;
-}
-
 /** Convert Sanity portable text blocks or string into a plain text string. */
 export function portableTextToText(blocks?: unknown): string {
   if (!blocks) return "";
@@ -746,55 +663,6 @@ export function getFormattedOperationalHours(hours?: OperationalHours | null): A
   ].filter((item) => Boolean(item.value && item.value.trim().length > 0));
 }
 
-export async function getPartnerLogos(): Promise<PartnerLogo[]> {
-  try {
-    return await sanityFetch<PartnerLogo[]>(LOGOS_QUERY);
-  } catch {
-    return [];
-  }
-}
-
-export async function getTestimonials(): Promise<Testimonial[]> {
-  try {
-    return await sanityFetch<Testimonial[]>(TESTIMONIALS_QUERY);
-  } catch {
-    return [];
-  }
-}
-
-export async function getTestimonialSettings(): Promise<TestimonialSettings | null> {
-  try {
-    return (await sanityFetch<TestimonialSettings | null>(TESTIMONIAL_SETTINGS_QUERY)) ?? null;
-  } catch {
-    return null;
-  }
-}
-
-/** Testimoni dengan satu dokumen per orang (sumber utama). */
-export async function getEffectiveTestimonials(): Promise<Testimonial[]> {
-  const list = await getTestimonials();
-  if (list.length > 0) return list;
-
-  // Fallback ke array manual (data lama) bila belum dimigrasi
-  const settings = await getTestimonialSettings();
-  const inline = settings?.manualTestimonials;
-  if (Array.isArray(inline) && inline.length > 0) {
-    return inline.map((t, idx) => ({
-      _id: t._key || `manual-${idx}`,
-      nama: t.nama,
-      rating: t.rating,
-      kutipan: t.kutipan,
-      jabatan: t.jabatan,
-      photo: t.photo,
-      urutanTampil: idx,
-      videoLabel: t.videoLabel,
-      videoUrl: t.videoUrl,
-    }));
-  }
-
-  return [];
-}
-
 export async function getSiteSettings(): Promise<import("@/types/sanity").SiteSettings | null> {
   try {
     return (await sanityFetch<import("@/types/sanity").SiteSettings | null>(SITE_SETTINGS_QUERY)) ?? null;
@@ -811,28 +679,12 @@ export async function getContacts(): Promise<Contact[]> {
   }
 }
 
-export async function getServices(): Promise<Service[]> {
-  try {
-    return await sanityFetch<Service[]>(SERVICES_QUERY);
-  } catch {
-    return [];
-  }
-}
-
 export async function getCategories(): Promise<string[]> {
   try {
     const list = await sanityFetch<Array<{ title?: string }>>(CATEGORIES_QUERY);
     return list.map((c) => c.title).filter((t): t is string => Boolean(t));
   } catch {
     return [];
-  }
-}
-
-export async function getKerjasamaSettings(): Promise<KerjasamaSettings | null> {
-  try {
-    return (await sanityFetch<KerjasamaSettings | null>(KERJASAMA_SETTINGS_QUERY)) ?? null;
-  } catch {
-    return null;
   }
 }
 
