@@ -1,5 +1,6 @@
 import { defineField, defineType } from 'sanity'
 import { ImageInputWithUrl } from '../components/ImageInputWithUrl'
+import { GalleryMultiUploadInput } from '../components/GalleryMultiUploadInput'
 import { GoogleMapsUrlInput } from '../components/GoogleMapsUrlInput'
 import { PricingWithRate } from '../components/PricingWithRate'
 import { PropertyPrimaryPriceInput } from '../components/PropertyPrimaryPriceInput'
@@ -260,6 +261,12 @@ export default defineType({
             name: 'gallery',
             title: 'Galeri Foto',
             type: 'array',
+            options: {
+                layout: 'grid',
+            },
+            components: {
+                input: GalleryMultiUploadInput,
+            },
             of: [
                 {
                     type: 'image',

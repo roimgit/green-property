@@ -33,6 +33,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <html
       lang="id"
       className={`${plusJakarta.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
       <head>
         {/* Material Symbols icon font — guarantees service icons render as
